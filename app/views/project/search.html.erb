@@ -1,0 +1,179 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//PT" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>PIEGAS</title>
+		<link REL="SHORTCUT ICON" HREF="favicon.png">
+		<link href="/stylesheets/background.css" rel="stylesheet" type="text/css" />
+        <link rel="stylesheet" type="text/css" href="/stylesheets/style4.css" />
+        <link rel="stylesheet" type="text/css" href="/stylesheets/head.css" />
+		<script type="text/javascript" src="js/modernizr.custom.04022.js"></script>
+		<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+		<script type="text/javascript">
+	$(function () {
+	    	
+	    	// Radialize the colors
+			Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function(color) {
+			    return {
+			        radialGradient: { cx: 0.5, cy: 0.3, r: 0.7 },
+			        stops: [
+			            [0, color],
+			            [1, Highcharts.Color(color).brighten(-0.3).get('rgb')] // darken
+			        ]
+			    };
+			});
+			
+			// Build the chart
+	        $('#container').highcharts({
+	            chart: {
+	                plotBackgroundColor: null,
+	                plotBorderWidth: null,
+	                plotShadow: false,
+	                backgroundColor: null
+	            },
+	            title: {
+	                text: 'Gráfico de avaliações positivas, negativas e neutras do produto',
+	                color: 'white'
+	            },
+	            tooltip: {
+	        	    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+	            },
+	            plotOptions: {
+	                pie: {
+	                    allowPointSelect: true,
+	                    cursor: 'pointer',
+	                    dataLabels: {
+	                        enabled: true,
+	                        color: 'white',
+	                        connectorColor: '#000000',
+	                        formatter: function() {
+	                            return '<b>'+ this.point.name +'</b>: '+ this.percentage +' %';
+	                        }
+	                    }
+	                }
+	            },
+	            series: [{
+	                type: 'pie',
+	                name: 'Browser share',
+	                data: [
+	                    ['Firefox',   45.0],
+	                    ['IE',       26.8],
+	                    {
+	                        name: 'Chrome',
+	                        y: 12.8,
+	                        sliced: true,
+	                        selected: true
+	                    },
+	                    ['Safari',    8.5],
+	                    ['Opera',     6.2],
+	                    ['Others',   0.7]
+	                ]
+	            }]
+	        });
+	    });
+	</script>
+	</head>
+
+	<body>
+		<meta charset="utf-8" >
+				
+			<table>
+			
+				<td>
+					<tr>
+					<div id="header">
+						<h1> Resultado de <%= @product %> </h1>
+						<img src=<%= @productImageURL %> alt=<%= @product %>+" from Google Images" width="300" height="300" align="center">
+					</div>
+					</tr><br>
+
+						<script src="/js/highcharts.js"></script>
+						<script src="/js/modules/exporting.js"></script>
+
+						<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+
+							<section class="tabs">
+							           <input id="tab-1" type="radio" name="radio-set" class="tab-selector-1" checked="checked" />
+							       <label for="tab-1" class="tab-label-1">Todos</label>
+
+							           <input id="tab-2" type="radio" name="radio-set" class="tab-selector-2" />
+							       <label for="tab-2" class="tab-label-2">Positivos</label>
+
+							           <input id="tab-3" type="radio" name="radio-set" class="tab-selector-3" />
+							       <label for="tab-3" class="tab-label-3">Negativos</label>
+
+							           <input id="tab-4" type="radio" name="radio-set" class="tab-selector-4" />
+							       <label for="tab-4" class="tab-label-4">Neutros</label>
+							           
+							   <div class="clear-shadow"></div>
+
+							       <div class="content">
+							       <div class="content-1" style="background:#C2CFF8; overflow:scroll; height:400px">
+								   <% for i in (0..20).step(2) %>
+								   		<h3><%= @posts[i] %></h3>
+								   		<p><%= @posts[i+1] %></p>
+									<% end %>
+							   </div>
+							       <div class="content-2" style="background:#C6F8C2; overflow:scroll; height:400px">
+							<h2>Services</h2>
+							                       <p>Do you see any Teletubbies in here? Do you see a slender plastic tag clipped to my shirt with my name printed on it? Do you see a little Asian child with a blank expression on his face sitting outside on a mechanical helicopter that shakes when you put quarters in it? No? Well, that's what you see at a toy store. And you must think you're in a toy store, because you're here shopping for an infant named Jeb.</p>
+							<h3>Excellence</h3>
+							<p>Like you, I used to think the world was this great place where everybody lived by the same standards I did, then some kid with a nail showed me I was living in his world, a world where chaos rules not order, a world where righteousness is not rewarded. That's Cesar's world, and if you're not willing to play by his rules, then you're gonna have to pay the price. </p>
+							   </div>
+							       <div class="content-3" style="background:#F8CFC2; overflow:scroll; height:400px">
+							<h2>Portfolio</h2>
+							                       <p>The path of the righteous man is beset on all sides by the iniquities of the selfish and the tyranny of evil men. Blessed is he who, in the name of charity and good will, shepherds the weak through the valley of darkness, for he is truly his brother's keeper and the finder of lost children. And I will strike down upon thee with great vengeance and furious anger those who would attempt to poison and destroy My brothers. And you will know My name is the Lord when I lay My vengeance upon thee.</p>
+							<h3>Examples</h3>
+							<p>Now that we know who you are, I know who I am. I'm not a mistake! It all makes sense! In a comic, you know how you can tell who the arch-villain's going to be? He's the exact opposite of the hero. And most times they're friends, like you and me! I should've known way back when... You know why, David? Because of the kids. They called me Mr Glass. </p>
+							   </div>
+							   <div class="content-4" style="background:#F8F6C2; overflow:scroll; height:400px">
+							<h2>Contact</h2>
+							                       <p>You see? It's curious. Ted did figure it out - time travel. And when we get back, we gonna tell everyone. How it's possible, how it's done, what the dangers are. But then why fifty years in the future when the spacecraft encounters a black hole does the computer call it an 'unknown entry event'? Why don't they know? If they don't know, that means we never told anyone. And if we never told anyone it means we never made it back. Hence we die down here. Just as a matter of deductive logic.</p>
+							<h3>Get in touch</h3>
+							<p>Well, the way they make shows is, they make one show. That show's called a pilot. Then they show that show to the people who make shows, and on the strength of that one show they decide if they're going to make more shows. Some pilots get picked and become television programs. Some don't, become nothing. She starred in one of the ones that became nothing. </p>
+							   </div>
+							       </div>
+							</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+					
+
+				</td>	
+
+
+				<td>
+					<tr>
+					<div id="content">
+						<%= form_tag({controller: "project", action: "pdf"}, {method: "get"}) do %>
+						  <%= submit_tag("Gerar PDF do resultado!") %>
+						<% end %>
+					</div>
+					</tr>
+				</td>	
+
+
+				<td>
+					<tr> 
+					<div id="footer">
+						Desenvolvido por Pedro H. Grandin <br> Projeto final de conclusão do curso de Engenharia de Computação - PUC Campinas
+					</div>
+					</tr>
+				</td>
+			</table>
+		</meta>
+	</body>
+</html>

@@ -1,0 +1,60 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//PT" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>PIEGAS</title>
+		<link REL="SHORTCUT ICON" HREF="favicon.png">
+		<link href="/stylesheets/background.css" rel="stylesheet" type="text/css" />
+		<link rel="stylesheet" type="text/css" href="/stylesheets/head.css" />
+	</head>
+
+	<body>
+		<meta charset="utf-8" >
+				
+			<table>
+			
+				<td>
+					<tr>
+					<div id="header">
+						<h1> Piegas </h1>
+					</div>
+					</tr>
+
+					<tr>
+					<div id="content">
+					<%= image_tag('/images/logo.png', :alt => 'Piegas logo', :width => 215) %><br>
+					</div>
+					</tr>
+					<!--
+					<div align="center">
+						<iframe id="panel" width="100%" height="550px" frameborder="0" src="/optiviewer/chart1"></iframe>
+					</div>
+
+					<div align="center" style="width: 100%;"><%= image_tag("logo_tansp.png") %></div>
+					-->
+					<tr>
+				    <div id="content">
+
+						<%= form_tag({controller: "project", action: "search"}, {method: "get"}) do %>
+						  <%= label_tag(:search, "Digite o nome do produto que deseje pesquisar:") %> <br /><br />
+						  <%= text_field_tag(:search)%><br /><br />
+						  <%= submit_tag("Pesquisar!") %>
+						<% end %>
+						
+				    </div>
+
+					</tr>
+				</td>
+			
+				<td>
+					<tr> 
+					<div id="footer">
+						Desenvolvido por Pedro H. Grandin <br> Projeto final de conclusão do curso de Engenharia de Computação - PUC Campinas
+					</div>
+					</tr>
+				</td>
+			</table>
+		</meta>
+	</body>
+</html>
