@@ -31,6 +31,10 @@ gem 'datagrid'
 
 gem 'prawn'
 
+gem 'classifier'
+
+gem 'ruby-stemmer', '~> 0.9.3'
+
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
 
@@ -57,4 +61,4 @@ end
 # Use debugger
 # gem 'debugger', group: [:development, :test]
 
-gem 'tzinfo-data', platforms: [:x64_mingw, :mswin]
+gem 'tzinfo-data', platforms: [:mingw, :x64_mingw, :mswin]

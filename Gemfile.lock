@@ -30,6 +30,8 @@ GEM
     arel (5.0.1.20140414130214)
     builder (3.2.2)
     certified (0.1.1)
+    classifier (1.3.4)
+      fast-stemmer (>= 1.0.0)
     coffee-rails (4.0.1)
       coffee-script (>= 2.2.0)
       railties (>= 4.0.0, < 5.0)
@@ -41,6 +43,7 @@ GEM
       rails (>= 3.0)
     erubis (2.7.0)
     execjs (2.0.2)
+    fast-stemmer (1.0.2)
     hike (1.2.3)
     i18n (0.6.9)
     image_suckr (0.1.0)
@@ -118,6 +121,7 @@ PLATFORMS
 
 DEPENDENCIES
   certified
+  classifier
   datagrid
   image_suckr
   jbuilder
@@ -126,6 +130,7 @@ DEPENDENCIES
   nokogiri (~> 1.6.2.rc1)
   prawn
   rails
+  ruby-stemmer (~> 0.9.3)
   sdoc
   turbolinks
   tzinfo-data

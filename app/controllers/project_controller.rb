@@ -1,19 +1,17 @@
 class ProjectController < ApplicationController
 
-	# Prevent CSRF attacks by raising an exception.
-	# For APIs, you may want to use :null_session instead.
-	protect_from_forgery with: :exception
-	  
-	layout false
+require 'classifierclass'
+require 'twitterreader'
 
-	def index
+helper_method :classify_spam
+layout false
 
-  	end
 
 	def search
-		@product = params[:search]
 
-		@posts = twitter_reader(@product)
+		@product = params[:search]
+		@posts = TwitterReader.reader(@product)
+
 	end
 
 	def pdf
@@ -40,6 +38,15 @@ class ProjectController < ApplicationController
 	    # Sends the PDF as inline document with name x.pdf
 	    send_data pdf.render, :filename => "x.pdf", :type => "application/pdf", :disposition => 'inline'
 	end
+	
+
+	def classify_spam (text)
+		ClassifierClass.classify_tweet(text)
+	end
+
+	# Prevent CSRF attacks by raising an exception.
+	# For APIs, you may want to use :null_session instead.
+	protect_from_forgery with: :exception
 
 end
 
