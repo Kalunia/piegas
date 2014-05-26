@@ -8,7 +8,7 @@ body {
 	top: 0;
 	font-size: 30px;
 	color: orange;
-	font-family: "Monotype Corsiva"
+	font-family: "Monotype Corsiva";
 }
 
 #content {
@@ -16,10 +16,12 @@ body {
     min-height: 100%;
     height: auto !important;
     height: 100%;
-    margin: 0 auto; /* the bottom margin is the negative value of the footer's height */
+    margin-top: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
     font-size: 20px;
-    color: white;
-    font-family: "Comic Sans MS"
+    color: black;
+    font-family: "Comic Sans MS";
 }
 
 #footer {
@@ -31,4 +33,5 @@ body {
     text-align: center;
     font-size: 15px;
     color: white;
+    position: fixed;
 }

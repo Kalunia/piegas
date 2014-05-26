@@ -34,11 +34,11 @@
 					<div align="center" style="width: 100%;"><%= image_tag("logo_tansp.png") %></div>
 					-->
 					<tr>
-				    <div id="content">
+				    <div id="content" style="color:white;">
 
-						<%= form_tag({controller: "project", action: "search"}, {method: "get"}) do %>
-						  <%= label_tag(:search, "Digite o nome do produto que deseje pesquisar:") %> <br /><br />
-						  <%= text_field_tag(:search)%><br /><br />
+						<%= form_tag({controller: "project", action: "info"}, {method: "get"}) do %>
+						  <%= label_tag(:product, "Digite o nome do produto que deseje pesquisar:") %> <br /><br />
+						  <%= text_field_tag(:product)%><br /><br />
 						  <%= submit_tag("Pesquisar!") %>
 						<% end %>
 						

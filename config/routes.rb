@@ -7,8 +7,19 @@ Piegas::Application.routes.draw do
   root "project#index"
 
   get 'project/index' => 'project#index'
-  get 'project/search' => 'project#search'
+  get 'project/info' => 'project#info'
   get 'project/pdf' => 'project#pdf'
+  get 'project/posts' => 'project#posts'
+  get 'project/charts' => 'project#charts'
+  get 'project/spams' => 'project#spams'
+  get 'project/about' => 'project#about'
+  get 'project/profile' => 'project#profile'
+
+
+  # GET para Action Controllers
+  get 'project/add_spam' => 'project#add_spam'
+
+
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
 

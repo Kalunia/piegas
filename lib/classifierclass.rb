@@ -14,10 +14,17 @@ require 'stemmer'
 		not_spam.each { |good| @classifier.train_not_spam good }
 	end
 
+
 	def self.classify_tweet (text)
 
 	  	@classifier.classify text
+	end
 
+	def self.add_spam (post)
+
+		open('public/yaml/spam.yml', 'a') { |f|
+			f.puts "- '"+post+" '"
+		}
 	end
 
 end

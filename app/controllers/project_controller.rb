@@ -1,19 +1,73 @@
 class ProjectController < ApplicationController
 
-require 'classifierclass'
-require 'twitterreader'
-
-helper_method :classify_spam
+# Prevent CSRF attacks by raising an exception.
+# For APIs, you may want to use :null_session instead.
+protect_from_forgery with: :exception
 layout false
 
+require 'classifierclass'
+require 'twitterreader'
+require 'open-uri'
+require 'classifierclass'
 
-	def search
+helper_method :get_info
+helper_method :get_posts
+helper_method :product_image
+helper_method :classify_spam
+helper_method :list_spams
+helper_method :add_spam
 
-		@product = params[:search]
-		@posts = TwitterReader.reader(@product)
+#before_filter :get_product
 
+respond_to :html
+
+	# # Reforca o produto em foco
+	# def get_product
+
+	# 	@product = params[:product]
+	# end
+
+	# Resgata os posts do Twitter em relacao ao produto no momento
+	def get_info
+
+		info = Nokogiri::HTML(open("http://pt.wikipedia.org/wiki/"+txt(session[:product])))
+		text = info.css('div#mw-content-text p')[2].text 
+
+		text
 	end
 
+
+	# Resgata os posts do Twitter em relacao ao produto no momento
+	def get_posts (product)
+
+		doc = Nokogiri::HTML(open("https://twitter.com/search?q="+txt(product)+"%20lang%3Apt&src=typd"))
+		items = doc.css ".content"
+		list = Array.new
+
+		items.each do |item|
+			autor = item.css(".fullname").first.content
+			tweet = item.css(".js-tweet-text").first.content
+
+			list << autor
+			list << tweet
+		end
+
+		ClassifierClass.initialize_classifier
+
+		list
+	end
+
+
+	# Obtem a URL do produto pesquisado
+	def product_image
+
+	  	suckr = ImageSuckr::GoogleSuckr.new
+
+	  	suckr.get_image_url({"q" => session[:product], as_filetype: "png", safe: "active"})
+	end
+
+
+	# Gera o arquivo PDF
 	def pdf
 		# Creates a new PDF document
 	    pdf = Prawn::Document.new
@@ -39,14 +93,21 @@ layout false
 	    send_data pdf.render, :filename => "x.pdf", :type => "application/pdf", :disposition => 'inline'
 	end
 	
+	# Classifica o post em "Spam" ou "Nao Spam"
+	def classify_spam (post)
 
-	def classify_spam (text)
-		ClassifierClass.classify_tweet(text)
+		ClassifierClass.classify_tweet(post)
 	end
 
-	# Prevent CSRF attacks by raising an exception.
-	# For APIs, you may want to use :null_session instead.
-	protect_from_forgery with: :exception
+
+	# Adiciona post à lista de Spams
+	def add_spam
+
+		#respond_to do |format|
+			ClassifierClass.add_spam (params[:post])
+		#	format.js
+		#end
+	end
 
 end
 

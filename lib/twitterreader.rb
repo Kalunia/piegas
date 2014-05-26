@@ -18,14 +18,7 @@ require 'classifierclass'
 
 		ClassifierClass.initialize_classifier
 
-		@productImageURL = self.product_image(product)
 		list
-	end
-
-	def self.product_image (product)
-	  	suckr = ImageSuckr::GoogleSuckr.new
-
-	  	suckr.get_image_url({q: product, as_filetype: "png", safe: "moderate"})
 	end
 
 	def self.sub (str)
