@@ -33,10 +33,21 @@ gem 'prawn'
 
 gem 'classifier'
 
-gem 'ruby-stemmer', '~> 0.9.3'
+#gem 'ruby-stemmer', '~> 0.9.3'
+gem 'stemmer'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
+
+gem 'execjs'
+
+group :assets do
+  gem 'sass-rails'
+  gem 'coffee-rails'
+  gem 'coffee-script'
+  gem 'uglifier'
+end
+
 
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
 gem 'turbolinks'

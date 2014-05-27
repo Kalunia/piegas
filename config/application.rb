@@ -21,6 +21,5 @@ module Piegas
     # config.i18n.default_locale = :de
     config.i18n.load_path += Dir[Rails.root.join('lib').to_s]
     config.autoload_paths += %W(#{config.root}/lib)
-    config.assets.initialize_on_precompile = false
   end
 end
