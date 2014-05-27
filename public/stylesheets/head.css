@@ -3,15 +3,19 @@ body {
 	padding: 0;
 }
 
-#header {
+.header{
 	text-align:center;
-	top: 0;
+	margin-top: 40px;
 	font-size: 30px;
 	color: orange;
 	font-family: "Monotype Corsiva";
 }
 
-#content {
+.header h1{
+    font-size: 60px;
+}
+
+.content {
 	text-align:center;
     min-height: 100%;
     height: auto !important;
@@ -24,7 +28,11 @@ body {
     font-family: "Comic Sans MS";
 }
 
-#footer {
+.content p {
+    color: white;
+}
+
+.footer {
 	margin-top: 50px;
     left: 0;
     bottom: 30px;
