@@ -1,8 +1,7 @@
 class ClassifierClass
 
 require 'rubygems'
-require 'yaml'
-require 'stemmer'	
+require 'yaml'	
 
 	def self.initialize_classifier
 		@classifier = Classifier::Bayes.new('Spam', 'Not Spam')

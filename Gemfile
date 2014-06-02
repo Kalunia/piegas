@@ -34,7 +34,8 @@ gem 'prawn'
 gem 'classifier'
 
 #gem 'ruby-stemmer', '~> 0.9.3'
-gem 'stemmer'
+#gem 'stemmer'
+gem 'fast-stemmer'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
@@ -46,6 +47,9 @@ gem 'turbolinks'
 
 # Build JSON APIs with ease. Read more: https://github.com/rails/jbuilder
 gem 'jbuilder'
+
+# Sessions
+gem 'activerecord-session_store'
 
 group :assets do
   gem 'sass-rails'

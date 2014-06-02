@@ -72,6 +72,15 @@
             		:action => 'pdf'}, 
             		class: "fa fa-edit fa-lg" %>
             </li>
+
+          <div class="reload">
+              <%= link_to ' Recarregar pesquisa!', {
+                :action => 'refresh_posts',
+                :remote => true,
+                :format => 'html',
+                :path => 'about' },
+                class: "fa fa-refresh fa-2x" %>
+          </div>
             
           </ul>
 
@@ -98,22 +107,22 @@
           <div class="col-lg-12">
             <h1>Sobre Piegas</h1>
           </div>
-
-		  <div id="content">
-        <span style="display:inline-block; vertical-align:middle;">
-		   	<p><h1> Criado por: </h1></p>
-        <p> Pedro Henrique Grandin </p>
-        <p> Campinas, SP <p>
-        <p> Engenharia de Computação - PUC Campinas </p>
-
-        <p><h1> API: </h1></p>
-        <p><a href="http://cs.stanford.edu/people/alecmgo/papers/TwitterDistantSupervision09.pdf"> Artigo de análise de sentimentos </a></p>
-        <p><a href="https://docs.google.com/document/d/1oqhjoBMvCSq3vmaPJr7ogs0CNjzIpJn_hUm4FKS1wGI/edit"> Lista de palavras positivas </a></p>
-        <p><a href="https://docs.google.com/document/d/1djkE8k8S0VjoGQWjwDO02Sw-QoCqZa3_XV52gw-I9IM/edit"> Lista de palavras negativas </a></p>
-        </span>
-		  </div>
-
         </div><!-- /.row -->
+
+        <div class="content">
+          <span style="display:inline-block; vertical-align:middle;">
+         	<p><h1> Criado por: </h1></p>
+          <p> Pedro Henrique Grandin </p>
+          <p> Campinas, SP <p>
+          <p> Engenharia de Computação - PUC Campinas </p>
+
+          <p><h1> API: </h1></p>
+          <p><a href="http://cs.stanford.edu/people/alecmgo/papers/TwitterDistantSupervision09.pdf"> Artigo de análise de sentimentos </a></p>
+          <p><a href="https://docs.google.com/document/d/1oqhjoBMvCSq3vmaPJr7ogs0CNjzIpJn_hUm4FKS1wGI/edit"> Lista de palavras positivas </a></p>
+          <p><a href="https://docs.google.com/document/d/1djkE8k8S0VjoGQWjwDO02Sw-QoCqZa3_XV52gw-I9IM/edit"> Lista de palavras negativas </a></p>
+          </span>
+        </div>
+
       </div><!-- /#page-wrapper -->
     </div><!-- /#wrapper -->	
 </body>

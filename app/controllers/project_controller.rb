@@ -16,6 +16,7 @@ helper_method :product_image
 helper_method :classify_spam
 helper_method :list_spams
 helper_method :add_spam
+helper_method :get_spams_detected
 
 #before_filter :get_product
 
@@ -38,23 +39,37 @@ respond_to :html
 
 
 	# Resgata os posts do Twitter em relacao ao produto no momento
-	def get_posts (product)
+	def get_posts
 
-		doc = Nokogiri::HTML(open("https://twitter.com/search?q="+txt(product)+"%20lang%3Apt&src=typd"))
+		doc = Nokogiri::HTML(open("https://twitter.com/search?q="+txt(session[:product])+"%20lang%3Apt&src=typd"))
 		items = doc.css ".content"
 		list = Array.new
 
 		items.each do |item|
 			autor = item.css(".fullname").first.content
 			tweet = item.css(".js-tweet-text").first.content
+			#time = item.css("._timestamp").first.content
+			avatar = item.css(".avatar").first['src']
 
 			list << autor
 			list << tweet
+			#list << time
+			list << avatar
 		end
 
 		ClassifierClass.initialize_classifier
 
-		list
+		session[:posts] = list
+	end
+
+	def refresh_posts
+
+		get_posts
+
+		respond_to do |format|
+			format.html { redirect_to :action => params[:path] }
+			format.html { render :layout => false }
+		end
 	end
 
 
@@ -94,9 +109,30 @@ respond_to :html
 	end
 	
 	# Classifica o post em "Spam" ou "Nao Spam"
-	def classify_spam (post)
+	def classify_spam
 
-		ClassifierClass.classify_tweet(post)
+		@spams_detected = 0
+		@tweets = Array.new
+
+		for i in (0..30).step(3)
+
+          if ClassifierClass.classify_tweet(session[:posts][i+1]) != 'Spam'
+
+                @tweets << session[:posts][i]
+				@tweets << session[:posts][i+1]
+				@tweets << session[:posts][i+2]
+
+          else
+             	@spams_detected += 1
+          end
+          
+        end
+
+        @tweets
+	end
+
+	def get_spams_detected
+		@spams_detected
 	end
 
 
@@ -104,7 +140,7 @@ respond_to :html
 	def add_spam
 
 		#respond_to do |format|
-			ClassifierClass.add_spam (params[:post])
+			ClassifierClass.add_spam (filter(params[:post]))
 		#	format.js
 		#end
 	end

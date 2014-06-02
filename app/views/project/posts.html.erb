@@ -17,6 +17,8 @@
   <body>
     <meta charset="utf-8" >
 
+    <% @tweets = classify_spam %>
+
     <div id="wrapper">
 
     <!-- Sidebar -->
@@ -69,9 +71,19 @@
 
             <li>
               <%= link_to ' Gerar PDF', {
-                :action => 'pdf'}, 
+                :action => 'pdf'},
                 class: "fa fa-edit fa-lg" %>
             </li>
+
+          <div class="reload">
+              <%= link_to ' Recarregar pesquisa!', {
+                :action => 'refresh_posts',
+                :remote => true,
+                :format => 'html',
+                :path => 'posts' },
+                class: "fa fa-refresh fa-2x" %>
+          </div>
+   
             
           </ul>
 
@@ -150,7 +162,7 @@
             </div>
           </div>
 
-          <div class="col-lg-3">
+         <div class="col-lg-3">
             <div class="panel panel-warning">
               <div class="panel-heading">
                 <div class="row">
@@ -158,9 +170,8 @@
                     <i class="fa fa-bug fa-5x"></i>
                   </div>
                   <div class="col-xs-6 text-right">
-                    <!-- <p class="announcement-heading"><%= @spams_detected %></p> -->
-                    <p class="announcement-heading">X</p>
-                    <p class="announcement-text">Spams Detectados!</p>
+                    <p class="announcement-heading"><%= get_spams_detected %></p>
+                    <p class="announcement-text">Spam(s) Detectado(s)!</p>
                   </div>
                 </div>
               </div>
@@ -168,11 +179,10 @@
           </div>
         </div>
 
-        <% @posts = get_posts(session[:product]) %>     
-        <div class="row">
-        <% for i in (0..30).step(2) %>
 
-          <% if classify_spam(@posts[i+1])!='Spam' %>
+        <div class="row">
+
+        <% for i in (0..30).step(3) %>
 
             <div class="panel panel-body panel-default" style="background-color:#B2B2B2;">
             <!-- <div class="panel panel-body panel-default" style="background-color:#FFB2B2;"> -->
@@ -180,11 +190,12 @@
               <div class="panel-body" >
                 <div class="col-lg-2 h4">
 
-                      <strong><%= @posts[i] %></strong> 
+                      <img src=<%= @tweets[i+2] %>>
+                      <p /><p><strong><%= @tweets[i] %></strong></p>
                 </div>
                 <div class="col-lg-10 well h4" >
 
-                      <%= @posts[i+1] %> 
+                      <%= @tweets[i+1] %>
                 </div>
               </div>
 
@@ -198,7 +209,7 @@
                       $.ajax({
                         type: 'GET',
                         url: '/project/add_spam',
-                        data: { post: '<%= @posts[i+1] %>' },
+                        data: { post: '<%= @tweets[i+1] %>' },
                         success: function(){
                           $("page_element").html(data);
                         }
@@ -208,17 +219,9 @@
                 </script>
 
             </div>
-
-          <% end %>
-            <!-- <div class="col-lg-3">
-            <div class="panel panel-default">
-              <div class="panel-body">
-                  
-              </div>
-            </div>
-            </div> -->
           
         <% end %>
+
         </div>
       </div><!-- /#page-wrapper -->
   </div><!-- /#wrapper -->

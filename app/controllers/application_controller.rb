@@ -13,4 +13,10 @@ attr_accessor :product
 		str.sub(" ", "_")
 	end
 
+	def filter (str)
+		str.sub("%", " ")
+		str.sub("|", " ")
+		str.sub("@", " ")
+	end
+
 end

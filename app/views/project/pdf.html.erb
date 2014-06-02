@@ -72,6 +72,15 @@
             		:action => 'pdf'}, 
             		class: "fa fa-edit fa-lg" %>
             </li>
+
+                     <div class="reload">
+              <%= link_to ' Recarregar pesquisa!', {
+                :action => 'refresh_posts',
+                :remote => true,
+                :format => 'html',
+                :path => 'pdf' },
+                class: "fa fa-refresh fa-2x" %>
+          </div>
             
           </ul>
 

@@ -28,7 +28,7 @@ body {
     font-family: "Comic Sans MS";
 }
 
-.content p {
+.content h4 {
     color: white;
 }
 
@@ -42,4 +42,10 @@ body {
     font-size: 15px;
     color: white;
     position: fixed;
+}
+
+.reload {
+    text-align:center;
+    position:absolute;
+    bottom:80px;
 }
