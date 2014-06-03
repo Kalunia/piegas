@@ -19,4 +19,8 @@ attr_accessor :product
 		str.sub("@", " ")
 	end
 
+	def wiki (str)
+		str.split.map(&:capitalize).join('_')
+	end
+
 end

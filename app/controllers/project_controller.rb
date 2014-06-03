@@ -32,42 +32,64 @@ respond_to :html
 	def get_info
 
 		text = String.new
-		doc = Nokogiri::HTML(open("http://pt.wikipedia.org/wiki/"+txt(session[:product])))
-		
-		for i in (0..3)
-			info = doc.css('div#mw-content-text p')[i].text 
+		product = session[:product].split.map(&:capitalize).join('_')
 
-			if info.downcase.include? session[:product]
-					text = text + info
+		begin 
+			doc = Nokogiri::HTML(open("http://pt.wikipedia.org/wiki/"+product)) 
+		
+			for i in (0..3)
+				if doc.css('div#mw-content-text p')[i]
+					info = doc.css('div#mw-content-text p')[i].text 
+
+					if info.downcase.include? session[:product]
+							text = text + info
+					end
+				end
+			end
+
+			text
+
+		rescue OpenURI::HTTPError => e
+			if e.message == '404 Not Found'
+				return "Informacao nao encontrada a respeito no Wikipedia"
+			else
+				raise e
 			end
 		end
-
-		text
 	end
 
 
 	# Resgata os posts do Twitter em relacao ao produto no momento
 	def get_posts
 
-		doc = Nokogiri::HTML(open("https://twitter.com/search?q="+txt(session[:product])+"%20lang%3Apt&src=typd"))
-		items = doc.css ".content"
 		list = Array.new
 
-		items.each do |item|
-			autor = item.css(".fullname").first.content
-			tweet = item.css(".js-tweet-text").first.content
-			time = item.css(".stream-item-header small a")[0]['title']
-			avatar = item.css(".avatar").first['src']
+		begin
+			doc = Nokogiri::HTML(open("https://twitter.com/search?q="+txt(session[:product])+"%20lang%3Apt&src=typd")) 
+			items = doc.css ".content"
+			
+			items.each do |item|
+				autor = item.css(".fullname").first.content
+				tweet = item.css(".js-tweet-text").first.content
+				time = item.css(".stream-item-header small a")[0]['title']
+				avatar = item.css(".avatar").first['src']
 
-			list << autor
-			list << tweet
-			list << time
-			list << avatar
+				list << autor
+				list << tweet
+				list << time
+				list << avatar
+			end
+
+			ClassifierClass.initialize_classifier
+			session[:posts] = list
+
+		rescue OpenURI::HTTPError => e
+			if e.message == '404 Not Found'
+				return "Nenhum post foi encontrado"
+			else
+				raise e
+			end
 		end
-
-		ClassifierClass.initialize_classifier
-
-		session[:posts] = list
 	end
 
 	def refresh_posts
@@ -86,7 +108,16 @@ respond_to :html
 
 	  	suckr = ImageSuckr::GoogleSuckr.new
 
-	  	suckr.get_image_url({"q" => session[:product], as_filetype: "png", safe: "active"})
+	  	begin
+	  		suckr.get_image_url({"q" => session[:product], as_filetype: "png", safe: "active"}) do  			
+	  		end
+	  	rescue OpenURI::HTTPError => e
+			if e.message == '404 Not Found'
+				return "Nenhuma figura encontrada"
+			else
+				raise e
+			end
+		end
 	end
 
 
