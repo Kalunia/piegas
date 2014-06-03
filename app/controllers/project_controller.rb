@@ -31,8 +31,16 @@ respond_to :html
 	# Resgata os posts do Twitter em relacao ao produto no momento
 	def get_info
 
-		info = Nokogiri::HTML(open("http://pt.wikipedia.org/wiki/"+txt(session[:product])))
-		text = info.css('div#mw-content-text p')[2].text 
+		text = String.new
+		doc = Nokogiri::HTML(open("http://pt.wikipedia.org/wiki/"+txt(session[:product])))
+		
+		for i in (0..3)
+			info = doc.css('div#mw-content-text p')[i].text 
+
+			if info.downcase.include? session[:product]
+					text = text + info
+			end
+		end
 
 		text
 	end
@@ -48,12 +56,12 @@ respond_to :html
 		items.each do |item|
 			autor = item.css(".fullname").first.content
 			tweet = item.css(".js-tweet-text").first.content
-			#time = item.css("._timestamp").first.content
+			time = item.css(".stream-item-header small a")[0]['title']
 			avatar = item.css(".avatar").first['src']
 
 			list << autor
 			list << tweet
-			#list << time
+			list << time
 			list << avatar
 		end
 
@@ -114,13 +122,14 @@ respond_to :html
 		@spams_detected = 0
 		@tweets = Array.new
 
-		for i in (0..30).step(3)
+		for i in (0..30).step(4)
 
           if ClassifierClass.classify_tweet(session[:posts][i+1]) != 'Spam'
 
                 @tweets << session[:posts][i]
 				@tweets << session[:posts][i+1]
 				@tweets << session[:posts][i+2]
+				@tweets << session[:posts][i+3]
 
           else
              	@spams_detected += 1

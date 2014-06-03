@@ -179,25 +179,27 @@
           </div>
         </div>
 
-
         <div class="row">
 
-        <% for i in (0..30).step(3) %>
+        <% for i in (0..30).step(4) %>
 
             <div class="panel panel-body panel-default" style="background-color:#B2B2B2;">
             <!-- <div class="panel panel-body panel-default" style="background-color:#FFB2B2;"> -->
             <!-- <div class="panel panel-body panel-default" style="background-color:#B8ff70;"> -->
-              <div class="panel-body" >
                 <div class="col-lg-2 h4">
 
-                      <img src=<%= @tweets[i+2] %>>
+                      <img src=<%= @tweets[i+3] %>>
                       <p /><p><strong><%= @tweets[i] %></strong></p>
                 </div>
                 <div class="col-lg-10 well h4" >
 
                       <%= @tweets[i+1] %>
                 </div>
-              </div>
+                <div class="col-lg-2 well well-sm " style="background-color:#373737;color: white;">
+
+                      <%= @tweets[i+2] %>
+                </div>
+              
 
                 <button type="button" id="<%= "reportSpamBtn"+i.to_s %>" class="btn btn-primary pull-right" aria-hidden="true" data-dismiss="alert">
                   Assumir Spam
@@ -217,7 +219,6 @@
                     });
                   });
                 </script>
-
             </div>
           
         <% end %>

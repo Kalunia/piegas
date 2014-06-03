@@ -103,7 +103,7 @@
 
       <% if params[:product] != nil %>
       		<% session[:product] = params[:product] %>
-      		<%= get_posts %>
+      		<% get_posts %>
       <% end %>
 
       <div id="page-wrapper">
@@ -117,6 +117,12 @@
 
           	<h1> <%= session[:product] %> </h1> 
 			<img src=<%= product_image %> width="300" height="300" align="center">
+
+		  </div>
+
+		  <div class="content">
+
+          	<%= get_info %>
 
 		  </div>
 
