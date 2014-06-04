@@ -1,5 +1,6 @@
 Piegas::Application.routes.draw do
 
+  devise_for :users
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
@@ -14,7 +15,6 @@ Piegas::Application.routes.draw do
   get 'project/spams' => 'project#spams'
   get 'project/about' => 'project#about'
   get 'project/profile' => 'project#profile'
-
 
   # GET para Action Controllers
   get 'project/add_spam' => 'project#add_spam'

@@ -31,21 +31,48 @@
 		  <a class="navbar-brand" href="#"><i class="fa fa-home fa-lg"></a></i>
 		</div>
 
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse navbar-ex1-collapse">
+   		<% if user_signed_in? %>
+	        <div class="collapse navbar-collapse navbar-ex1-collapse">
 
-          <ul class="nav navbar-nav navbar-right navbar-user">
-            <li class="dropdown user-dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user fa-lg"></i> Pedro Grandin <b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li><a href="#"><i class="fa fa-user"></i> Perfil</a></li>
-                <li><a href="#"><i class="fa fa-gear"></i> Configurações</a></li>
-                <li class="divider"></li>
-                <li><a href="#"><i class="fa fa-power-off"></i> Sair</a></li>
-              </ul>
-            </li>
-          </ul>
-        </div><!-- /.navbar-collapse -->
+	          <ul class="nav navbar-nav navbar-right navbar-user">
+	            <li class="dropdown user-dropdown">
+	              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user fa-lg"></i> Pedro Grandin <b class="caret"></b></a>
+	              <ul class="dropdown-menu">
+	                <li><a href="#"><i class="fa fa-user"></i> Perfil</a></li>
+	                <li><a href="#"><i class="fa fa-gear"></i> Configurações</a></li>
+	                <li class="divider"></li>
+	                <li><a href="#"><i class="fa fa-power-off"></i> Sair</a></li>
+	              </ul>
+	            </li>
+	          </ul>
+	        </div>
+	    <% else %>
+
+			<div class="collapse navbar-collapse navbar-ex1-collapse" style="margin-top:10px;">
+				<%= form_tag("users/sign_up", class: 'navbar-form navbar-right', 
+		           role: 'form', method: "get") do %>
+
+		        <%= submit_tag "Cadastrar", class: "btn btn-success" %>
+      			<% end %>
+
+		        <%= form_tag("users/sign_in", class: 'navbar-form navbar-right', 
+		           role: 'form', method: "get") do %>
+
+		        <div class="form-group">
+		          <%= text_field_tag :email, params[:email],
+		              class: 'form-control', placeholder: "Email"%>
+		        </div>
+		        <div class="form-group">
+		          <%= password_field_tag :password, nil,
+		              class: 'form-control', placeholder: "Password"%>
+		        </div>
+		        	<%= submit_tag "Entrar", class: "btn btn-primary" %>
+      			<% end %>
+
+      			
+
+			</div>
+		<% end %>
       	</nav>
 				
 			<table>

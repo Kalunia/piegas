@@ -47,11 +47,15 @@ respond_to :html
 				end
 			end
 
-			text
+			if text.include? "podem referir-se a"
+				return "Foram encontrados mais de um resultado esperado..."
+			else
+				return text
+			end
 
 		rescue OpenURI::HTTPError => e
 			if e.message == '404 Not Found'
-				return "Informacao nao encontrada a respeito no Wikipedia"
+				return "Não foi possivel extrair informacoes do Wikipedia sobre o produto"
 			else
 				raise e
 			end

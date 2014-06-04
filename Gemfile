@@ -51,6 +51,9 @@ gem 'jbuilder'
 # Sessions
 gem 'activerecord-session_store'
 
+# Login usuarios
+gem 'devise'
+
 group :assets do
   gem 'sass-rails'
   gem 'coffee-rails'
