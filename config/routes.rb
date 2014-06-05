@@ -19,6 +19,7 @@ Piegas::Application.routes.draw do
   # GET para Action Controllers
   get 'project/add_spam' => 'project#add_spam'
   get 'project/refresh_posts' => 'project#refresh_posts'
+  get 'project/get_pdf' => 'project#get_pdf'
 
 
   # Example of regular route:

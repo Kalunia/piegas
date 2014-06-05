@@ -126,29 +126,55 @@ respond_to :html
 
 
 	# Gera o arquivo PDF
-	def pdf
+	def get_pdf
 		# Creates a new PDF document
 	    pdf = Prawn::Document.new
+	    logo = "#{Rails.root}/public/images/logo.png"
 	    
 	    # Draw formated text with multiple options  
-	    pdf.formatted_text([
-	          { :text => "Bold and Italic!", :styles => [:bold, :italic] },
-	          # Gotcha Arial is not known by default
-	          { :text => " Colored Helvetica.", :font => "Helvetica", :color => "#FF0000" },
-	          { :text => " GO big Runnable!", :size => 20 }
-	        ])
-	        
-	    # Force padding all round
-	    pdf.pad(20) { pdf.text "Text padded both before and after." }
+	    # pdf.formatted_text([
+	    #       { :text => "Bold and Italic!", :styles => [:bold, :italic] },
+	    #       # Gotcha Arial is not known by default
+	    #       { :text => " Colored Helvetica.", :font => "Helvetica", :color => "#FF0000" },
+	    #       { :text => " GO big Runnable!", :size => 20 }
+	    #     ])
 
-	    # Move cursor 200px below
-	    pdf.move_down(200)
-	    
-	    # Simple text draw
-	    pdf.text "It is easy to draw text in other places"
+	    #   
+
+	    pdf.indent 400 do
+	    	pdf.image logo, :height => 60
+	    	pdf.indent 70 do
+	    		pdf.draw_text "Piegas", :at => [0, pdf.bounds.top - 30]
+	    	end
+	    end
+
+	    pdf.image open( product_image ), :height => 80, :width => 80, :at => [0, pdf.bounds.top + 10]
+
+	    pdf.formatted_text([
+			{ :text => session[:product], :styles => [:bold], :color => "#FF0F0F", :size => 30}
+		]) 
+	    pdf.move_down(10)
+
+	    if params[:infoY].present?
+	    	pdf.formatted_text([
+	    		{ :text => "Informacoes do produto", :styles => [:bold], :color => "#FF0000", :size => 18 }
+	    		]) 
+	    	pdf.move_down(20)
+	    	pdf.text get_info
+	    	pdf.move_down(40)
+	    end
+
+	    if params[:neutros].present?
+	    	pdf.formatted_text([
+	    		{ :text => "Tweets neutros", :styles => [:bold], :color => "#FF0000", :size => 18 }
+	    		]) 
+	    	pdf.move_down(20)
+	    	pdf.text tweets_neutral
+	    	pdf.move_down(40)
+	    end
 	    
 	    # Sends the PDF as inline document with name x.pdf
-	    send_data pdf.render, :filename => "x.pdf", :type => "application/pdf", :disposition => 'inline'
+	    send_data pdf.render, :filename => "avaliacao_piegas.pdf", :type => "application/pdf", :disposition => 'inline'
 	end
 	
 	# Classifica o post em "Spam" ou "Nao Spam"
@@ -188,6 +214,20 @@ respond_to :html
 		#	format.js
 		#end
 	end
+
+
+	def tweets_neutral
+
+		tweets = String.new
+
+		for i in (0..30).step(4)
+			tweets << session[:posts][i]
+			tweets << " - " + session[:posts][i+1]
+			tweets << "\n\n"
+        end
+
+        tweets
+    end
 
 end
 

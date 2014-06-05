@@ -36,19 +36,28 @@
 
 	          <ul class="nav navbar-nav navbar-right navbar-user">
 	            <li class="dropdown user-dropdown">
-	              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user fa-lg"></i> Pedro Grandin <b class="caret"></b></a>
+	              <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+	              <i class="fa fa-user fa-lg"></i> Pedro Grandin <b class="caret"></b></a>
+
 	              <ul class="dropdown-menu">
 	                <li><a href="#"><i class="fa fa-user"></i> Perfil</a></li>
 	                <li><a href="#"><i class="fa fa-gear"></i> Configurações</a></li>
 	                <li class="divider"></li>
-	                <li><a href="#"><i class="fa fa-power-off"></i> Sair</a></li>
+
+	                <li>
+	                	<%= link_to ' Sair', {
+	                		:controller => 'devise/sessions',
+			                :action => 'destroy'}, 
+			                class: "fa fa-power-off" %>
+			        </li>
 	              </ul>
+	              
 	            </li>
 	          </ul>
 	        </div>
 	    <% else %>
 
-			<div class="collapse navbar-collapse navbar-ex1-collapse" style="margin-top:10px;">
+			<div class="collapse navbar-collapse navbar-ex1-collapse">
 				<%= form_tag("users/sign_up", class: 'navbar-form navbar-right', 
 		           role: 'form', method: "get") do %>
 

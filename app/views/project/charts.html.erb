@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 	<head>
 		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-		<title> Piegas - Graficos</title>
+		<title> Piegas - Gráficos</title>
 		<link REL="SHORTCUT ICON" HREF="favicon.png">
 		<!-- <link href="/stylesheets/background.css" rel="stylesheet" type="text/css" /> -->
     <link href="/stylesheets/style4.css" rel="stylesheet" type="text/css" />
@@ -14,6 +14,10 @@
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
     <script type="text/javascript" src="/sb-admin/js/jquery-1.10.2.js"></script>
     <script type="text/javascript" src="/sb-admin/js/bootstrap.js"></script>
+    <script src="http://code.highcharts.com/highcharts.js"></script>
+    <script src="http://code.highcharts.com/modules/exporting.js"></script>
+    <script src="http://canvg.googlecode.com/svn/trunk/rgbcolor.js"></script> 
+    <script src="http://canvg.googlecode.com/svn/trunk/canvg.js"></script> 
 		<script type="text/javascript">
 	$(function () {
 	    	
@@ -86,6 +90,8 @@
 	            }]
 	        });
 	    });
+
+    this.createCanvas();
 	</script>
   </head>
 
@@ -191,10 +197,10 @@
 
     </div><!-- /#wrapper -->
 
-						<script src="/js/highcharts.js"></script>
-						<script src="/js/modules/exporting.js"></script>
+		<script src="/js/highcharts.js"></script>
+		<script src="/js/modules/exporting.js"></script>
 
-						<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+		<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 
 	</body>
 </html>
