@@ -1,0 +1,37 @@
+		
+<table>
+	<td>
+		<tr>
+			<div class="header" >
+			<br />
+				<h1>Piegas </h1>
+			</div>
+		</tr>
+
+		<tr>
+			<div class="content">
+			<%= image_tag('/images/logo.png', :alt => 'Piegas logo', :width => 215) %><br>
+			</div>
+		</tr>
+
+		<tr>
+		    <div class="content">
+
+				<%= form_tag({controller: "project", action: "index"}, {method: "get"}) do %>
+				  <%= label_tag(:product, "Digite o nome do produto que deseje pesquisar:") %> <br /><br />
+				  <btn><%= text_field_tag(:product)%><br /><br />
+				  <%= submit_tag("Pesquisar!") %></btn>
+				<% end %>
+				
+		    </div>
+		</tr>
+	</td>
+
+	<td>
+		<tr> 
+			<div class="footer">
+				Desenvolvido por Pedro H. Grandin <br> Projeto final de conclusão do curso de Engenharia de Computação - PUC Campinas
+			</div>
+		</tr>
+	</td>
+</table>

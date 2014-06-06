@@ -24,12 +24,29 @@ body {
     margin-left: 20px;
     margin-right: 20px;
     font-size: 20px;
+    color: white;
+    font-family: "Comic Sans MS";
+}
+.content2 {
+    text-align:center;
+    min-height: 100%;
+    height: auto !important;
+    height: 100%;
+    margin-top: 20px;
+    margin-left: 20px;
+    margin-right: 20px;
+    font-size: 20px;
     color: black;
     font-family: "Comic Sans MS";
 }
 
-.content h4 {
-    color: white;
+.content btn {
+    color: black;
+}
+
+.content h2 {
+    margin-top: 100px;
+    margin-bottom: 60px;
 }
 
 .footer {
@@ -48,4 +65,14 @@ body {
     text-align:center;
     position:absolute;
     bottom:80px;
+}
+
+.spaceV {
+    height: 70px;
+    color: black;
+}
+
+.spacev {
+    height: 40px;
+    color: black;
 }

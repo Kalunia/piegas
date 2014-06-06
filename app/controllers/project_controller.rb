@@ -3,7 +3,6 @@ class ProjectController < ApplicationController
 # Prevent CSRF attacks by raising an exception.
 # For APIs, you may want to use :null_session instead.
 protect_from_forgery with: :exception
-layout false
 
 require 'classifierclass'
 require 'twitterreader'
@@ -101,8 +100,7 @@ respond_to :html
 		get_posts
 
 		respond_to do |format|
-			format.html { redirect_to :action => params[:path] }
-			format.html { render :layout => false }
+			format.html { redirect_to params[:path] }
 		end
 	end
 

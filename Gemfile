@@ -25,12 +25,15 @@ gem 'nokogiri', '~> 1.6.2.rc1'
 
 gem 'certified'
 
+# Imagem Google
 gem 'image_suckr'
 
 gem 'datagrid'
 
+# PDF
 gem 'prawn'
 
+# Classificador Bayes
 gem 'classifier'
 
 #gem 'ruby-stemmer', '~> 0.9.3'
@@ -39,7 +42,6 @@ gem 'fast-stemmer'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
-
 gem 'execjs'
 
 # Turbolinks makes following links in your web application faster. Read more: https://github.com/rails/turbolinks
@@ -53,6 +55,17 @@ gem 'activerecord-session_store'
 
 # Login usuarios
 gem 'devise'
+
+# Gravatar
+gem 'gravtastic'
+
+# Email
+#gem 'mail'
+#gem 'tlsmail'
+
+group :development, :test do
+  gem 'foreman'
+end
 
 group :assets do
   gem 'sass-rails'

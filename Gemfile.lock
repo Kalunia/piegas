@@ -32,6 +32,7 @@ GEM
       thread_safe (~> 0.1)
       tzinfo (~> 1.1)
     arel (5.0.1.20140414130214)
+    bcrypt (3.1.7)
     bcrypt (3.1.7-x64-mingw32)
     builder (3.2.2)
     certified (0.1.1)
@@ -52,9 +53,16 @@ GEM
       railties (>= 3.2.6, < 5)
       thread_safe (~> 0.1)
       warden (~> 1.2.3)
+    dotenv (0.11.1)
+      dotenv-deployment (~> 0.0.2)
+    dotenv-deployment (0.0.2)
     erubis (2.7.0)
     execjs (2.0.2)
     fast-stemmer (1.0.2)
+    foreman (0.71.0)
+      dotenv (~> 0.11.1)
+      thor (~> 0.19.1)
+    gravtastic (3.2.6)
     hike (1.2.3)
     i18n (0.6.9)
     image_suckr (0.1.0)
@@ -161,6 +169,8 @@ DEPENDENCIES
   devise
   execjs
   fast-stemmer
+  foreman
+  gravtastic
   image_suckr
   jbuilder
   jquery-rails

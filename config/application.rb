@@ -21,5 +21,13 @@ module Piegas
     # config.i18n.default_locale = :de
     #config.i18n.load_path += Dir[Rails.root.join('lib').to_s]
     config.autoload_paths += %W(#{config.root}/lib)
+    config.to_prepare do
+        Devise::SessionsController.layout "home"
+        Devise::RegistrationsController.layout "home"
+        Devise::ConfirmationsController.layout "home"
+        Devise::UnlocksController.layout "home"
+        Devise::PasswordsController.layout "home"
+    end
+    
   end
 end

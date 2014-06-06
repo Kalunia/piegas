@@ -15,4 +15,5 @@
 /log/*.log
 /tmp
 
-remote_images.pdf
+/.env
+/Procfile

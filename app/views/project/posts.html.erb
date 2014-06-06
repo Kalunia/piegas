@@ -1,230 +1,122 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//PT" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-	<head>
-		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
-		<title> Piegas - Posts</title>
-		<link REL="SHORTCUT ICON" HREF="favicon.png">
-		<!-- <link href="/stylesheets/background.css" rel="stylesheet" type="text/css" /> -->
-    <link href="/stylesheets/style4.css" rel="stylesheet" type="text/css" />
-    <link href="/stylesheets/head.css" rel="stylesheet" type="text/css"  />
-    <link href="/sb-admin/css/bootstrap.css" rel="stylesheet" type="text/css" />
-    <link href="/sb-admin/css/sb-admin.css" rel="stylesheet" type="text/css" />
-	  <link href="/sb-admin/font-awesome/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
-		<script type="text/javascript" src="/sb-admin/js/jquery-1.10.2.js"></script>
-      <script type="text/javascript" src="/sb-admin/js/bootstrap.js"></script>
-  </head>
 
-  <body>
-    <meta charset="utf-8" >
 
-    <% @tweets = classify_spam %>
+<% @tweets = classify_spam %>
 
-    <div id="wrapper">
+<div class="row">
+  <div class="col-lg-12">
+    <h1>Tweets no momento sobre <small> <%= session[:product] %> </small></h1>
+  </div>
+</div>
 
-    <!-- Sidebar -->
-    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-    <!-- Brand and toggle get grouped for better mobile display -->
-    <div class="navbar-header">
-      <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-      </button>
-      <a class="navbar-brand" href="index.html"><i class="fa fa-home fa-lg"> Procurar novo produto</a></i>
+<div class="row">
+
+  <div class="col-lg-3">
+      <div class="panel panel-success">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-xs-6">
+              <i class="fa fa-thumbs-up fa-5x"></i>
+            </div>
+            <div class="col-xs-6 text-right">
+              <p class="announcement-heading">X</p>
+              <p class="announcement-text">Positivos!</p>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
 
-        <!-- Collect the nav links, forms, and other content for toggling -->
-        <div class="collapse navbar-collapse navbar-ex1-collapse">
-          <ul class="nav navbar-nav side-nav">
-
-            <li class="actie">
-              <%= link_to ' Info do produto', {
-                :action => 'info'}, 
-              class: "fa fa-info fa-lg" %>
-            </li>
-
-            <li>
-              <%= link_to ' Graficos', {
-                :action => 'charts'}, 
-                class: "fa fa-bar-chart-o fa-lg" %>
-            </li>
-
-            <li class="dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-caret-square-o-down fa-lg"></i> Tweets <b class="caret"></b></a>
-              <ul class="dropdown-menu">
-
-                <li>
-                  <%= link_to ' Geral', {
-                    :action => 'posts'}, 
-                    class: "fa fa-list-alt" %>
-                </li>
-
-                <li>
-                  <%= link_to ' Lista de Spams', {
-                    :action => 'spams'}, 
-                    class: "fa fa-thumbs-down" %>
-                </li>
-
-              </ul>
-            </li>
-
-            <li>
-              <%= link_to ' Gerar PDF', {
-                :action => 'pdf'},
-                class: "fa fa-edit fa-lg" %>
-            </li>
-
-          <div class="reload">
-              <%= link_to ' Recarregar pesquisa!', {
-                :action => 'refresh_posts',
-                :remote => true,
-                :format => 'html',
-                :path => 'posts' },
-                class: "fa fa-refresh fa-2x" %>
-          </div>
-   
-            
-          </ul>
-
-          <ul class="nav navbar-nav navbar-right navbar-user">
-            <li>
-              <%= link_to '', {:action => 'about'}, class: "fa fa-info-circle fa-lg" %>
-            </li>
-            <li class="dropdown user-dropdown">
-              <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user fa-lg"></i> Pedro Grandin <b class="caret"></b></a>
-              <ul class="dropdown-menu">
-                <li><a href="#"><i class="fa fa-user"></i> Perfil</a></li>
-                <li><a href="#"><i class="fa fa-gear"></i> Configurações</a></li>
-                <li class="divider"></li>
-                <li><a href="#"><i class="fa fa-power-off"></i> Sair</a></li>
-              </ul>
-            </li>
-          </ul>
-        </div><!-- /.navbar-collapse -->
-      </nav>
-
-      <div id="page-wrapper">
-
-        <div class="row">
-          <div class="col-lg-12">
-            <h1>Tweets no momento sobre <small> <%= session[:product] %> </small></h1>
-          </div>
-        </div><!-- /.row -->
-
-        <div class="row">
-
-        <div class="col-lg-3">
-            <div class="panel panel-success">
-              <div class="panel-heading">
-                <div class="row">
-                  <div class="col-xs-6">
-                    <i class="fa fa-thumbs-up fa-5x"></i>
-                  </div>
-                  <div class="col-xs-6 text-right">
-                    <p class="announcement-heading">X</p>
-                    <p class="announcement-text">Positivos!</p>
-                  </div>
-                </div>
-              </div>
+  <div class="col-lg-3">
+      <div class="panel panel-danger">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-xs-6">
+              <i class="fa fa-thumbs-down fa-5x"></i>
             </div>
-          </div>
-
-        <div class="col-lg-3">
-            <div class="panel panel-danger">
-              <div class="panel-heading">
-                <div class="row">
-                  <div class="col-xs-6">
-                    <i class="fa fa-thumbs-down fa-5x"></i>
-                  </div>
-                  <div class="col-xs-6 text-right">
-                    <p class="announcement-heading">X</p>
-                    <p class="announcement-text">Negativos!</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-        <div class="col-lg-3">
-            <div class="panel panel-info">
-              <div class="panel-heading">
-                <div class="row">
-                  <div class="col-xs-6">
-                    <i class="fa fa-comments fa-5x"></i>
-                  </div>
-                  <div class="col-xs-6 text-right">
-                    <p class="announcement-heading">X</p>
-                    <p class="announcement-text">Neutros!</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-         <div class="col-lg-3">
-            <div class="panel panel-warning">
-              <div class="panel-heading">
-                <div class="row">
-                  <div class="col-xs-6">
-                    <i class="fa fa-bug fa-5x"></i>
-                  </div>
-                  <div class="col-xs-6 text-right">
-                    <p class="announcement-heading"><%= get_spams_detected %></p>
-                    <p class="announcement-text">Spam(s) Detectado(s)!</p>
-                  </div>
-                </div>
-              </div>
+            <div class="col-xs-6 text-right">
+              <p class="announcement-heading">X</p>
+              <p class="announcement-text">Negativos!</p>
             </div>
           </div>
         </div>
+      </div>
+    </div>
 
-        <div class="row">
-
-        <% for i in (0..30).step(4) %>
-
-            <div class="panel panel-body panel-default" style="background-color:#B2B2B2;">
-            <!-- <div class="panel panel-body panel-default" style="background-color:#FFB2B2;"> -->
-            <!-- <div class="panel panel-body panel-default" style="background-color:#B8ff70;"> -->
-                <div class="col-lg-2 h4">
-
-                      <img src=<%= @tweets[i+3] %>>
-                      <p /><p><strong><%= @tweets[i] %></strong></p>
-                </div>
-                <div class="col-lg-10 well h4" >
-
-                      <%= @tweets[i+1] %>
-                </div>
-                <div class="col-lg-2 well well-sm " style="background-color:#373737;color: white;">
-
-                      <%= @tweets[i+2] %>
-                </div>
-              
-                <button type="button" id="<%= "reportSpamBtn"+i.to_s %>" class="btn btn-primary pull-right" aria-hidden="true" data-dismiss="alert">
-                  Assumir Spam
-                </button>
-
-                <script>
-                  $(document).ready(function(){
-                    $('#<%= "reportSpamBtn"+i.to_s %>').click(function() {
-                      $.ajax({
-                        type: 'GET',
-                        url: '/project/add_spam',
-                        data: { post: '<%= @tweets[i+1] %>' },
-                        success: function(){
-                          $("page_element").html(data);
-                        }
-                      });
-                    });
-                  });
-                </script>
+  <div class="col-lg-3">
+      <div class="panel panel-info">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-xs-6">
+              <i class="fa fa-comments fa-5x"></i>
             </div>
+            <div class="col-xs-6 text-right">
+              <p class="announcement-heading">X</p>
+              <p class="announcement-text">Neutros!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  <div class="col-lg-3">
+    <div class="panel panel-warning">
+      <div class="panel-heading">
+        <div class="row">
+          <div class="col-xs-6">
+            <i class="fa fa-bug fa-5x"></i>
+          </div>
+            <div class="col-xs-6 text-right">
+              <p class="announcement-heading"><%= get_spams_detected %></p>
+              <p class="announcement-text">Spam(s) Detectado(s)!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="row">
+
+    <% for i in (0..@tweets.length-1).step(4) %>
+
+      <div class="panel panel-body panel-default" style="background-color:#B2B2B2;">
+      <!-- <div class="panel panel-body panel-default" style="background-color:#FFB2B2;"> -->
+      <!-- <div class="panel panel-body panel-default" style="background-color:#B8ff70;"> -->
+          <div class="col-lg-2 h4">
+
+                <img src=<%= @tweets[i+3] %>>
+                <p /><strong><%= @tweets[i] %></strong></p>
+          </div>
+          <div class="col-lg-10 well h4" >
+
+                <%= @tweets[i+1] %>
+          </div>
+          <div class="col-lg-2 well well-sm " style="background-color:#373737;color: white;">
+
+                <%= @tweets[i+2] %>
+          </div>
+        
+          <button type="button" id="<%= "reportSpamBtn"+i.to_s %>" class="btn btn-primary pull-right" aria-hidden="true" data-dismiss="alert">
+            Assumir Spam
+          </button>
           
-        <% end %>
+          <script>
+            $(document).ready(function(){
+              $('#<%= "reportSpamBtn"+i.to_s %>').click(function() {
+                $.ajax({
+                  type: 'GET',
+                  url: '/project/add_spam',
+                  data: { post: '<%= @tweets[i+1] %>' },
+                  success: function(){
+                    $("page_element").html(data);
+                  }
+                });
+              });
+            });
+          </script>
+      </div>
+          
+    <% end %>
+  </div>
+</div>
 
-        </div>
-      </div><!-- /#page-wrapper -->
-  </div><!-- /#wrapper -->
-	</meta>
-</body>
-</html>

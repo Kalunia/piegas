@@ -5,10 +5,10 @@ Piegas::Application.routes.draw do
   # See how all your routes lay out with "rake routes".
 
   # You can have the root of your site routed with "root"
-  root "project#index"
+  root 'home#index'
 
+  get 'home/index' => 'home#index'
   get 'project/index' => 'project#index'
-  get 'project/info' => 'project#info'
   get 'project/pdf' => 'project#pdf'
   get 'project/posts' => 'project#posts'
   get 'project/charts' => 'project#charts'
