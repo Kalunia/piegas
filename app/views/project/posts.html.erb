@@ -96,24 +96,33 @@
                 <%= @tweets[i+2] %>
           </div>
         
-          <button type="button" id="<%= "reportSpamBtn"+i.to_s %>" class="btn btn-primary pull-right" aria-hidden="true" data-dismiss="alert">
-            Assumir Spam
-          </button>
-          
-          <script>
-            $(document).ready(function(){
-              $('#<%= "reportSpamBtn"+i.to_s %>').click(function() {
-                $.ajax({
-                  type: 'GET',
-                  url: '/project/add_spam',
-                  data: { post: '<%= @tweets[i+1] %>' },
-                  success: function(){
-                    $("page_element").html(data);
-                  }
+          <% if user_signed_in? %>
+
+              <button type="button" id="<%= "addTweetFavBtn"+i.to_s %>" class="btn btn-secondary pull-right" aria-hidden="true" data-dismiss="alert">
+                Boa opinião!
+              </button>
+
+              <button type="button" id="<%= "reportSpamBtn"+i.to_s %>" class="btn btn-primary pull-right" aria-hidden="true" data-dismiss="alert">
+                Assumir Spam
+              </button>
+              
+              <script>
+                $(document).ready(function(){
+                  $('#<%= "reportSpamBtn"+i.to_s %>').click(function() {
+                    $.ajax({
+                      type: 'GET',
+                      url: '/project/add_spam',
+                      data: { post: '<%= @tweets[i+1] %>' },
+                      success: function(){
+                        $("page_element").html(data);
+                      }
+                    });
+                  });
                 });
-              });
-            });
-          </script>
+              </script>
+
+          <% end %>
+
       </div>
           
     <% end %>

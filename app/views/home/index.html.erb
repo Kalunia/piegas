@@ -4,13 +4,13 @@
 		<tr>
 			<div class="header" >
 			<br />
-				<h1>Piegas </h1>
+				<!-- <h1>Piegas </h1> -->
 			</div>
 		</tr>
 
 		<tr>
 			<div class="content">
-			<%= image_tag('/images/logo.png', :alt => 'Piegas logo', :width => 215) %><br>
+			<%= image_tag('/images/piegas_logo.png', :alt => 'Piegas logo', :width => 180) %><br>
 			</div>
 		</tr>
 
@@ -18,7 +18,7 @@
 		    <div class="content">
 
 				<%= form_tag({controller: "project", action: "index"}, {method: "get"}) do %>
-				  <%= label_tag(:product, "Digite o nome do produto que deseje pesquisar:") %> <br /><br />
+				  <%= label_tag(:product, "Digite o que deseje pesquisar:") %> <br /><br />
 				  <btn><%= text_field_tag(:product)%><br /><br />
 				  <%= submit_tag("Pesquisar!") %></btn>
 				<% end %>

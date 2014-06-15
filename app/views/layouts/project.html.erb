@@ -32,7 +32,7 @@
 			    <span class="icon-bar"></span>
 			    <span class="icon-bar"></span>
 		  	</button>
-		  	<a class="navbar-brand" href="/home/index.html"><i class="fa fa-home fa-lg"> Procurar novo produto</a></i>
+		  	<a class="navbar-brand" href="/home/index.html"><i class="fa fa-home fa-lg"> Procurar nova pesquisa</a></i>
 		</div>
 
 	    <!-- Collect the nav links, forms, and other content for toggling -->
@@ -40,7 +40,7 @@
 
 	      	<ul class="nav navbar-nav side-nav">
 		      	<li>
-		      		<%= link_to ' Info do produto', {
+		      		<%= link_to ' Info da pesquisa', {
 		      			:action => 'index'}, 
 		      		class: "fa fa-info fa-lg" %>
 		      	</li>
@@ -123,19 +123,17 @@
 				        <%= submit_tag "Cadastrar", class: "btn btn-success" %>
 			  			<% end %>
 
-				        <%= form_tag("/users/sign_in", class: 'navbar-form navbar-right', 
-				           role: 'form', method: "get") do %>
+		  				<%= form_for(:user, url: session_path(:user), :html => { class: 'navbar-form navbar-right'}) do |f| %>
+		  					<div class="form-group">
+						  		<%= f.email_field :email, placeholder: "Email", autofocus: true, class: 'form-control' %>
+						  	</div>
+						  	<div class="form-group">
+						    	<%= f.password_field :password, placeholder: "Senha", autocomplete: "off", class: 'form-control' %>
+						    </div>
 
-				        <div class="form-group">
-				          <%= text_field_tag :email, params[:email],
-				              class: 'form-control', placeholder: "Email"%>
-				        </div>
-				        <div class="form-group">
-				          <%= password_field_tag :password, nil,
-				              class: 'form-control', placeholder: "Password"%>
-				        </div>
-				        	<%= submit_tag "Entrar", class: "btn btn-primary" %>
-		  				<% end %>
+						  <btn><%= f.submit "Sign in", class: "btn btn-primary" %></btn>
+
+						<% end %>
 	  				</li>
 
 				<% end %>
