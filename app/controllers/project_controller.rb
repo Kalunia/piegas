@@ -34,7 +34,7 @@ respond_to :html
 	def get_info
 
 		text = String.new
-		product = session[:product].split.map(&:capitalize).join('_')
+		product = URI.encode(session[:product].split.map(&:capitalize).join('_'))
 
 		begin 
 			doc = Nokogiri::HTML(open("http://pt.wikipedia.org/wiki/"+product)) 
@@ -49,7 +49,7 @@ respond_to :html
 				end
 			end
 
-			if text.include? "podem referir-se a"
+			if text.include? "referir-se a"
 				return "Foram encontrados mais de um resultado esperado..."
 			else
 				return text
@@ -71,7 +71,7 @@ respond_to :html
 		list = Array.new
 
 		begin
-			doc = Nokogiri::HTML(open("https://twitter.com/search?q="+txt(session[:product])+"%20lang%3Apt&src=typd")) 
+			doc = Nokogiri::HTML(open("https://twitter.com/search?q="+URI.encode(session[:product])+"%20lang%3Apt&src=typd")) 
 			items = doc.css ".content"
 			
 			items.each do |item|
@@ -135,7 +135,7 @@ respond_to :html
 		
 		image_data = Base64.decode64(data['data:image/png;base64,'.length .. -1])
 
-		File.open("#{Rails.root}/tmp/barchart.png", 'wb') do |f|
+		File.open("#{Rails.root}/public/images/barchart.png", 'wb') do |f|
 		  f.write image_data
 		end
 
@@ -149,7 +149,7 @@ respond_to :html
 		
 		image_data = Base64.decode64(data['data:image/png;base64,'.length .. -1])
 
-		File.open("#{Rails.root}/tmp/piechart.png", 'wb') do |f|
+		File.open("#{Rails.root}/public/images/piechart.png", 'wb') do |f|
 		  f.write image_data
 		end
 
@@ -218,14 +218,14 @@ respond_to :html
 			#send_data(kit.to_pdf, :filename => 'report.pdf', :type => 'application/pdf', :disposition => 'inline'
 
 			pdf.indent 50 do
-				pdf.image "#{Rails.root}/tmp/piechart.png", :height => 300
+				pdf.image "#{Rails.root}/public/images//piechart.png", :height => 300
 			end
 	    	pdf.move_down(40)
 	    end
 
 	    if params[:barras].present?
 	    	pdf.indent 50 do
-	    		pdf.image "#{Rails.root}/tmp/barchart.png", :height => 300
+	    		pdf.image "#{Rails.root}/public/images/barchart.png", :height => 300
 	    	end
 	    	pdf.move_down(40)
 	    end
