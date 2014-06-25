@@ -79,9 +79,9 @@
 
     <% @favoriteds = Array.new  %>
     <% sql = "SELECT post FROM favoriteds;" %>
-    <% favoriteds_array = ActiveRecord::Base.connection.execute(sql) %>
+    <% favoriteds_array = ActiveRecord::Base.connection.select_all(sql) %>
 
-    <% favoriteds_array.each(:as => :hash) do |row| %>
+    <% favoriteds_array.each do |row| %>
         <% @favoriteds << row["post"] %>
      <% end %>
 

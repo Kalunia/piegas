@@ -59,19 +59,12 @@ gem 'devise'
 # Gravatar
 gem 'gravtastic'
 
-
-# HTML to PDF
-#gem 'pdfkit'
-#gem 'imgkit'
-# gem 'wkhtmltopdf'
-# gem 'wkhtmltopdf-binary'
-
 # Email
 #gem 'mail'
 #gem 'tlsmail'
 
 group :development, :test do
-  gem 'foreman', '~> 0.61.0'
+  gem 'foreman'
 end
 
 group :assets do

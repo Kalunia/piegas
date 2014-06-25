@@ -8,10 +8,11 @@
 
   <div id="content" style="text-align:left;margin-left: 5%;">
 
-  		<% sql = "SELECT * FROM favoriteds;" %>
-		 <% posts_array = ActiveRecord::Base.connection.execute(sql) %>
+  	 <% sql = "SELECT * FROM favoriteds;" %>
 
-		 <% posts_array.each(:as => :hash) do |row| %>
+     <% posts_array = ActiveRecord::Base.connection.select_all(sql) %>
+
+		 <% posts_array.each do |row| %>
 
         <% if current_user.email == row["user"] %>
      		 	<h3><%= row["query"] %></h3>

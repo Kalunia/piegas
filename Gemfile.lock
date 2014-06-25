@@ -161,7 +161,7 @@ DEPENDENCIES
   devise
   execjs
   fast-stemmer
-  foreman (~> 0.61.0)
+  foreman
   gravtastic
   image_suckr
   jbuilder

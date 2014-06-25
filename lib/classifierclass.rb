@@ -11,17 +11,17 @@ require 'yaml'
 
 		spam = Array.new 
   		sql = "SELECT post FROM spams;"
-		spam_results = ActiveRecord::Base.connection.execute(sql)
+		spam_results = ActiveRecord::Base.connection.select_all(sql)
 
-		spam_results.each(:as => :hash) do |row|
+		spam_results.each do |row|
 		 	spam << row["post"]
 		end
 
 		not_spam = Array.new 
   		sql = "SELECT post FROM favoriteds;"
-		favorited_results = ActiveRecord::Base.connection.execute(sql)
+		favorited_results = ActiveRecord::Base.connection.select_all(sql)
 
-		favorited_results.each(:as => :hash) do |row|
+		favorited_results.each do |row|
 		 	not_spam << row["post"]
 		end
 

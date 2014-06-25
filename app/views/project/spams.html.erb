@@ -9,9 +9,9 @@
   <div id="content" style="text-align:left;margin-left: 5%;">
 
   		 <% sql = "SELECT * FROM spams;" %>
-		 <% posts_array = ActiveRecord::Base.connection.execute(sql) %>
+		 <% posts_array = ActiveRecord::Base.connection.select_all(sql) %>
 
-		 <% posts_array.each(:as => :hash) do |row| %>
+		 <% posts_array.each do |row| %>
    		 	<h3><%= row["query"] %></h3> 
    		 	<h4><small> <%= row["user"] %> </small></h4>
    		 	<%= row["post"] %>
