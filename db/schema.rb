@@ -11,7 +11,17 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140606032053) do
+ActiveRecord::Schema.define(version: 20140624104536) do
+
+  create_table "favoriteds", force: true do |t|
+    t.string   "query"
+    t.string   "user"
+    t.string   "author"
+    t.text     "post"
+    t.integer  "sentiment",  default: 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "sessions", force: true do |t|
     t.string   "session_id", null: false
@@ -22,6 +32,15 @@ ActiveRecord::Schema.define(version: 20140606032053) do
 
   add_index "sessions", ["session_id"], name: "index_sessions_on_session_id", unique: true, using: :btree
   add_index "sessions", ["updated_at"], name: "index_sessions_on_updated_at", using: :btree
+
+  create_table "spams", force: true do |t|
+    t.string   "query"
+    t.string   "user"
+    t.string   "author"
+    t.text     "post"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "tweets", force: true do |t|
     t.string   "product"

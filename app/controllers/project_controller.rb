@@ -8,6 +8,7 @@ require 'classifierclass'
 require 'twitterreader'
 require 'open-uri'
 require 'classifierclass'
+require 'base64'
 
 helper_method :get_info
 helper_method :get_posts
@@ -16,6 +17,8 @@ helper_method :classify_spam
 helper_method :list_spams
 helper_method :add_spam
 helper_method :get_spams_detected
+helper_method :get_spams_tweets
+helper_method :get_pdf
 
 #before_filter :get_product
 
@@ -116,6 +119,8 @@ respond_to :html
 	  	rescue OpenURI::HTTPError => e
 			if e.message == '404 Not Found'
 				return "Nenhuma figura encontrada"
+			elsif e.message == '403 Forbidden'
+				return "Figura proibida"
 			else
 				raise e
 			end
@@ -123,11 +128,40 @@ respond_to :html
 	end
 
 
+	##################################################################### PDF
+	def create_barchart_png
+
+		data = params[:data_uri]
+		
+		image_data = Base64.decode64(data['data:image/png;base64,'.length .. -1])
+
+		File.open("#{Rails.root}/tmp/barchart.png", 'wb') do |f|
+		  f.write image_data
+		end
+
+		render :json => {:success => true}
+	end
+
+
+	def create_piechart_png
+
+		data = params[:data_uri]
+		
+		image_data = Base64.decode64(data['data:image/png;base64,'.length .. -1])
+
+		File.open("#{Rails.root}/tmp/piechart.png", 'wb') do |f|
+		  f.write image_data
+		end
+
+		render :json => {:success => true}
+	end
+
+
 	# Gera o arquivo PDF
 	def get_pdf
 		# Creates a new PDF document
 	    pdf = Prawn::Document.new
-	    logo = "#{Rails.root}/public/images/logo.png"
+	    logo = "#{Rails.root}/public/images/piegas_logo.png"
 	    
 	    # Draw formated text with multiple options  
 	    # pdf.formatted_text([
@@ -153,12 +187,46 @@ respond_to :html
 		]) 
 	    pdf.move_down(10)
 
-	    if params[:infoY].present?
+	    if params[:info] == "infoY"
 	    	pdf.formatted_text([
 	    		{ :text => "Informacoes do produto", :styles => [:bold], :color => "#FF0000", :size => 18 }
 	    		]) 
 	    	pdf.move_down(20)
 	    	pdf.text get_info
+	    	pdf.move_down(40)
+	    end
+
+	    if params[:pizza].present?
+	    	
+	    	# Load the html to convert to PDF
+		    #html = File.read("#{Rails.root}/app/views/project/charts.html.erb")
+		    # Create a new kit and define page size to be US letter
+
+		    # kit = PDFKit.new(html, :page_size => 'Letter')
+		    # kit.stylesheets << "#{Rails.root}/app/assets/javascripts/charts.js"
+		    # send_data(kit.to_pdf, :filename => 'report.pdf', :type => 'application/pdf', :disposition => 'inline')
+		    # Render the html
+		    #render :text => html
+
+		    #kit = IMGKit.new(File.new("#{Rails.root}/app/views/project/charts.html.erb"))
+
+		    #file = kit.to_file("#{Rails.root}/public/images/logo.png") 
+		    #pdf.image kit.to_png
+
+	  #   	html = render_to_string(:controller => 'project', :action => "charts")
+			# kit = PDFKit.new(html)
+			#send_data(kit.to_pdf, :filename => 'report.pdf', :type => 'application/pdf', :disposition => 'inline'
+
+			pdf.indent 50 do
+				pdf.image "#{Rails.root}/tmp/piechart.png", :height => 300
+			end
+	    	pdf.move_down(40)
+	    end
+
+	    if params[:barras].present?
+	    	pdf.indent 50 do
+	    		pdf.image "#{Rails.root}/tmp/barchart.png", :height => 300
+	    	end
 	    	pdf.move_down(40)
 	    end
 
@@ -174,14 +242,16 @@ respond_to :html
 	    # Sends the PDF as inline document with name x.pdf
 	    send_data pdf.render, :filename => "avaliacao_piegas.pdf", :type => "application/pdf", :disposition => 'inline'
 	end
+
 	
 	# Classifica o post em "Spam" ou "Nao Spam"
 	def classify_spam
 
 		@spams_detected = 0
 		@tweets = Array.new
+		@tweets_spams = Array.new
 
-		for i in (0..30).step(4)
+		for i in (0..70).step(4)
 
           if ClassifierClass.classify_tweet(session[:posts][i+1]) != 'Spam'
 
@@ -192,6 +262,10 @@ respond_to :html
 
           else
              	@spams_detected += 1
+             	@tweets_spams << session[:posts][i]
+				@tweets_spams << session[:posts][i+1]
+				@tweets_spams << session[:posts][i+2]
+				@tweets_spams << session[:posts][i+3]
           end
           
         end
@@ -203,22 +277,41 @@ respond_to :html
 		@spams_detected
 	end
 
+	def get_spams_tweets
+		@tweets_spams
+	end
+
 
 	# Adiciona post à lista de Spams
 	def add_spam
 
-		#respond_to do |format|
-			ClassifierClass.add_spam (filter(params[:post]))
-		#	format.js
-		#end
+		#ClassifierClass.add_spam (filter(params[:post]))
+
+		sql = "INSERT INTO spams (user, query, post) VALUES ('"+current_user.email+"','"+session[:product]+"','"+filter(params[:post])+"');"
+		records_array = ActiveRecord::Base.connection.execute(sql)
+
+		#render :json => {:success => true}
 	end
+
+	# Adiciona post à lista de Favoritos
+	def add_favorited
+
+		#ClassifierClass.add_not_spam (filter(params[:post]))
+
+		sql = "INSERT INTO favoriteds (user, query, post) VALUES ('"+current_user.email+"','"+session[:product]+"','"+filter(params[:post])+"');"
+		records_array = ActiveRecord::Base.connection.execute(sql)
+
+		#render :json => {:success => true}
+	end
+
+
 
 
 	def tweets_neutral
 
 		tweets = String.new
 
-		for i in (0..30).step(4)
+		for i in (0..70).step(4)
 			tweets << session[:posts][i]
 			tweets << " - " + session[:posts][i+1]
 			tweets << "\n\n"
@@ -226,6 +319,5 @@ respond_to :html
 
         tweets
     end
-
 end
 

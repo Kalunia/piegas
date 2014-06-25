@@ -1,6 +1,6 @@
 
-
 <% @tweets = classify_spam %>
+<% @tweets_spams = get_spams_tweets %>
 
 <div class="row">
   <div class="col-lg-12">
@@ -77,6 +77,14 @@
 
   <div class="row">
 
+    <% @favoriteds = Array.new  %>
+    <% sql = "SELECT post FROM favoriteds;" %>
+    <% favoriteds_array = ActiveRecord::Base.connection.execute(sql) %>
+
+    <% favoriteds_array.each(:as => :hash) do |row| %>
+        <% @favoriteds << row["post"] %>
+     <% end %>
+
     <% for i in (0..@tweets.length-1).step(4) %>
 
       <div class="panel panel-body panel-default" style="background-color:#B2B2B2;">
@@ -98,8 +106,14 @@
         
           <% if user_signed_in? %>
 
-              <button type="button" id="<%= "addTweetFavBtn"+i.to_s %>" class="btn btn-secondary pull-right" aria-hidden="true" data-dismiss="alert">
+              <% if @favoriteds.include? filter(@tweets[i+1])  %>
+                <button type="button" id="<%= "favorited"+i.to_s %>" class="btn btn-success pull-right disabled" aria-hidden="true">
+                Favoritado!
+              <% else %>
+                <button type="button" id="<%= "addTweetFavBtn"+i.to_s %>" class="btn btn-success pull-right" aria-hidden="true">
                 Boa opinião!
+              <% end %>
+                
               </button>
 
               <button type="button" id="<%= "reportSpamBtn"+i.to_s %>" class="btn btn-primary pull-right" aria-hidden="true" data-dismiss="alert">
@@ -112,9 +126,20 @@
                     $.ajax({
                       type: 'GET',
                       url: '/project/add_spam',
-                      data: { post: '<%= @tweets[i+1] %>' },
-                      success: function(){
-                        $("page_element").html(data);
+                      data: { post: '<%= filter(@tweets[i+1]) %>' },
+                      success: function(output){
+                        console.log(output);
+                      }
+                    });
+                  });
+
+                  $('#<%= "addTweetFavBtn"+i.to_s %>').click(function() {
+                    $.ajax({
+                      type: 'GET',
+                      url: '/project/add_favorited',
+                      data: { post: '<%= filter(@tweets[i+1]) %>' },
+                      success: function(output){
+                        console.log(output);
                       }
                     });
                   });
@@ -126,6 +151,30 @@
       </div>
           
     <% end %>
+    
+    <% for i in (0..@tweets_spams.length-1).step(4) %>
+
+      <!-- <div class="panel panel-body panel-default" style="background-color:#B2B2B2;"> -->
+      <div class="panel panel-body panel-default" style="background-color:#FFB2B2;">
+      <!-- <div class="panel panel-body panel-default" style="background-color:#B8ff70;"> -->
+          <div class="col-lg-2 h4">
+
+                <img src=<%= @tweets_spams[i+3] %>>
+                <p /><strong><%= @tweets_spams[i] %></strong></p>
+          </div>
+          <div class="col-lg-10 well h4" >
+
+                <%= @tweets_spams[i+1] %>
+          </div>
+          <div class="col-lg-2 well well-sm " style="background-color:#373737;color: white;">
+
+                <%= @tweets_spams[i+2] %>
+          </div>
+
+      </div>
+          
+    <% end %>
+
   </div>
 </div>
 

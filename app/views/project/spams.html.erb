@@ -1,12 +1,25 @@
+<div class="row">
+  <div class="col-lg-12">
+    <h1>Lista de spams registrado no sistema</h1>
+  </div>
+</div>
 
 <div class="row">
 
-  <div id="content" style="text-align:left;">
-    <% @file = File.readlines('public/yaml/spam.yml') %>
-        <% for i in (1..@file.length) %>
-          <%= @file[i] %>
-          <br />
-        <% end %>
+  <div id="content" style="text-align:left;margin-left: 5%;">
+
+  		 <% sql = "SELECT * FROM spams;" %>
+		 <% posts_array = ActiveRecord::Base.connection.execute(sql) %>
+
+		 <% posts_array.each(:as => :hash) do |row| %>
+   		 	<h3><%= row["query"] %></h3> 
+   		 	<h4><small> <%= row["user"] %> </small></h4>
+   		 	<%= row["post"] %>
+   		 	<br /><br />
+		 <%	end %>
+
   </div>
 
 </div>
+
+

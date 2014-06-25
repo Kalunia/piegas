@@ -9,6 +9,8 @@ require 'rubygems'
 attr_accessor :posts
 attr_accessor :product
 
+helper_method :filter
+
 	def txt (str)
 		str.sub(" ", "_")
 	end
@@ -17,18 +19,20 @@ attr_accessor :product
 		str.sub("%", " ")
 		str.sub("|", " ")
 		str.sub("@", " ")
+		str.sub("'", " ")
+		str.sub("\n", " ")
 	end
 
 	def wiki (str)
 		str.split.map(&:capitalize).join('_')
 	end
 
-
-
 	private
 
 	def after_sign_in_path_for(resource_or_scope)
     	request.referrer
   	end
+
+  	
 
 end

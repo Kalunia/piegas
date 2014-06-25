@@ -13,14 +13,21 @@ Piegas::Application.routes.draw do
   get 'project/posts' => 'project#posts'
   get 'project/charts' => 'project#charts'
   get 'project/spams' => 'project#spams'
+  get 'project/favoriteds' => 'project#favoriteds'
   get 'project/about' => 'project#about'
   get 'project/profile' => 'project#profile'
 
   # GET para Action Controllers
-  get 'project/add_spam' => 'project#add_spam'
   get 'project/refresh_posts' => 'project#refresh_posts'
+  get 'project/generate_pdf' => 'project#generate_pdf'
   get 'project/get_pdf' => 'project#get_pdf'
 
+  get'project/add_spam' => 'project#add_spam'
+  get 'project/add_favorited' => 'project#add_favorited'
+
+  post 'project/create_barchart_png' => 'project#create_barchart_png'
+  post 'project/create_piechart_png' => 'project#create_piechart_png'
+ 
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

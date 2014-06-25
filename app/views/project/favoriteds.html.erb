@@ -1,0 +1,26 @@
+<div class="row">
+  <div class="col-lg-12">
+    <h1>Lista tweets classificados como bons ao usuário <small> <%= current_user.email %></small></h1>
+  </div>
+</div>
+
+<div class="row">
+
+  <div id="content" style="text-align:left;margin-left: 5%;">
+
+  		<% sql = "SELECT * FROM favoriteds;" %>
+		 <% posts_array = ActiveRecord::Base.connection.execute(sql) %>
+
+		 <% posts_array.each(:as => :hash) do |row| %>
+
+        <% if current_user.email == row["user"] %>
+     		 	<h3><%= row["query"] %></h3>
+     		 	<h4><small> <%= row["user"] %> </small></h4>
+     		 	<%= row["post"] %>
+     		 	<br /><br />
+        <% end %>
+		 <%	end %>
+
+  </div>
+
+</div>

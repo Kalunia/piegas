@@ -1,0 +1,216 @@
+<script src="http://code.highcharts.com/highcharts.js"></script>
+<script src="http://code.highcharts.com/modules/exporting.js"></script>
+<script src="http://canvg.googlecode.com/svn/trunk/rgbcolor.js"></script> 
+<script src="http://canvg.googlecode.com/svn/trunk/canvg.js"></script>
+
+<script type="text/javascript">
+(function (H) {
+    H.Chart.prototype.createCanvasPiechart = function (divId) {
+        var svg = this.getSVG(),
+            width = parseInt(svg.match(/width="([0-9]+)"/)[1]),
+            height = parseInt(svg.match(/height="([0-9]+)"/)[1]),
+            canvas = document.createElement('canvas');
+        
+        canvas.setAttribute('width', width);
+        canvas.setAttribute('height', height);
+        
+        if (canvas.getContext && canvas.getContext('2d')) {
+        
+            canvg(canvas, svg);
+            
+            var image = canvas.toDataURL("image/png");
+                //.replace("image/png", "image/octet-stream"); 
+    
+            // Save locally
+            //window.location.href = image;
+            //window.location = image
+
+            $.ajax({
+              type: 'POST',
+              url: '/project/create_piechart_png',
+              data: { data_uri: image },
+              success: function(output){
+		        console.log(output);
+		      }
+            });
+
+
+        } else {
+            alert ("Your browser doesn't support this feature, please use a modern browser");
+        }
+        
+    }
+}(Highcharts));
+
+    $(function () {
+    $('#piechart').highcharts({
+        chart: {
+            plotBackgroundColor: null,
+            plotBorderWidth: 1,//null,
+            plotShadow: false,
+            events: {
+                load: function () {
+                    var ch = this;
+                    setTimeout(function(){
+                        ch.createCanvasPiechart();
+                    },1);
+                }
+            }
+        },
+        title: {
+            text: 'Browser market shares at a specific website, 2014'
+        },
+        tooltip: {
+    	    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+        },
+        plotOptions: {
+            pie: {
+                allowPointSelect: true,
+                cursor: 'pointer',
+                dataLabels: {
+                    enabled: true,
+                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+                    style: {
+                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+                    }
+                }
+            }
+        },
+        series: [{
+            type: 'pie',
+            name: 'Browser share',
+            data: [
+                ['Firefox',   10.0],
+                ['IE',       26.8],
+                {
+                    name: 'Chrome',
+                    y: 12.8,
+                    sliced: true,
+                    selected: true
+                },
+                ['Safari',    8.5],
+                ['Opera',     6.2],
+                ['Others',   0.7]
+            ]
+        }]
+    });
+});
+</script>
+
+
+
+<script type="text/javascript">
+(function (H) {
+    H.Chart.prototype.createCanvasBarchart = function (divId) {
+        var svg = this.getSVG(),
+            width = parseInt(svg.match(/width="([0-9]+)"/)[1]),
+            height = parseInt(svg.match(/height="([0-9]+)"/)[1]),
+            canvas = document.createElement('canvas');
+        
+        canvas.setAttribute('width', width);
+        canvas.setAttribute('height', height);
+        
+        if (canvas.getContext && canvas.getContext('2d')) {
+        
+            canvg(canvas, svg);
+            
+            var image = canvas.toDataURL("image/png");
+                //.replace("image/png", "image/octet-stream"); 
+    
+            // Save locally
+            //window.location.href = image;
+            //window.location = image
+
+            $.ajax({
+              type: 'POST',
+              url: '/project/create_barchart_png',
+              data: { data_uri: image },
+              success: function(output){
+                console.log(output);
+              }
+            });
+
+
+        } else {
+            alert ("Your browser doesn't support this feature, please use a modern browser");
+        }
+        
+    }
+}(Highcharts));
+
+    $(function () {
+        $('#barchart').highcharts({
+            chart: {
+                type: 'bar',
+                events: {
+                load: function () {
+                    var ch = this;
+                    setTimeout(function(){
+                        ch.createCanvasBarchart();
+                    },1);
+                }
+            }
+            },
+            title: {
+                text: 'Historic World Population by Region'
+            },
+            subtitle: {
+                text: 'Source: Wikipedia.org'
+            },
+            xAxis: {
+                categories: ['Africa', 'America', 'Asia', 'Europe', 'Oceania'],
+                title: {
+                    text: null
+                }
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Population (millions)',
+                    align: 'high'
+                },
+                labels: {
+                    overflow: 'justify'
+                }
+            },
+            tooltip: {
+                valueSuffix: ' millions'
+            },
+            plotOptions: {
+                bar: {
+                    dataLabels: {
+                        enabled: true
+                    }
+                }
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'top',
+                x: -40,
+                y: 100,
+                floating: true,
+                borderWidth: 1,
+                backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor || '#FFFFFF'),
+                shadow: true
+            },
+            credits: {
+                enabled: false
+            },
+            series: [{
+                name: 'Year 1800',
+                data: [107, 31, 635, 203, 2]
+            }, {
+                name: 'Year 1900',
+                data: [133, 156, 947, 408, 6]
+            }, {
+                name: 'Year 2008',
+                data: [973, 914, 4054, 732, 34]
+            }]
+        });
+    });
+</script>
+
+<div id="piechart" ></div>
+<div id="barchart" ></div>
+

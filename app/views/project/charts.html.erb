@@ -1,25 +1,30 @@
 
 <script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="http://code.highcharts.com/modules/exporting.js"></script>
-<script src="http://canvg.googlecode.com/svn/trunk/rgbcolor.js"></script> 
-<script src="http://canvg.googlecode.com/svn/trunk/canvg.js"></script>
+<script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/rgbcolor.js"></script> 
+<script type="text/javascript" src="http://canvg.googlecode.com/svn/trunk/canvg.js"></script> 
 
 <script type="text/javascript">
-	$(function () {
+	
+$(document).ready(function() {
+        //chart = new Highcharts.Chart({
+
+ // $(function () {
 	    	
 	    	// Radialize the colors
-			Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function(color) {
-			    return {
-			        radialGradient: { cx: 0.5, cy: 0.3, r: 0.7 },
-			        stops: [
-			            [0, color],
-			            [1, Highcharts.Color(color).brighten(-0.3).get('rgb')] // darken
-			        ]
-			    };
-			});
+			// Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function(color) {
+			//     return {
+			//         radialGradient: { cx: 0.5, cy: 0.3, r: 0.7 },
+			//         stops: [
+			//             [0, color],
+			//             [1, Highcharts.Color(color).brighten(-0.3).get('rgb')] // darken
+			//         ]
+			//     };
+			// });
 			
 			// Build the chart
-      $('#container').highcharts({
+      // chart = new Hightcharts.Chart({
+       $('#container').highcharts({
           chart: {
               plotBackgroundColor: null,
               plotBorderWidth: null,
@@ -27,7 +32,7 @@
               backgroundColor: null
           },
           title: {
-              text: 'Gráfico de avaliações positivas, negativas e neutras',
+              text: 'Gráfico de seções - avaliações positivas, negativas e neutras',
               color: 'black'
           },
           tooltip: {
@@ -78,7 +83,64 @@
 
       
       $('#container').createCanvas;
-	});
+
+      $('#barchart').highcharts({
+            chart: {
+                type: 'bar'
+            },
+            title: {
+                text: 'Gráfico de Barras - rAvaliações positivas, negativas e neutras'
+            },
+            subtitle: {
+                text: 'Pesquisa: <%= session[:product] %>'
+            },
+            xAxis: {
+                categories: ['Positivos', 'Negativos', 'Neutros', 'Spams'],
+                title: {
+                    text: null
+                }
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Tweets',
+                    align: 'high'
+                },
+                labels: {
+                    overflow: 'justify'
+                }
+            },
+            tooltip: {
+                valueSuffix: ' Comentários'
+            },
+            plotOptions: {
+                bar: {
+                    dataLabels: {
+                        enabled: true
+                    }
+                }
+            },
+            legend: {
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'top',
+                x: -40,
+                y: 100,
+                floating: true,
+                borderWidth: 1,
+                backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor || '#FFFFFF'),
+                shadow: true
+            },
+            credits: {
+                enabled: false
+            },
+            series: [{
+                name: 'Tweets',
+                data: [17, 13, 20, 7]
+            }]
+        });
+    });
+</script>
 
    
 </script>
@@ -90,3 +152,5 @@
 </div>
 
 <div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+<br /><br/>
+<div id="barchart" style="min-width: 310px; height: 400px; margin: 0 auto"></div>

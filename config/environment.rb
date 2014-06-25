@@ -6,4 +6,4 @@ Rails.application.initialize!
 
 #config.gem 'ruby-stemmer', :require => 'lingua/stemmer'
 #config.gem 'luisparravicini-classifier', :require => 'classifier'
-
+#Mime::Type.register 'application/pdf', :pdf

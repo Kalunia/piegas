@@ -46,7 +46,7 @@
 		      	</li>
 
 		        <li>
-		        	<%= link_to ' Graficos', {
+		        	<%= link_to ' Gráficos', {
 		        		:action => 'charts'}, 
 		        		class: "fa fa-bar-chart-o fa-lg" %>
 		        </li>
@@ -61,12 +61,19 @@
 			            		class: "fa fa-list-alt" %>
 			            </li>
 
+			            <% if user_signed_in? %>
 			            <li>
 			            	<%= link_to ' Lista de Spams', {
 			            		:action => 'spams'}, 
 			            		class: "fa fa-thumbs-down" %>
 			            </li>
 
+			            <li>
+			            	<%= link_to ' Lista de Favoritos', {
+			            		:action => 'favoriteds'}, 
+			            		class: "fa fa-thumbs-up" %>
+			            </li>
+			            <% end %>
 		          	</ul>
 		        </li>
 
