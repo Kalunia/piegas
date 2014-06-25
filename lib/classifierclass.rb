@@ -4,18 +4,10 @@ require 'rubygems'
 require 'yaml'	
 
 	def self.initialize_classifier
-		@classifier = Classifier::Bayes.new('Spam', 'Not Spam')
+		@classifier = Classifier::Bayes.new('Not Spam', 'Spam')
 
 		#spam = YAML::load_file(File.join('public/yaml/', 'spam.yml'))
 		#not_spam = YAML::load_file(File.join('public/yaml/', 'not_spam.yml'))
-
-		spam = Array.new 
-  		sql = "SELECT post FROM spams;"
-		spam_results = ActiveRecord::Base.connection.select_all(sql)
-
-		spam_results.each do |row|
-		 	spam << row["post"]
-		end
 
 		not_spam = Array.new 
   		sql = "SELECT post FROM favoriteds;"
@@ -25,8 +17,16 @@ require 'yaml'
 		 	not_spam << row["post"]
 		end
 
-		spam.each { |spam| @classifier.train_spam spam }
+		spam = Array.new 
+  		sql = "SELECT post FROM spams;"
+		spam_results = ActiveRecord::Base.connection.select_all(sql)
+
+		spam_results.each do |row|
+		 	spam << row["post"]
+		end
+
 		not_spam.each { |good| @classifier.train_not_spam good }
+		spam.each { |spam| @classifier.train_spam spam }
 	end
 
 

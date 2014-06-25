@@ -180,7 +180,9 @@ respond_to :html
 	    	end
 	    end
 
-	    pdf.image open( product_image ), :height => 80, :width => 80, :at => [0, pdf.bounds.top + 10]
+	   	if product_image.present?
+	    	pdf.image open( product_image ), :height => 80, :width => 80, :at => [0, pdf.bounds.top + 10]
+	    end
 
 	    pdf.formatted_text([
 			{ :text => session[:product], :styles => [:bold], :color => "#FF0F0F", :size => 30}
@@ -189,7 +191,7 @@ respond_to :html
 
 	    if params[:info] == "infoY"
 	    	pdf.formatted_text([
-	    		{ :text => "Informacoes do produto", :styles => [:bold], :color => "#FF0000", :size => 18 }
+	    		{ :text => "Informacoes da pesquisa", :styles => [:bold], :color => "#FF0000", :size => 18 }
 	    		]) 
 	    	pdf.move_down(20)
 	    	pdf.text get_info
