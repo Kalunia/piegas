@@ -58,21 +58,21 @@ $(document).ready(function() {
               data: [
                   {
                       name: 'Positivos',
-                      y: 15,
+                      y: parseInt('<%= session[:positives] %>'),
                       sliced: true,
                       selected: true,
                       color: 'green'
                   },
                   {
                       name: 'Negativos',
-                      y: 15,
+                      y: parseInt('<%= session[:negatives] %>'),
                       sliced: false,
                       selected: false,
                       color: 'red'
                   },
                   {
                       name: 'Neutros',
-                      y: 5,
+                      y: parseInt('<%= session[:neutros] %>'),
                       sliced: false,
                       selected: false,
                       color: 'gray'
@@ -89,7 +89,7 @@ $(document).ready(function() {
                 type: 'bar'
             },
             title: {
-                text: 'Gráfico de Barras - rAvaliações positivas, negativas e neutras'
+                text: 'Gráfico de Barras - Avaliações positivas, negativas e neutras'
             },
             subtitle: {
                 text: 'Pesquisa: <%= session[:product] %>'
@@ -136,7 +136,7 @@ $(document).ready(function() {
             },
             series: [{
                 name: 'Tweets',
-                data: [17, 13, 20, 7]
+                data: [parseInt('<%= session[:positives] %>'), parseInt('<%= session[:negatives] %>'), parseInt('<%= session[:neutros] %>'), 0]
             }]
         });
     });

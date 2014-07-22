@@ -39,6 +39,7 @@ gem 'classifier'
 #gem 'ruby-stemmer', '~> 0.9.3'
 #gem 'stemmer'
 gem 'fast-stemmer'
+#gem 'ruby-stemmer'
 
 # Use jquery as the JavaScript library
 gem 'jquery-rails'
@@ -59,9 +60,21 @@ gem 'devise'
 # Gravatar
 gem 'gravtastic'
 
+# NLTK ruby
+#gem 'treat'
+
 # Email
 #gem 'mail'
 #gem 'tlsmail'
+
+# API Twitter
+gem 'twitter'
+
+
+# Sentiment Classifier
+#gem 'turn'
+#gem 'simplecov'
+#gem 'minitest'
 
 group :development, :test do
   gem 'foreman'

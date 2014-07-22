@@ -18,7 +18,7 @@
               <i class="fa fa-thumbs-up fa-5x"></i>
             </div>
             <div class="col-xs-6 text-right">
-              <p class="announcement-heading">X</p>
+              <p class="announcement-heading"><%= session[:positives] %></p>
               <p class="announcement-text">Positivos!</p>
             </div>
           </div>
@@ -34,7 +34,7 @@
               <i class="fa fa-thumbs-down fa-5x"></i>
             </div>
             <div class="col-xs-6 text-right">
-              <p class="announcement-heading">X</p>
+              <p class="announcement-heading"><%= session[:negatives] %></p>
               <p class="announcement-text">Negativos!</p>
             </div>
           </div>
@@ -50,7 +50,7 @@
               <i class="fa fa-comments fa-5x"></i>
             </div>
             <div class="col-xs-6 text-right">
-              <p class="announcement-heading">X</p>
+              <p class="announcement-heading"><%= session[:neutros] %></p>
               <p class="announcement-text">Neutros!</p>
             </div>
           </div>
@@ -85,11 +85,16 @@
         <% @favoriteds << row["post"] %>
      <% end %>
 
-    <% for i in (0..@tweets.length-1).step(4) %>
+    <% for i in (0..@tweets.length-1).step(5) %>
 
-      <div class="panel panel-body panel-default" style="background-color:#B2B2B2;">
-      <!-- <div class="panel panel-body panel-default" style="background-color:#FFB2B2;"> -->
-      <!-- <div class="panel panel-body panel-default" style="background-color:#B8ff70;"> -->
+      <% if (@tweets[i+4]).include?('negative') %>
+        <div class="panel panel-body panel-default" style="background-color:#FFB2B2;">
+      <% elsif (@tweets[i+4]).include?('positive') %>
+        <div class="panel panel-body panel-default" style="background-color:#B8ff70;">
+      <% elsif (@tweets[i+4]).include?('neutro') %>
+        <div class="panel panel-body panel-default" style="background-color:#B2B2B2;">
+      <% end %>
+
           <div class="col-lg-2 h4">
 
                 <img src=<%= @tweets[i+3] %>>
@@ -152,10 +157,10 @@
           
     <% end %>
     
-    <% for i in (0..@tweets_spams.length-1).step(4) %>
+    <% for i in (0..@tweets_spams.length-1).step(5) %>
 
       <!-- <div class="panel panel-body panel-default" style="background-color:#B2B2B2;"> -->
-      <div class="panel panel-body panel-default" style="background-color:#FFB2B2;">
+      <div class="panel panel-body panel-default" style="background-color:blue;">
       <!-- <div class="panel panel-body panel-default" style="background-color:#B8ff70;"> -->
           <div class="col-lg-2 h4">
 

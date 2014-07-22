@@ -5,10 +5,10 @@ class ProjectController < ApplicationController
 protect_from_forgery with: :exception
 
 require 'classifierclass'
-require 'twitterreader'
+require 'stuff-classifier'
 require 'open-uri'
-require 'classifierclass'
 require 'base64'
+require 'twitter'
 
 helper_method :get_info
 helper_method :get_posts
@@ -68,23 +68,63 @@ respond_to :html
 	# Resgata os posts do Twitter em relacao ao produto no momento
 	def get_posts
 
+		session[:positives] = 0
+		session[:negatives] = 0
+		session[:neutros] = 0
+
+		@sentClassifier = StuffClassifier::Bayes.new("Positive vs Negative")
+		@sentClassifier.train_file("pt-words.txt")
+		# puts "EH PRA SER POSITIVO"
+		# puts @sentClassifier.classify("Estou no paraíso!")
+		# puts ""
+
 		list = Array.new
 
 		begin
-			doc = Nokogiri::HTML(open("https://twitter.com/search?q="+URI.encode(session[:product])+"%20lang%3Apt&src=typd")) 
-			items = doc.css ".content"
-			
-			items.each do |item|
-				autor = item.css(".fullname").first.content
-				tweet = item.css(".js-tweet-text").first.content
-				time = item.css(".stream-item-header small a")[0]['title']
-				avatar = item.css(".avatar").first['src']
 
-				list << autor
-				list << tweet
-				list << time
-				list << avatar
+			client = Twitter::REST::Client.new do |config|
+				config.consumer_key        = "MOe3DYlVMw1qYpRNPZdf8nSTG"
+				config.consumer_secret     = "PwmHyTvtiBQBJlQ95ghnyfBHfGhBaxIO67D6n0RSzlX3DUDwUx"
+				config.access_token        = "93068866-EVLLzkGGoqDyK6jn4nXqvH4eanl4btTwg6RoouN7G"
+				config.access_token_secret = "fizJverUWl7d4tfYQj41GS03KQsCY4T68KZCNGWXmsCDA"
 			end
+
+			#data = client.search(search_term, :language => "pt").take(results_per_page).collect
+			client.search(session[:product], :lang => "pt", :result_type => "recent").take(2).collect do |tweet|
+				
+				puts "#{tweet.text}"
+				sentiment = @sentClassifier.classify("#{tweet.text}")
+
+				list << "#{tweet.user.screen_name}"
+				list << "#{tweet.text}"
+				list << "#{tweet.created_at}"
+				list << "#{tweet.user.profile_image_url}"
+				list << sentiment
+
+				#puts sentiment
+				if sentiment.include?('positive')
+					session[:positives] += 1
+				elsif  sentiment.include?('negative')
+					session[:negatives] += 1
+				elsif sentiment.include?('neutro')
+					session[:neutros] += 1
+				end
+			end
+		
+			# doc = Nokogiri::HTML(open("https://twitter.com/search?q="+URI.encode(session[:product])+"%20lang%3Apt&src=typd")) 
+			# items = doc.css ".content"
+			
+			# items.each do |item|
+			# 	autor = item.css(".fullname").first.content
+			# 	tweet = item.css(".js-tweet-text").first.content
+			# 	time = item.css(".stream-item-header small a")[0]['title']
+			# 	avatar = item.css(".avatar").first['src']
+
+			# 	list << autor
+			# 	list << tweet
+			# 	list << time
+			# 	list << avatar
+			# end
 
 			ClassifierClass.initialize_classifier
 			session[:posts] = list
@@ -170,7 +210,6 @@ respond_to :html
 	    #       { :text => " Colored Helvetica.", :font => "Helvetica", :color => "#FF0000" },
 	    #       { :text => " GO big Runnable!", :size => 20 }
 	    #     ])
-
 	    #   
 
 	    pdf.indent 400 do
@@ -253,22 +292,24 @@ respond_to :html
 		@tweets = Array.new
 		@tweets_spams = Array.new
 
-		for i in (0..70).step(4)
+		for i in (0..9).step(5)
 
-          if ClassifierClass.classify_tweet(session[:posts][i+1]) != 'Spam'
+          # if ClassifierClass.classify_tweet(session[:posts][i+1]) != 'Spam'
 
                 @tweets << session[:posts][i]
 				@tweets << session[:posts][i+1]
 				@tweets << session[:posts][i+2]
 				@tweets << session[:posts][i+3]
+				@tweets << session[:posts][i+4]
 
-          else
-             	@spams_detected += 1
-             	@tweets_spams << session[:posts][i]
-				@tweets_spams << session[:posts][i+1]
-				@tweets_spams << session[:posts][i+2]
-				@tweets_spams << session[:posts][i+3]
-          end
+    #       else
+    #          	@spams_detected += 1
+    #          	@tweets_spams << session[:posts][i]
+				# @tweets_spams << session[:posts][i+1]
+				# @tweets_spams << session[:posts][i+2]
+				# @tweets_spams << session[:posts][i+3]
+				# @tweets_spams << session[:posts][i+4]
+    #       end
           
         end
 
@@ -313,7 +354,7 @@ respond_to :html
 
 		tweets = String.new
 
-		for i in (0..70).step(4)
+		for i in (0..9).step(5)
 			tweets << session[:posts][i]
 			tweets << " - " + session[:posts][i+1]
 			tweets << "\n\n"
@@ -321,5 +362,18 @@ respond_to :html
 
         tweets
     end
+
+
+
+    def sentiment_classifier()
+	  @sentClassifier = StuffClassifier::Bayes.new("Positive vs Negative")
+
+	  @sentClassifier.train_file("pt-words.txt")
+	  puts sentClassifier.categories 
+	end
+
+
+
+
 end
 
