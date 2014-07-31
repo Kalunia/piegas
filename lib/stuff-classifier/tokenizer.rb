@@ -7,10 +7,10 @@ class StuffClassifier::Tokenizer
   require  "stuff-classifier/tokenizer/tokenizer_properties"
   
   def initialize(opts={})
-    @language = opts.key?(:language) ? opts[:language] : "pt"
+    @language = "pt"
     @properties = StuffClassifier::Tokenizer::TOKENIZER_PROPERTIES[@language]
     
-    @stemming = opts.key?(:stemming) ? opts[:stemming] : true
+    @stemming = true
     if @stemming
       #@stemmer = Lingua::Stemmer.new(:language => @language)
       #@stemmer = Stemmer::stem_word(:language)

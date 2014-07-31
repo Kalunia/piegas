@@ -162,25 +162,97 @@ class StuffClassifier::Base
     end
   end
 
+  def train_negative()
+    File.open("public/tweets-negatives.txt", "r").each_line do |line|
+      train("negative", line)
+    end
+  end
+
+  def train_positive()
+    File.open("public/tweets-positives.txt", "r").each_line do |line|
+      train("positive", line)
+    end
+  end
+
   # classify a text
   def classify(text, default=nil)
     # Find the category with the highest probability
     max_prob = @min_prob
+    prob1 = @min_prob
+    prob2 = @min_prob
     best = nil
+    margin = 0.05
+    diff_prob = 0
 
     scores = cat_scores(text)
     scores.each do |score|
       cat, prob = score
-      # puts prob
-      # puts ">"
-      # puts max_prob
-      # puts ""
-      if prob > max_prob
-        max_prob = prob
-        best = cat
-        # puts cat
+       # puts prob
+       # puts ">"
+       # puts max_prob
+       # puts ""
+
+      # if prob > max_prob
+      #   max_prob = prob
+      #   best = cat
+      #    puts cat
+      # end
+
+
+      # ---------------------------------------------------
+
+
+      # if cat == "positive"
+      #   max_prob += prob
+      # elsif cat == "negative"
+      #   max_prob -= prob
+      # end
+
+      # puts "max_prob:" + max_prob
+
+      # margin_prob = margin * max_prob
+      # n_prob = Math.sqrt(margin_prob ** 2)
+
+      # puts "n_prob:" + n_prob
+
+      # if max_prob > 0
+      #   best = "positive"
+      # elsif max_prob < 0
+      #   best = "negative"
+      # elsif max_prob == 0
+      #   best = "neutro"
+      # end
+
+      # ----------------------------------------------------
+
+      if cat == "positive"
+        prob1 += prob
+      elsif cat == "negative"
+        prob2 += prob
       end
-      # puts ""
+
+      puts "prob1:" + prob1.to_s
+      puts "prob2:" + prob2.to_s
+
+      margin_prob1 = margin * prob1
+      margin_prob2 = margin * prob2
+      diff_prob = Math.sqrt((prob1 - prob2) ** 2)
+
+      puts "margin1:" + margin_prob1.to_s
+      puts "margin2:" + margin_prob2.to_s
+      puts "diff_prob:" + diff_prob.to_s
+
+      if prob1 > prob2
+        best = "positive"
+      end
+      if prob1 < prob2
+        best = "negative"
+      end
+      
+      if prob1 == prob2 or (diff_prob < margin_prob1 and diff_prob < margin_prob2)
+        best = "neutro"
+      end
+       # puts ""
     end
 
     # Return the default category in case the threshold condition was
@@ -190,14 +262,18 @@ class StuffClassifier::Base
     #    :spam => 0.80, :ham => 0.70  (Fail, :ham is too close)
 
     return default unless best
+    #return best
 
     threshold = @thresholds[best] || 1.0
 
-    scores.each do |score|
-      cat, prob = score
-      next if cat == best
-      return default if prob * threshold > max_prob
-    end
+    # puts threshold
+    # puts "TT"
+
+    # scores.each do |score|
+    #   cat, prob = score
+    #   next if cat == best
+    #   return default if prob * threshold > max_prob
+    # end
 
     return best    
   end

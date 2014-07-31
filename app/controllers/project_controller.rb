@@ -68,12 +68,17 @@ respond_to :html
 	# Resgata os posts do Twitter em relacao ao produto no momento
 	def get_posts
 
+		sentiment = ""
 		session[:positives] = 0
 		session[:negatives] = 0
 		session[:neutros] = 0
 
 		@sentClassifier = StuffClassifier::Bayes.new("Positive vs Negative")
-		@sentClassifier.train_file("pt-words.txt")
+		@sentClassifier.train_positive()
+		@sentClassifier.train_negative()
+
+
+		#@sentClassifier.train_file("pt-words.txt")
 		# puts "EH PRA SER POSITIVO"
 		# puts @sentClassifier.classify("Estou no paraíso!")
 		# puts ""
@@ -90,24 +95,30 @@ respond_to :html
 			end
 
 			#data = client.search(search_term, :language => "pt").take(results_per_page).collect
-			client.search(session[:product], :lang => "pt", :result_type => "recent").take(2).collect do |tweet|
+			client.search(session[:product], :lang => "pt", :result_type => "recent", :exclude => "retweets").take(100).collect do |tweet|
 				
-				puts "#{tweet.text}"
-				sentiment = @sentClassifier.classify("#{tweet.text}")
+				if !list.include?("#{tweet.text}")
+					#puts "#{tweet.text}"
+					# StuffClassifier::Bayes.open("Positive vs Negative") do |cls|
+					# 	sentiment = cls.classify("#{tweet.text}")
+					# end
 
-				list << "#{tweet.user.screen_name}"
-				list << "#{tweet.text}"
-				list << "#{tweet.created_at}"
-				list << "#{tweet.user.profile_image_url}"
-				list << sentiment
+					sentiment = @sentClassifier.classify("#{tweet.text}")
 
-				#puts sentiment
-				if sentiment.include?('positive')
-					session[:positives] += 1
-				elsif  sentiment.include?('negative')
-					session[:negatives] += 1
-				elsif sentiment.include?('neutro')
-					session[:neutros] += 1
+					list << "#{tweet.user.screen_name}"
+					list << "#{tweet.text}"
+					list << "#{tweet.created_at}"
+					list << "#{tweet.user.profile_image_url}"
+					list << sentiment
+
+					#puts sentiment
+					if sentiment.include?('positive')
+						session[:positives] += 1
+					elsif  sentiment.include?('negative')
+						session[:negatives] += 1
+					elsif sentiment.include?('neutro')
+						session[:neutros] += 1
+					end
 				end
 			end
 		
@@ -292,7 +303,7 @@ respond_to :html
 		@tweets = Array.new
 		@tweets_spams = Array.new
 
-		for i in (0..9).step(5)
+		for i in (0..session[:posts].length-1).step(5)
 
           # if ClassifierClass.classify_tweet(session[:posts][i+1]) != 'Spam'
 
@@ -354,7 +365,7 @@ respond_to :html
 
 		tweets = String.new
 
-		for i in (0..9).step(5)
+		for i in (0..session[:posts].length-1).step(5)
 			tweets << session[:posts][i]
 			tweets << " - " + session[:posts][i+1]
 			tweets << "\n\n"
