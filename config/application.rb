@@ -28,6 +28,5 @@ module Piegas
         Devise::UnlocksController.layout "home"
         Devise::PasswordsController.layout "home"
     end
-
   end
 end

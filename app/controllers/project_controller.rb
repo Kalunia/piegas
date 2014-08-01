@@ -20,15 +20,8 @@ helper_method :get_spams_detected
 helper_method :get_spams_tweets
 helper_method :get_pdf
 
-#before_filter :get_product
-
 respond_to :html
 
-	# # Reforca o produto em foco
-	# def get_product
-
-	# 	@product = params[:product]
-	# end
 
 	# Resgata os posts do Twitter em relacao ao produto no momento
 	def get_info
@@ -49,8 +42,8 @@ respond_to :html
 				end
 			end
 
-			if text.include? "referir-se a"
-				return "Foram encontrados mais de um resultado esperado..."
+			if text.include? "referir-se a" or text.include? "remete-se a" 
+				return "Muitas informações encontradas no Wikipedia - favor especificar..."
 			else
 				return text
 			end
@@ -64,6 +57,28 @@ respond_to :html
 		end
 	end
 
+	# Obtem a URL do produto pesquisado
+	def product_image
+
+	  	suckr = ImageSuckr::GoogleSuckr.new
+
+
+	  	begin
+	  		suckr.get_image_url({"q" => session[:product], as_filetype: "png", safe: "active"}) do  		
+	  		end
+	  	rescue OpenURI::HTTPError => e
+			if e.message == '404 Not Found'
+				return "Nenhuma figura encontrada"
+			elsif e.message == '403 Forbidden'
+				return "Figura proibida"
+			else
+				raise e
+			end
+		end
+	end
+
+
+	################################################################ TWEETS
 
 	# Resgata os posts do Twitter em relacao ao produto no momento
 	def get_posts
@@ -73,15 +88,7 @@ respond_to :html
 		session[:negatives] = 0
 		session[:neutros] = 0
 
-		@sentClassifier = StuffClassifier::Bayes.new("Positive vs Negative")
-		@sentClassifier.train_positive()
-		@sentClassifier.train_negative()
-
-
-		#@sentClassifier.train_file("pt-words.txt")
-		# puts "EH PRA SER POSITIVO"
-		# puts @sentClassifier.classify("Estou no paraíso!")
-		# puts ""
+		@sentClassifier = StuffClassifier::Bayes.open("Positive vs Negative")
 
 		list = Array.new
 
@@ -94,14 +101,9 @@ respond_to :html
 				config.access_token_secret = "fizJverUWl7d4tfYQj41GS03KQsCY4T68KZCNGWXmsCDA"
 			end
 
-			#data = client.search(search_term, :language => "pt").take(results_per_page).collect
 			client.search(session[:product], :lang => "pt", :result_type => "recent", :exclude => "retweets").take(100).collect do |tweet|
 				
 				if !list.include?("#{tweet.text}")
-					#puts "#{tweet.text}"
-					# StuffClassifier::Bayes.open("Positive vs Negative") do |cls|
-					# 	sentiment = cls.classify("#{tweet.text}")
-					# end
 
 					sentiment = @sentClassifier.classify("#{tweet.text}")
 
@@ -121,23 +123,7 @@ respond_to :html
 					end
 				end
 			end
-		
-			# doc = Nokogiri::HTML(open("https://twitter.com/search?q="+URI.encode(session[:product])+"%20lang%3Apt&src=typd")) 
-			# items = doc.css ".content"
-			
-			# items.each do |item|
-			# 	autor = item.css(".fullname").first.content
-			# 	tweet = item.css(".js-tweet-text").first.content
-			# 	time = item.css(".stream-item-header small a")[0]['title']
-			# 	avatar = item.css(".avatar").first['src']
 
-			# 	list << autor
-			# 	list << tweet
-			# 	list << time
-			# 	list << avatar
-			# end
-
-			ClassifierClass.initialize_classifier
 			session[:posts] = list
 
 		rescue OpenURI::HTTPError => e
@@ -155,26 +141,6 @@ respond_to :html
 
 		respond_to do |format|
 			format.html { redirect_to params[:path] }
-		end
-	end
-
-
-	# Obtem a URL do produto pesquisado
-	def product_image
-
-	  	suckr = ImageSuckr::GoogleSuckr.new
-
-	  	begin
-	  		suckr.get_image_url({"q" => session[:product], as_filetype: "png", safe: "active"}) do  			
-	  		end
-	  	rescue OpenURI::HTTPError => e
-			if e.message == '404 Not Found'
-				return "Nenhuma figura encontrada"
-			elsif e.message == '403 Forbidden'
-				return "Figura proibida"
-			else
-				raise e
-			end
 		end
 	end
 
@@ -207,6 +173,18 @@ respond_to :html
 		render :json => {:success => true}
 	end
 
+	def tweets_neutral
+
+		tweets = String.new
+
+		for i in (0..session[:posts].length-1).step(5)
+			tweets << session[:posts][i]
+			tweets << " - " + session[:posts][i+1]
+			tweets << "\n\n"
+        end
+
+        tweets
+    end
 
 	# Gera o arquivo PDF
 	def get_pdf
@@ -296,6 +274,8 @@ respond_to :html
 	end
 
 	
+	##################################################################### SPAMS
+
 	# Classifica o post em "Spam" ou "Nao Spam"
 	def classify_spam
 
@@ -305,23 +285,31 @@ respond_to :html
 
 		for i in (0..session[:posts].length-1).step(5)
 
-          # if ClassifierClass.classify_tweet(session[:posts][i+1]) != 'Spam'
+			if session[:spam_on] == 1
+	           if ClassifierClass.classify_tweet(session[:posts][i+1]) != 'Spam'
 
-                @tweets << session[:posts][i]
+	                @tweets << session[:posts][i]
+					@tweets << session[:posts][i+1]
+					@tweets << session[:posts][i+2]
+					@tweets << session[:posts][i+3]
+					@tweets << session[:posts][i+4]
+
+	           else
+	              	@spams_detected += 1
+	              	@tweets_spams << session[:posts][i]
+				    @tweets_spams << session[:posts][i+1]
+					@tweets_spams << session[:posts][i+2]
+					@tweets_spams << session[:posts][i+3]
+					@tweets_spams << session[:posts][i+4]
+	           end
+	        else
+          
+          		@tweets << session[:posts][i]
 				@tweets << session[:posts][i+1]
 				@tweets << session[:posts][i+2]
 				@tweets << session[:posts][i+3]
 				@tweets << session[:posts][i+4]
-
-    #       else
-    #          	@spams_detected += 1
-    #          	@tweets_spams << session[:posts][i]
-				# @tweets_spams << session[:posts][i+1]
-				# @tweets_spams << session[:posts][i+2]
-				# @tweets_spams << session[:posts][i+3]
-				# @tweets_spams << session[:posts][i+4]
-    #       end
-          
+			end
         end
 
         @tweets
@@ -357,34 +345,6 @@ respond_to :html
 
 		#render :json => {:success => true}
 	end
-
-
-
-
-	def tweets_neutral
-
-		tweets = String.new
-
-		for i in (0..session[:posts].length-1).step(5)
-			tweets << session[:posts][i]
-			tweets << " - " + session[:posts][i+1]
-			tweets << "\n\n"
-        end
-
-        tweets
-    end
-
-
-
-    def sentiment_classifier()
-	  @sentClassifier = StuffClassifier::Bayes.new("Positive vs Negative")
-
-	  @sentClassifier.train_file("pt-words.txt")
-	  puts sentClassifier.categories 
-	end
-
-
-
 
 end
 

@@ -131,30 +131,30 @@ class StuffClassifier::Base
     incr_cat(category)
   end
 
-  def train_file(file)
-    File.open("public/"+file, "r").each_line do |line|
+  def train_file()
+    File.open("public/pt-words.txt", "r").each_line do |line|
       tokens = line.split(" ")
       word = tokens[0]
       value = tokens[1]
 
       if value == "-4"
-        category = "negative4"
+        category = "negative"
       elsif value == "-3"
-        category = "negative3"
+        category = "negative"
       elsif value == "-2"
-        category = "negative2"
+        category = "negative"
       elsif value == "-1"
-        category = "negative1"
+        category = "negative"
       elsif value == "1"
-        category = "positive1"
+        category = "positive"
       elsif value == "2"
-        category = "positive2"
+        category = "positive"
       elsif value == "3"
-        category = "positive3"
+        category = "positive"
       elsif value == "4"
-        category = "positive4"
-      else
-        category = "neutro"
+        category = "positive"
+      # else
+      #   category = "neutro"
       end
 
       #puts category + " - " + word
