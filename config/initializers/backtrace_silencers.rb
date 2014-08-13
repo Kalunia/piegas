@@ -18,3 +18,29 @@ StuffClassifier::Bayes.open("Positive vs Negative") do |cls|
 end
 
 ClassifierClass.initialize_classifier
+
+
+# StuffClassifier::Bayes.open("Teste") do |cls|
+#     cls.train('positivo', "Eu amo programar! Adoro computador!")
+#     cls.train('positivo', "Sempre gostei de sorvete e chocolate")
+#     cls.train('positivo', "Sou apaixonado por aquela atriz!")
+#     cls.train('positivo', "Hoje estou feliz porque ganhei um presente.")
+#     cls.train('positivo', "Estou animado para comprar meu celular! Não vejo a hora!")
+
+#     cls.train('negativo', "Odiei aquele restaurante, péssimo serviço")
+#     cls.train('negativo', "Rídicula a proposta desse presidente, sempre caluniando")
+#     cls.train('negativo', "Muito ruim aquele produto")
+#     cls.train('negativo', "Esse celular é muito caro e nem dura nada")
+#     cls.train('negativo', "Esse computador é um lixo, sempre com problemas")
+    
+# end
+
+# @sentClassifier = StuffClassifier::Bayes.open("Teste")
+# puts @sentClassifier.classify("Muito lixo esse celular")
+# puts @sentClassifier.classify("com problemas, mas adoro assim")
+# puts @sentClassifier.classify("O meu pai é adorável e lindo! Adoro ele demais! Feliz dia dos Pais PAI! =D")
+# puts @sentClassifier.classify("Odeio Segunda-Feira... Muitos problemas e desanimada =(")
+
+# puts "" 
+# puts "Num Pos - "+@sentClassifier.total_word_count_in_cat("positivo").to_s
+# puts "Num Neg - "+@sentClassifier.total_word_count_in_cat("negativo").to_s

@@ -5,6 +5,7 @@ require "stemmerportuguese"
 class StuffClassifier::Tokenizer
   require  "stuff-classifier/tokenizer/tokenizer_properties"
   
+  # Inicialização do tokenizer
   def initialize(opts={})
     @language = "pt"
     @properties = StuffClassifier::Tokenizer::TOKENIZER_PROPERTIES[@language]
@@ -19,16 +20,8 @@ class StuffClassifier::Tokenizer
     @language
   end
 
-  def preprocessing_regexps=(value)
-    @preprocessing_regexps = value
-  end
-
-  def preprocessing_regexps
-    @preprocessing_regexps || @properties[:preprocessing_regexps]
-  end
-
-  def ignore_words=(value)
-    @ignore_words = value
+  def ignore_word(value)
+    @ignore_words.add(value)
   end
 
   def ignore_words
@@ -39,6 +32,7 @@ class StuffClassifier::Tokenizer
     @stemming || false
   end
 
+  # Recorre cada palavra, separando e organizando
   def each_word(string)
     string = string.strip
     return if string == ''
@@ -48,16 +42,12 @@ class StuffClassifier::Tokenizer
     # tokenize string
     string.split("\n").each do |line|
 
-      # Apply preprocessing regexps
-      if preprocessing_regexps
-        preprocessing_regexps.each { |regexp,replace_by| line.gsub!(regexp, replace_by) }
-      end
-
       line.gsub(/\p{Word}+/).each do |w|
           next if w == '' || ignore_words.member?(w.downcase)
 
         if stemming? and stemable?(w)
-          #puts w
+          #puts "Stem - "+w+" = "+@stemmer.stem(w).downcase
+          #puts ""
           w = @stemmer.stem(w).downcase
           #puts w
           next if ignore_words.member?(w)
@@ -66,6 +56,26 @@ class StuffClassifier::Tokenizer
         end
 
         words << (block_given? ? (yield w) : w)
+      end
+    end
+
+    return words
+  end
+
+  # Recorre cada palavra, separando e organizando
+  def each_word_tag_cloud(string)
+    string = string.strip
+    return if string == ''
+
+    words = ""
+
+    # tokenize string
+    string.split("\n").each do |line|
+
+      line.gsub(/\p{Word}+/).each do |w|
+          next if w == '' || ignore_words.member?(w.downcase)
+
+        words += " " + (block_given? ? (yield w) : w).downcase
       end
     end
 

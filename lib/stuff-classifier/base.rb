@@ -15,26 +15,18 @@ class StuffClassifier::Base
 
 
   storable :version,:word_list,:category_list,:training_count,:thresholds,:min_prob
-    
-  # opts :
-  # language
-  # stemming : true | false
-  # weight
-  # assumed_prob
-  # storage
-  # purge_state ?
 
+  # Inicializa a base do classificador
   def initialize(name, opts={})
     @version = StuffClassifier::VERSION
     
     @name = name
 
-    # This values are nil or are loaded from storage
     @word_list = {}
     @category_list = {}
     @training_count=0
 
-    # storage
+    # Repositório
     purge_state = opts[:purge_state]
     @storage = opts[:storage] || StuffClassifier::Base.storage
     unless purge_state
@@ -43,16 +35,15 @@ class StuffClassifier::Base
       @storage.purge_state(self)
     end
 
-    # This value can be set during initialization or overrided after load_state
     @thresholds = opts[:thresholds] || {}
     @min_prob = opts[:min_prob] || 0.0
-    
 
     @ignore_words = nil
     @tokenizer = StuffClassifier::Tokenizer.new(opts)
     
   end
 
+  # Incrementa palavra à categoria indicada
   def incr_word(word, category)
     @word_list[word] ||= {}
 
@@ -63,14 +54,13 @@ class StuffClassifier::Base
     @word_list[word][:_total_word] ||= 0
     @word_list[word][:_total_word] += 1
 
-  
-    # words count by categroy
     @category_list[category] ||= {}
     @category_list[category][:_total_word] ||= 0
     @category_list[category][:_total_word] += 1
 
   end
 
+  # Incrementa categoria
   def incr_cat(category)
     @category_list[category] ||= {}
     @category_list[category][:_count] ||= 0
@@ -81,56 +71,64 @@ class StuffClassifier::Base
 
   end
 
-  # return number of times the word appears in a category
+  # Retorna o número de vezes que a palavra aparece na categoria indicada
   def word_count(word, category)
     return 0.0 unless @word_list[word] && @word_list[word][:categories] && @word_list[word][:categories][category]
     @word_list[word][:categories][category].to_f
   end
 
-  # return the number of times the word appears in all categories
+  # Retorna o número de vezes que a palavra aparece em todas as categorias
   def total_word_count(word)
     return 0.0 unless @word_list[word] && @word_list[word][:_total_word]
     @word_list[word][:_total_word].to_f
   end
 
-  # return the number of words in a categories
+  # Retorna o número de palavras da uma categoria
   def total_word_count_in_cat(cat)
     return 0.0 unless @category_list[cat] && @category_list[cat][:_total_word]
     @category_list[cat][:_total_word].to_f
   end
 
-  # return the number of training item 
+  # Retorn o número de itens em treinamento 
   def total_cat_count
     @training_count
   end
   
-  # return the number of training document for a category
+  # Retorna o numero de documentos treinados pela categoria
   def cat_count(category)
     @category_list[category][:_count] ? @category_list[category][:_count].to_f : 0.0
   end
 
-  # return the number of time categories in wich a word appear
-  def categories_with_word_count(word)
+  # Retorna as palavras da categoria
+  def cat_words
+    return  @word_list
+  end
+
+  # Retorna o número de vezes que a palavra aparece nas categorias
+    def categories_with_word_count(word)
     return 0 unless @word_list[word] && @word_list[word][:categories]
     @word_list[word][:categories].length 
   end  
 
-  # return the number of categories
+  # Retorna o número de categorias
   def total_categories
     categories.length
   end
 
-  # return categories list
+  # Retorna a lista de categorias
   def categories
     @category_list.keys
   end
 
-  # train the classifier
+  # Treina a categoria com o texto indicado
   def train(category, text)
     @tokenizer.each_word(text) {|w| incr_word(w, category) }
+    #puts(category)
+    #puts "------------------------------------"
     incr_cat(category)
   end
 
+  # Treina o arquivo de palavras em português
   def train_file()
     File.open("public/pt-words.txt", "r").each_line do |line|
       tokens = line.split(" ")
@@ -153,131 +151,57 @@ class StuffClassifier::Base
         category = "positive"
       elsif value == "4"
         category = "positive"
-      # else
-      #   category = "neutro"
       end
 
-      #puts category + " - " + word
       train(category, word)
     end
   end
 
+  # Treina os Tweets negativos
   def train_negative()
     File.open("public/tweets-negatives.txt", "r").each_line do |line|
       train("negative", line)
     end
   end
 
+  #Treina os Tweets positivos
   def train_positive()
     File.open("public/tweets-positives.txt", "r").each_line do |line|
       train("positive", line)
     end
   end
 
-  # classify a text
-  def classify(text, default=nil)
+  # Classifica o texto
+  def classify(text, default="neutro")
     # Find the category with the highest probability
     max_prob = @min_prob
-    prob1 = @min_prob
-    prob2 = @min_prob
     best = nil
-    margin = 0.05
-    diff_prob = 0
 
     scores = cat_scores(text)
     scores.each do |score|
       cat, prob = score
-       # puts prob
-       # puts ">"
-       # puts max_prob
-       # puts ""
+       #puts cat+": "+prob.to_s
 
-      # if prob > max_prob
-      #   max_prob = prob
-      #   best = cat
-      #    puts cat
-      # end
-
-
-      # ---------------------------------------------------
-
-
-      # if cat == "positive"
-      #   max_prob += prob
-      # elsif cat == "negative"
-      #   max_prob -= prob
-      # end
-
-      # puts "max_prob:" + max_prob
-
-      # margin_prob = margin * max_prob
-      # n_prob = Math.sqrt(margin_prob ** 2)
-
-      # puts "n_prob:" + n_prob
-
-      # if max_prob > 0
-      #   best = "positive"
-      # elsif max_prob < 0
-      #   best = "negative"
-      # elsif max_prob == 0
-      #   best = "neutro"
-      # end
-
-      # ----------------------------------------------------
-
-      if cat == "positive"
-        prob1 += prob
-      elsif cat == "negative"
-        prob2 += prob
+      if prob > max_prob
+        max_prob = prob
+        best = cat
       end
-
-      puts "prob1:" + prob1.to_s
-      puts "prob2:" + prob2.to_s
-
-      margin_prob1 = margin * prob1
-      margin_prob2 = margin * prob2
-      diff_prob = Math.sqrt((prob1 - prob2) ** 2)
-
-      puts "margin1:" + margin_prob1.to_s
-      puts "margin2:" + margin_prob2.to_s
-      puts "diff_prob:" + diff_prob.to_s
-
-      if prob1 > prob2
-        best = "positive"
-      end
-      if prob1 < prob2
-        best = "negative"
-      end
-      
-      if prob1 == prob2 or (diff_prob < margin_prob1 and diff_prob < margin_prob2)
-        best = "neutro"
-      end
-       # puts ""
     end
 
-    # Return the default category in case the threshold condition was
-    # not met. For example, if the threshold for :spam is 1.2
-    #
-    #    :spam => 0.73, :ham => 0.40  (OK)
-    #    :spam => 0.80, :ham => 0.70  (Fail, :ham is too close)
-
     return default unless best
-    #return best
 
-    threshold = @thresholds[best] || 1.0
+    threshold = @thresholds[best] || 1.1
 
-    # puts threshold
-    # puts "TT"
+    scores.each do |score|
+      cat, prob = score
+      next if cat == best
+      return default if prob * threshold > max_prob
+    end
 
-    # scores.each do |score|
-    #   cat, prob = score
-    #   next if cat == best
-    #   return default if prob * threshold > max_prob
-    # end
-
-    return best    
+    return best
   end
 
+  # Salva estado atual do classificador
   def save_state
     @storage.save_state(self)
   end

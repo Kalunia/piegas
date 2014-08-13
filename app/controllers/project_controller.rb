@@ -88,9 +88,11 @@ respond_to :html
 		session[:negatives] = 0
 		session[:neutros] = 0
 
+		@tokenizer = StuffClassifier::Tokenizer.new
 		@sentClassifier = StuffClassifier::Bayes.open("Positive vs Negative")
 
 		list = Array.new
+		tag_words = ""
 
 		begin
 
@@ -106,6 +108,7 @@ respond_to :html
 				if !list.include?("#{tweet.text}")
 
 					sentiment = @sentClassifier.classify("#{tweet.text}")
+					tag_words += @tokenizer.each_word_tag_cloud("#{tweet.text}")
 
 					list << "#{tweet.user.screen_name}"
 					list << "#{tweet.text}"
@@ -123,6 +126,11 @@ respond_to :html
 					end
 				end
 			end
+
+			#puts tag_words
+			tag_words_list = tag_words.split.inject(Hash.new(0)) { |h,v| h[v] += 1; h }
+			tag_words_list_sorted = tag_words_list.sort_by{|k,v| v}.reverse
+			session[:tag_cloud_words] = tag_words_list_sorted
 
 			session[:posts] = list
 
@@ -173,14 +181,49 @@ respond_to :html
 		render :json => {:success => true}
 	end
 
+	# Organiza os Tweets neutros
 	def tweets_neutral
 
 		tweets = String.new
 
 		for i in (0..session[:posts].length-1).step(5)
-			tweets << session[:posts][i]
-			tweets << " - " + session[:posts][i+1]
-			tweets << "\n\n"
+			if session[:posts][i+4].include?('neutro')
+				tweets << session[:posts][i]
+				tweets << " - " + session[:posts][i+1]
+				tweets << "\n\n"
+			end
+        end
+
+        tweets
+    end
+
+    # Organiza os Tweets positivos
+    def tweets_positive
+
+		tweets = String.new
+
+		for i in (0..session[:posts].length-1).step(5)
+			if session[:posts][i+4].include?('positive')
+				tweets << session[:posts][i]
+				tweets << " - " + session[:posts][i+1]
+				tweets << "\n\n"
+			end
+        end
+
+        tweets
+    end
+
+    # Organiza os Tweets negativos
+    def tweets_negative
+
+		tweets = String.new
+
+		for i in (0..session[:posts].length-1).step(5)
+			if session[:posts][i+4].include?('negative')
+				tweets << session[:posts][i]
+				tweets << " - " + session[:posts][i+1]
+				tweets << "\n\n"
+			end
         end
 
         tweets
@@ -260,7 +303,25 @@ respond_to :html
 	    	pdf.move_down(40)
 	    end
 
-	    if params[:neutros].present?
+	    if params[:positivos].present?
+	    	pdf.formatted_text([
+	    		{ :text => "Tweets positivos", :styles => [:bold], :color => "#FF0000", :size => 18 }
+	    		]) 
+	    	pdf.move_down(20)
+	    	pdf.text tweets_positive
+	    	pdf.move_down(40)
+	    end
+
+	    if params[:negativos].present?
+	    	pdf.formatted_text([
+	    		{ :text => "Tweets negativos", :styles => [:bold], :color => "#FF0000", :size => 18 }
+	    		]) 
+	    	pdf.move_down(20)
+	    	pdf.text tweets_negative
+	    	pdf.move_down(40)
+	    end
+
+	     if params[:neutros].present?
 	    	pdf.formatted_text([
 	    		{ :text => "Tweets neutros", :styles => [:bold], :color => "#FF0000", :size => 18 }
 	    		]) 
