@@ -1,7 +1,12 @@
+# Este código foi extraido em grande parte através do GitHUB https://github.com/alexandru/stuff-classifier
+# e adaptado por Pedro Grandin
+
 # encoding: utf-8
 
 class StuffClassifier::Base
   extend StuffClassifier::Storage::ActAsStorable
+  require  "stuff-classifier/filter"
+
   attr_reader :name
   attr_reader :word_list
   attr_reader :category_list
@@ -18,8 +23,8 @@ class StuffClassifier::Base
 
   # Inicializa a base do classificador
   def initialize(name, opts={})
-    @version = StuffClassifier::VERSION
-    
+    #@version = StuffClassifier::VERSION
+
     @name = name
 
     @word_list = {}
@@ -40,6 +45,8 @@ class StuffClassifier::Base
 
     @ignore_words = nil
     @tokenizer = StuffClassifier::Tokenizer.new(opts)
+
+    @filter = StuffClassifier::Filter[:trash_word]
     
   end
 
@@ -160,15 +167,48 @@ class StuffClassifier::Base
   # Treina os Tweets negativos
   def train_negative()
     File.open("public/tweets-negatives.txt", "r").each_line do |line|
-      train("negative", line)
+      train("negative", filter(line))
     end
   end
 
   #Treina os Tweets positivos
   def train_positive()
     File.open("public/tweets-positives.txt", "r").each_line do |line|
-      train("positive", line)
+      train("positive", filter(line))
     end
+  end
+
+  #Filtra o tweet com palavras inutilizadas 
+  def filter(text)
+
+    #Remove palavras inutilizaveis
+    @filter.each do |trash_word|
+      text.gsub! trash_word, ''
+    end
+
+    #Remove Links
+    text = text.gsub /http:\/\/.*/, ''
+
+    #Remove risadas "kkkkkkkkk"
+    text = text.gsub /k.k*/, ''
+
+    #Remove risadas "sauhsauhsua", "hahaha", "hehehe" 
+    text = text.gsub(/\b[hsuae]+\b/, '')
+
+    #Remove risadas "rsrsrs"
+    text = text.gsub(/\b[rs]+\b/, '')
+
+    #Remove hashtags
+    text = text.gsub /(?:\s|^)(?:#(?!(?:\d+|\w+?_|_\w+?)(?:\s|$)))(\w+)(?=\s|$)/i, ''
+
+    #Remove @usuario
+    text = text.gsub /(?:\s|^)(?:@(?!(?:\d+|\w+?_|_\w+?)(?:\s|$)))(\w+)(?=\s|$)/i, ''
+   
+    #Remove caracteres repetidos
+    text = text.squeeze
+
+    #puts text
+    return text
   end
 
   # Classifica o texto

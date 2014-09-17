@@ -1,3 +1,9 @@
+# Este código foi originado pelo seguinte algoritmo em perl
+# http://search.cpan.org/src/XERN/Lingua-PT-Stemmer-0.01/lib/Lingua/PT/Stemmer.pm
+
+# e adaptado para o ruby a seguir em
+# https://github.com/evertonts/usp-lost-and-found/blob/master/lib/StemmerPTBR.rb
+
 class StemmerPortuguese
  
   def initialize()

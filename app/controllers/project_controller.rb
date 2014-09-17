@@ -9,6 +9,7 @@ require 'stuff-classifier'
 require 'open-uri'
 require 'base64'
 require 'twitter'
+require 'date'
 
 helper_method :get_info
 helper_method :get_posts
@@ -62,7 +63,6 @@ respond_to :html
 
 	  	suckr = ImageSuckr::GoogleSuckr.new
 
-
 	  	begin
 	  		suckr.get_image_url({"q" => session[:product], as_filetype: "png", safe: "active"}) do  		
 	  		end
@@ -83,6 +83,7 @@ respond_to :html
 	# Resgata os posts do Twitter em relacao ao produto no momento
 	def get_posts
 
+		txt = ""
 		sentiment = ""
 		session[:positives] = 0
 		session[:negatives] = 0
@@ -105,14 +106,18 @@ respond_to :html
 
 			client.search(session[:product], :lang => "pt", :result_type => "recent", :exclude => "retweets").take(100).collect do |tweet|
 				
-				if !list.include?("#{tweet.text}")
+				txt = filter_tweet("#{tweet.text}")
+				#puts txt
 
-					sentiment = @sentClassifier.classify("#{tweet.text}")
-					tag_words += @tokenizer.each_word_tag_cloud("#{tweet.text}")
+				if !list.include?(txt)
+
+					sentiment = @sentClassifier.classify(txt)
+					tag_words += @tokenizer.each_word_tag_cloud(txt)
+					d = DateTime.parse("#{tweet.created_at}")
 
 					list << "#{tweet.user.screen_name}"
 					list << "#{tweet.text}"
-					list << "#{tweet.created_at}"
+					list << d.strftime('%H:%M %p - %d/%m/%y')
 					list << "#{tweet.user.profile_image_url}"
 					list << sentiment
 

@@ -20,6 +20,7 @@ module Piegas
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
     #config.i18n.load_path += Dir[Rails.root.join('lib').to_s]
+    config.i18n.default_locale = :'pt-BR'
     config.autoload_paths += %W(#{config.root}/lib)
     config.to_prepare do
         Devise::SessionsController.layout "home"

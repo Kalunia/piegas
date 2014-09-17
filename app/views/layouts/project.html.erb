@@ -45,36 +45,30 @@
 		      		class: "fa fa-info fa-lg" %>
 		      	</li>
 
-		        <li>
+	            <li>
+	            	<%= link_to ' Tweets', {
+	            		:action => 'posts'}, 
+	            		class: "fa fa-list-alt fa-lg" %>
+	            </li>
+
+	            <% if user_signed_in? %>
+		            <li>
+		            	<%= link_to ' Lista de Spams', {
+		            		:action => 'spams'}, 
+		            		class: "fa fa-thumbs-down fa-lg" %>
+		            </li>
+
+		            <li>
+		            	<%= link_to ' Lista de Favoritos', {
+		            		:action => 'favoriteds'}, 
+		            		class: "fa fa-thumbs-up fa-lg" %>
+		            </li>
+	            <% end %>
+
+	            <li>
 		        	<%= link_to ' Gráficos', {
 		        		:action => 'charts'}, 
 		        		class: "fa fa-bar-chart-o fa-lg" %>
-		        </li>
-
-		        <li class="dropdown">
-		          	<a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-caret-square-o-down fa-lg"></i> Tweets <b class="caret"></b></a>
-		          	<ul class="dropdown-menu">
-
-			            <li>
-			            	<%= link_to ' Geral', {
-			            		:action => 'posts'}, 
-			            		class: "fa fa-list-alt" %>
-			            </li>
-
-			            <% if user_signed_in? %>
-			            <li>
-			            	<%= link_to ' Lista de Spams', {
-			            		:action => 'spams'}, 
-			            		class: "fa fa-thumbs-down" %>
-			            </li>
-
-			            <li>
-			            	<%= link_to ' Lista de Favoritos', {
-			            		:action => 'favoriteds'}, 
-			            		class: "fa fa-thumbs-up" %>
-			            </li>
-			            <% end %>
-		          	</ul>
 		        </li>
 
 		        <li>
@@ -138,7 +132,7 @@
 						    	<%= f.password_field :password, placeholder: "Senha", autocomplete: "off", class: 'form-control' %>
 						    </div>
 
-						  <btn><%= f.submit "Sign in", class: "btn btn-primary" %></btn>
+						  <btn><%= f.submit "Entrar", class: "btn btn-primary" %></btn>
 
 						<% end %>
 	  				</li>

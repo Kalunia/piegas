@@ -95,18 +95,25 @@
         <div class="panel panel-body panel-default" style="background-color:#B2B2B2;">
       <% end %>
 
-          <div class="col-lg-2 h4">
+          <div class="col-lg-2 h4" style="float: left; height: 100px;">
 
                 <img src=<%= @tweets[i+3] %>>
-                <p /><strong><%= @tweets[i] %></strong></p>
+                <p></p>
+                <p><strong><%= @tweets[i] %></strong></p>
           </div>
-          <div class="col-lg-10 well h4" >
+          <div class="col-lg-10 well h4" style="float: left;">
 
                 <%= @tweets[i+1] %>
           </div>
-          <div class="col-lg-2 well well-sm " style="background-color:#373737;color: white;">
+          <div class="col-lg-2 well well-sm " style="background-color:#373737;color: white; width: 150px; float: left;">
 
                 <%= @tweets[i+2] %>
+          </div>
+
+          <div class="col-lg-2 well well-sm " style="background-color: purple; color: white; width: 100px; float: right;">
+            <%= (@tweets[i+4]).include?('negative') ? "Negativo" : 
+               (@tweets[i+4]).include?('positive') ? "Positivo" : "Neutro"
+            %>
           </div>
         
           <% if user_signed_in? %>

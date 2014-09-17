@@ -1,3 +1,6 @@
+# Este código foi extraido em grande parte através do GitHUB https://github.com/alexandru/stuff-classifier
+# e adaptado por Pedro Grandin
+
 # encoding: utf-8
 
 require "stemmerportuguese"

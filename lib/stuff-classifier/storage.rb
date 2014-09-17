@@ -1,4 +1,8 @@
+# Este código foi extraido em grande parte através do GitHUB https://github.com/alexandru/stuff-classifier
+# e adaptado por Pedro Grandin
+
 # encoding : UTF-8
+
 module StuffClassifier
 
   class Storage

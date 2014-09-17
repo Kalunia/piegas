@@ -2,21 +2,27 @@
 <html>
 <head>
   <title>Piegas</title>
-  <link rel="shortcut icon" href="/images/favicon.jpg"
+  <link rel="shortcut icon" href="/images/favicon.jpg">
   <%= stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track' => true %>
   <%= javascript_include_tag 'application', 'data-turbolinks-track' => true %>
   <%= csrf_meta_tags %>
+  <link rel="stylesheet" type="text/css" href="/bootstrap-3.1.1-dist/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
+  <script type="text/javascript" src="/bootstrap-3.1.1-dist/js/bootstrap.min.js"></script>
+  <script type="text/javascript" src="/bootstrap-3.1.1-dist/js/bootbox.min.js"></script>
 </head>
 <body>
 <% if notice %>
-  <p class="alert alert-success alert-dismissable" style="text-align:center;">
-  <button type="button" class"close" data-dismiss="alert" aria-hidden="true">&times;</button>
-  <%= notice %></p>
+  <script>
+      bootbox.alert('<%= notice %>', function() {
+      });
+  </script>
 <% end %>
 <% if alert %>
-  <p class="alert alert-danger alert-dismissable" style="text-align:center;">
-  <button type="button" class"close" data-dismiss="alert" aria-hidden="true">&times;</button>
-  <%= alert %></p>
+  <script>
+      bootbox.alert('<%= alert %>', function() {
+      });
+  </script>
 <% end %>
 <%= content_for?(:content) ? yield(:content) : yield %>
 
