@@ -9,13 +9,24 @@
 require 'stuff-classifier'
 require 'classifierclass'
 
-StuffClassifier::Base.storage = StuffClassifier::InMemoryStorage.new
+#StuffClassifier::Base.storage = StuffClassifier::InMemoryStorage.new
+
+
+store = StuffClassifier::FileStorage.new("lib/categories_store.db")
+StuffClassifier::Base.storage = store
+
+# cls = StuffClassifier::Bayes.open("Positive vs Negative")
+# cls.train_positive()
+# cls.train_negative()
+# cls.save_state
 
 StuffClassifier::Bayes.open("Positive vs Negative") do |cls|
-    cls.train_positive()
-    cls.train_negative()
+   	#cls.train_positive()
+    #cls.train_negative()
     #cls.train_file()
 end
+
+StuffClassifier::Base.storage = StuffClassifier::FileStorage.new("lib/categories_store.db")
 
 ClassifierClass.initialize_classifier
 
