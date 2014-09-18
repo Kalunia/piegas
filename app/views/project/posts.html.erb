@@ -58,23 +58,25 @@
       </div>
     </div>
 
-  <div class="col-lg-3">
-    <div class="panel panel-warning">
-      <div class="panel-heading">
-        <div class="row">
-          <div class="col-xs-6">
-            <i class="fa fa-bug fa-5x"></i>
-          </div>
-            <div class="col-xs-6 text-right">
-              <p class="announcement-heading"><%= get_spams_detected %></p>
-              <p class="announcement-text">Spam(s) Detectado(s)!</p>
+  <% if user_signed_in? and current_user.anti_spam == 1 %>
+    <div class="col-lg-3">
+      <div class="panel panel-warning">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-xs-6">
+              <i class="fa fa-bug fa-5x"></i>
+            </div>
+              <div class="col-xs-6 text-right">
+                <p class="announcement-heading"><%= get_spams_detected %></p>
+                <p class="announcement-text">Spam(s) Detectado(s)!</p>
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+  <% end %>
   </div>
-
+  
   <div class="row">
 
     <% @favoriteds = Array.new  %>
@@ -116,7 +118,7 @@
             %>
           </div>
         
-          <% if user_signed_in? %>
+          <% if user_signed_in? and current_user.anti_spam == 1 %>
 
               <% if @favoriteds.include? filter(@tweets[i+1])  %>
                 <button type="button" id="<%= "favorited"+i.to_s %>" class="btn btn-success pull-right disabled" aria-hidden="true">

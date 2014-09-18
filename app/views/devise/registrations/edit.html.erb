@@ -1,4 +1,4 @@
-<h2>Editar <%= resource_name.to_s.humanize %></h2>
+<h2>Editar Usuário</h2>
 
 <%= form_for(resource, as: resource_name, url: registration_path(resource_name), html: { method: :put }) do |f| %>
   <%= devise_error_messages! %>
@@ -12,29 +12,34 @@
     <div>Esperando confirmação: <%= resource.unconfirmed_email %></div>
   <% end %>
 
-  <%= f.label :password %> <i>(deixe em branco caso não queria alterá-la)</i>
+  Senha <i>(deixe em branco caso não queria alterá-la)</i>
   <div class="spacev" >
     <%= f.password_field :password, autocomplete: "off" %>
   </div>
 
-  <%= f.label :password_confirmation %>
+  Confirmação da senha
   <div class="spacev" >
     <%= f.password_field :password_confirmation, autocomplete: "off" %>
   </div>
 
-  <%= f.label :current_password %> <i>(precisamos da sua senha corrente para alterações)</i>
+  Senha atual <i>(precisamos da sua senha atual para alterações)</i>
   <div class="spacev" >
     <%= f.password_field :current_password, autocomplete: "off" %>
   </div>
 
-  <btn><%= f.submit "Update" %></btn>
+  Ativar recurso anti-spam?
+  <div class="spacev" >
+    <%= f.radio_button :anti_spam, 0 %><span style="color: white;">Não</span>
+    <%= f.radio_button :anti_spam, 1 %><span style="color: white;">Sim</span>
+  </div>
+  <br/>
+  <btn><%= f.submit "Atualizar" %></btn>
   <btn /> <btn />
 
 <% end %>
 
-<h3>Cancelar minha conta</h3>
-
-<p>Unhappy? <%= button_to "Cancelar minha conta", registration_path(resource_name), data: { confirm: "Are you sure?" }, method: :delete %></p>
+<br/><br/>
+<p><%= button_to "Cancelar minha conta", registration_path(resource_name), data: { confirm: "Tem certeza?" }, method: :delete %></p>
 
 <%= link_to "Voltar", :back %>
 
