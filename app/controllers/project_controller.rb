@@ -63,18 +63,18 @@ respond_to :html
 
 	  	suckr = ImageSuckr::GoogleSuckr.new
 
-	  	begin
-	  		suckr.get_image_url({"q" => session[:product], as_filetype: "png", safe: "active"}) do  		
-	  		end
-	  	rescue OpenURI::HTTPError => e
-			if e.message == '404 Not Found'
-				return "Nenhuma figura encontrada"
-			elsif e.message == '403 Forbidden'
-				return "Figura proibida"
-			else
-				raise e
+		  	begin
+		  		suckr.get_image_url({"q" => session[:product], as_filetype: "png", safe: "active"}) do
+		  		end
+		  	rescue OpenURI::HTTPError => e
+				if e.message == '404 Not Found'
+					return "Nenhuma figura encontrada"
+				elsif e.message == '403 Forbidden'
+					return "Figura proibida"
+				else
+					raise e
+				end
 			end
-		end
 	end
 
 
@@ -104,10 +104,9 @@ respond_to :html
 				config.access_token_secret = "fizJverUWl7d4tfYQj41GS03KQsCY4T68KZCNGWXmsCDA"
 			end
 
-			client.search(session[:product], :lang => "pt", :result_type => "recent", :exclude => "retweets").take(100).collect do |tweet|
+			client.search(session[:product]+' -rt', :lang => "pt", :result_type => "recent", :exclude => "links").take(100).collect do |tweet|
 				
-				txt = filter_tweet("#{tweet.text}")
-				#puts txt
+				txt = filter_tweet("#{tweet.text}", session[:product])
 
 				if !list.include?(txt)
 

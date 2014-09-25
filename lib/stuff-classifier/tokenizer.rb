@@ -31,6 +31,10 @@ class StuffClassifier::Tokenizer
     @ignore_words || @properties[:stop_word]
   end
 
+  def negation_words
+    @properties[:negation_word]
+  end
+
   def stemming?
     @stemming || false
   end
@@ -40,25 +44,39 @@ class StuffClassifier::Tokenizer
     string = string.strip
     return if string == ''
 
+    neg = false
     words = []
 
     # tokenize string
     string.split("\n").each do |line|
 
       line.gsub(/\p{Word}+/).each do |w|
+
+        if negation_words.member?(w.downcase)
+          neg = true
+          next
+        else
           next if w == '' || ignore_words.member?(w.downcase)
 
-        if stemming? and stemable?(w)
-          #puts "Stem - "+w+" = "+@stemmer.stem(w).downcase
-          #puts ""
-          w = @stemmer.stem(w).downcase
-          #puts w
-          next if ignore_words.member?(w)
-        else
-          w = w.downcase
-        end
+          if stemming? and stemable?(w)
+            #puts "Stem - "+w+" = "+@stemmer.stem(w).downcase
+            #puts ""
+            w = @stemmer.stem(w).downcase
+            #puts w
+            next if ignore_words.member?(w)
+          else
+            w = w.downcase
+          end
 
-        words << (block_given? ? (yield w) : w)
+          if neg
+            w = 'NO'+w
+            #puts w
+          end      
+
+          neg = false
+
+          words << (block_given? ? (yield w) : w)
+        end
       end
     end
 

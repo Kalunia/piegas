@@ -51,7 +51,7 @@
 	            		class: "fa fa-list-alt fa-lg" %>
 	            </li>
 
-	            <% if user_signed_in? %>
+	           	<% if user_signed_in? and current_user.anti_spam == 1 %>
 		            <li>
 		            	<%= link_to ' Lista de Spams', {
 		            		:action => 'spams'}, 

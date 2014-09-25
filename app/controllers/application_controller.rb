@@ -12,6 +12,11 @@ attr_accessor :product
 
 helper_method :filter
 
+before_action :configure_permitted_parameters, if: :devise_controller?
+	
+	def configure_permitted_parameters
+		devise_parameter_sanitizer.for(:account_update) << :anti_spam
+	end
 	
 
 	def txt (str)
@@ -31,13 +36,14 @@ helper_method :filter
 	end
 
 	#Filtra o tweet com palavras inutilizadas 
-	def filter_tweet(text)
+	def filter_tweet(text, query)
 		
 		trash_set = Set.new([
 	     '=)', '=P', '=p', '=*', '=D', '=]', '=[', '=(', ':)', ':(', ':]', ':[', ':P', ':p', ':*', 'T.T', '^^',
-	     '.com', '.br',
-	     'ish',
-	     ' vish',
+	     'caramba',
+	     'eita',
+	     'ish', 
+	     'vish',
 	     'lol', 'LOL', 'Lol'
 	    ])
 		
@@ -46,8 +52,17 @@ helper_method :filter
 	      text.gsub! trash_word, ''
 	    end
 
-	    #Remove Links
-	    text = text.gsub /http:\/\/.*/, ''
+	    # Remove o query
+	    text.gsub! query, ''
+
+	    # Remove numeros
+	    text = text.gsub /(W|\d)/, ''
+
+	    #Remove Links HTTPS
+	    # text = text.gsub /https?:\/\/[\S]+/, ''
+
+	    # #Remove Links HTTP
+	    # text = text.gsub /http?:\/\/[\S]+/, ''
 
 	    #Remove risadas "kkkkkkkkk"
 	    text = text.gsub /k.k*/, ''
@@ -58,14 +73,17 @@ helper_method :filter
 	    #Remove risadas "rsrsrs"
 	    text = text.gsub(/\b[rs]+\b/, '')
 
-	    #Remove hashtags
-	    text = text.gsub /(?:\s|^)(?:#(?!(?:\d+|\w+?_|_\w+?)(?:\s|$)))(\w+)(?=\s|$)/i, ''
+	    #Remove #hashtags
+	    #text = text.gsub /(?:\s|^)(?:#(?!(?:\d+|\w+?_|_\w+?)(?:\s|$)))(\w+)(?=\s|$)/i, ''
+	    text = text.gsub /#/, ''
 
 	    #Remove @usuario
 	    text = text.gsub /(?:\s|^)(?:@(?!(?:\d+|\w+?_|_\w+?)(?:\s|$)))(\w+)(?=\s|$)/i, ''
 	   
 	    #Remove caracteres repetidos
 	    text = text.squeeze
+
+	    #puts text
 
 	    return text
   	end

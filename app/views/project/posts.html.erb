@@ -1,3 +1,52 @@
+<script>
+$(document).ready(function(){
+  $('#all_header').hide();
+  $('#all_header').css('cursor', 'pointer');
+  $('#pos_header').css('cursor', 'pointer');
+  $('#neg_header').css('cursor', 'pointer');
+  $('#neu_header').css('cursor', 'pointer');
+  $('#spam_header').css('cursor', 'pointer');
+
+  $('#pos_header').click(function() {
+    $('.pos_tweet').show(1000);
+    $('.neg_tweet').hide(1000);
+    $('.neu_tweet').hide(1000);
+    $('.spam_tweet').hide(1000);
+    $('#all_header').show(1000);
+  });
+
+  $('#neg_header').click(function() {
+    $('.pos_tweet').hide(1000);
+    $('.neg_tweet').show(1000);
+    $('.neu_tweet').hide(1000);
+    $('.spam_tweet').hide(1000);
+    $('#all_header').show(1000);
+  });
+
+  $('#neu_header').click(function() {
+    $('.pos_tweet').hide(1000);
+    $('.neg_tweet').hide(1000);
+    $('.neu_tweet').show(1000);
+    $('.spam_tweet').hide(1000);
+    $('#all_header').show(1000);
+  });
+
+  $('#spam_header').click(function() {
+    $('.pos_tweet').hide(1000);
+    $('.neg_tweet').hide(1000);
+    $('.neu_tweet').hide(1000);
+    $('.spam_tweet').show(1000);
+    $('#all_header').show(1000);
+  });
+
+  $('#all_header').click(function() {
+    $('.pos_tweet').show(1000);
+    $('.neg_tweet').show(1000);
+    $('.neu_tweet').show(1000);
+    $('.spam_tweet').show(1000);
+  });
+});
+</script>
 
 <% @tweets = classify_spam %>
 <% @tweets_spams = get_spams_tweets %>
@@ -10,7 +59,7 @@
 
 <div class="row">
 
-  <div class="col-lg-3">
+  <div id="pos_header" class="col-lg-3">
       <div class="panel panel-success">
         <div class="panel-heading">
           <div class="row">
@@ -26,7 +75,7 @@
       </div>
     </div>
 
-  <div class="col-lg-3">
+  <div id="neg_header" class="col-lg-3">
       <div class="panel panel-danger">
         <div class="panel-heading">
           <div class="row">
@@ -42,7 +91,7 @@
       </div>
     </div>
 
-  <div class="col-lg-3">
+  <div id="neu_header" class="col-lg-3">
       <div class="panel panel-info">
         <div class="panel-heading">
           <div class="row">
@@ -59,7 +108,7 @@
     </div>
 
   <% if user_signed_in? and current_user.anti_spam == 1 %>
-    <div class="col-lg-3">
+    <div id="spam_header" class="col-lg-3">
       <div class="panel panel-warning">
         <div class="panel-heading">
           <div class="row">
@@ -76,6 +125,18 @@
       </div>
   <% end %>
   </div>
+
+  <div id="all_header" class="col-lg-16">
+      <div class="panel panel-primary">
+        <div class="panel-heading">
+          <div class="row">
+            <div class="col-xs-16 text-center">
+              <p class="announcement-text">Mostrar todos os tweets!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   
   <div class="row">
 
@@ -90,11 +151,11 @@
     <% for i in (0..@tweets.length-1).step(5) %>
 
       <% if (@tweets[i+4]).include?('negative') %>
-        <div class="panel panel-body panel-default" style="background-color:#FFB2B2;">
+        <div class="panel panel-body panel-default neg_tweet" style="background-color:#FFB2B2;">
       <% elsif (@tweets[i+4]).include?('positive') %>
-        <div class="panel panel-body panel-default" style="background-color:#B8ff70;">
+        <div class="panel panel-body panel-default pos_tweet" style="background-color:#B8ff70;">
       <% elsif (@tweets[i+4]).include?('neutro') %>
-        <div class="panel panel-body panel-default" style="background-color:#B2B2B2;">
+        <div class="panel panel-body panel-default neu_tweet" style="background-color:#B2B2B2;">
       <% end %>
 
           <div class="col-lg-2 h4" style="float: left; height: 100px;">
@@ -112,10 +173,16 @@
                 <%= @tweets[i+2] %>
           </div>
 
-          <div class="col-lg-2 well well-sm " style="background-color: purple; color: white; width: 100px; float: right;">
-            <%= (@tweets[i+4]).include?('negative') ? "Negativo" : 
-               (@tweets[i+4]).include?('positive') ? "Positivo" : "Neutro"
-            %>
+          <div class="col-lg-2 well well-sm " style="background-color: brown; color: white; font-size: 10px; width: 120px; float: right;">
+            <% if @tweets[i+4].include?('negative') %>
+              <i class="fa fa-thumbs-down fa-2x"> Negativo</i>
+            <% elsif @tweets[i+4].include?('positive') %>
+              <i class="fa fa-thumbs-up fa-2x"> Positivo</i>
+            <% elsif @tweets[i+4].include?('neutro') %>
+              <i class="fa fa-comments fa-2x"> Neutro</i>
+            <% else %>
+              <i class="fa fa-bug fa-2x"> Spam</i>
+            <% end %>
           </div>
         
           <% if user_signed_in? and current_user.anti_spam == 1 %>
@@ -169,7 +236,7 @@
     <% for i in (0..@tweets_spams.length-1).step(5) %>
 
       <!-- <div class="panel panel-body panel-default" style="background-color:#B2B2B2;"> -->
-      <div class="panel panel-body panel-default" style="background-color:brown;">
+      <div class="panel panel-body panel-default spam_tweet" style="background-color:brown;">
       <!-- <div class="panel panel-body panel-default" style="background-color:#B8ff70;"> -->
           <div class="col-lg-2 h4">
 

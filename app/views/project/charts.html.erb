@@ -311,61 +311,119 @@ $(document).ready(function() {
       
       $('#container').createCanvas;
 
-      $('#barchart').highcharts({
-            chart: {
-                type: 'bar'
-            },
-            title: {
-                text: 'Gráfico de Barras - Avaliações positivas, negativas e neutras'
-            },
-            subtitle: {
-                text: 'Pesquisa: <%= session[:product] %>'
-            },
-            xAxis: {
-                categories: ['Positivos', 'Negativos', 'Neutros', 'Spams'],
-                title: {
-                    text: null
-                }
-            },
-            yAxis: {
-                min: 0,
-                title: {
-                    text: 'Tweets',
-                    align: 'high'
-                },
-                labels: {
-                    overflow: 'justify'
-                }
-            },
-            tooltip: {
-                valueSuffix: ' Comentários'
-            },
-            plotOptions: {
-                bar: {
-                    dataLabels: {
-                        enabled: true
-                    }
-                }
-            },
-            legend: {
-                layout: 'vertical',
-                align: 'right',
-                verticalAlign: 'top',
-                x: -40,
-                y: 100,
-                floating: true,
-                borderWidth: 1,
-                backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor || '#FFFFFF'),
-                shadow: true
-            },
-            credits: {
-                enabled: false
-            },
-            series: [{
-                name: 'Tweets',
-                data: [parseInt('<%= session[:positives] %>'), parseInt('<%= session[:negatives] %>'), parseInt('<%= session[:neutros] %>'), 0]
-            }]
-        });
+      <% if user_signed_in? and current_user.anti_spam == 1 %>
+        $('#barchart').highcharts({
+              chart: {
+                  type: 'bar'
+              },
+              title: {
+                  text: 'Gráfico de Barras - Avaliações positivas, negativas e neutras'
+              },
+              subtitle: {
+                  text: 'Pesquisa: <%= session[:product] %>'
+              },
+              xAxis: {
+                  categories: ['Positivos', 'Negativos', 'Neutros', 'Spams'],
+                  title: {
+                      text: null
+                  }
+              },
+              yAxis: {
+                  min: 0,
+                  title: {
+                      text: 'Tweets',
+                      align: 'high'
+                  },
+                  labels: {
+                      overflow: 'justify'
+                  }
+              },
+              tooltip: {
+                  valueSuffix: ' Comentários'
+              },
+              plotOptions: {
+                  bar: {
+                      dataLabels: {
+                          enabled: true
+                      }
+                  }
+              },
+              legend: {
+                  layout: 'vertical',
+                  align: 'right',
+                  verticalAlign: 'top',
+                  x: -40,
+                  y: 100,
+                  floating: true,
+                  borderWidth: 1,
+                  backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor || '#FFFFFF'),
+                  shadow: true
+              },
+              credits: {
+                  enabled: false
+              },
+              series: [{
+                  name: 'Tweets',
+                  data: [parseInt('<%= session[:positives] %>'), parseInt('<%= session[:negatives] %>'), parseInt('<%= session[:neutros] %>'), 0]
+              }]
+          });
+      <% else %>
+          $('#barchart').highcharts({
+              chart: {
+                  type: 'bar'
+              },
+              title: {
+                  text: 'Gráfico de Barras - Avaliações positivas, negativas e neutras'
+              },
+              subtitle: {
+                  text: 'Pesquisa: <%= session[:product] %>'
+              },
+              xAxis: {
+                  categories: ['Positivos', 'Negativos', 'Neutros'],
+                  title: {
+                      text: null
+                  }
+              },
+              yAxis: {
+                  min: 0,
+                  title: {
+                      text: 'Tweets',
+                      align: 'high'
+                  },
+                  labels: {
+                      overflow: 'justify'
+                  }
+              },
+              tooltip: {
+                  valueSuffix: ' Comentários'
+              },
+              plotOptions: {
+                  bar: {
+                      dataLabels: {
+                          enabled: true
+                      }
+                  }
+              },
+              legend: {
+                  layout: 'vertical',
+                  align: 'right',
+                  verticalAlign: 'top',
+                  x: -40,
+                  y: 100,
+                  floating: true,
+                  borderWidth: 1,
+                  backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor || '#FFFFFF'),
+                  shadow: true
+              },
+              credits: {
+                  enabled: false
+              },
+              series: [{
+                  name: 'Tweets',
+                  data: [parseInt('<%= session[:positives] %>'), parseInt('<%= session[:negatives] %>'), parseInt('<%= session[:neutros] %>')]
+              }]
+          });
+      <% end %>
     });
 </script>
 

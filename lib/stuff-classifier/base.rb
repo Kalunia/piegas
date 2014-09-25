@@ -135,35 +135,6 @@ class StuffClassifier::Base
     incr_cat(category)
   end
 
-  # Treina o arquivo de palavras em português
-  def train_file()
-    File.open("public/pt-words.txt", "r").each_line do |line|
-      tokens = line.split(" ")
-      word = tokens[0]
-      value = tokens[1]
-
-      if value == "-4"
-        category = "negative"
-      elsif value == "-3"
-        category = "negative"
-      elsif value == "-2"
-        category = "negative"
-      elsif value == "-1"
-        category = "negative"
-      elsif value == "1"
-        category = "positive"
-      elsif value == "2"
-        category = "positive"
-      elsif value == "3"
-        category = "positive"
-      elsif value == "4"
-        category = "positive"
-      end
-
-      train(category, word)
-    end
-  end
-
   # Treina os Tweets negativos
   def train_negative()
     File.open("public/tweets-negatives.txt", "r").each_line do |line|
@@ -186,8 +157,14 @@ class StuffClassifier::Base
       text.gsub! trash_word, ''
     end
 
-    #Remove Links
-    text = text.gsub /http:\/\/.*/, ''
+    #Remove Links HTTPS
+    text = text.gsub /https?:\/\/[\S]+/, ''
+
+    #Remove Links HTTP
+    text = text.gsub /http?:\/\/[\S]+/, ''
+
+    # Remove numeros
+    text = text.gsub /(W|\d)/, ''
 
     #Remove risadas "kkkkkkkkk"
     text = text.gsub /k.k*/, ''
@@ -199,7 +176,8 @@ class StuffClassifier::Base
     text = text.gsub(/\b[rs]+\b/, '')
 
     #Remove hashtags
-    text = text.gsub /(?:\s|^)(?:#(?!(?:\d+|\w+?_|_\w+?)(?:\s|$)))(\w+)(?=\s|$)/i, ''
+    #text = text.gsub /(?:\s|^)(?:#(?!(?:\d+|\w+?_|_\w+?)(?:\s|$)))(\w+)(?=\s|$)/i, ''
+    text = text.gsub /#/, ''
 
     #Remove @usuario
     text = text.gsub /(?:\s|^)(?:@(?!(?:\d+|\w+?_|_\w+?)(?:\s|$)))(\w+)(?=\s|$)/i, ''
@@ -230,7 +208,7 @@ class StuffClassifier::Base
 
     return default unless best
 
-    threshold = @thresholds[best] || 1.1
+    threshold = @thresholds[best] || 1.5
 
     scores.each do |score|
       cat, prob = score
