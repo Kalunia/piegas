@@ -8,27 +8,28 @@ StuffClassifier::Tokenizer::TOKENIZER_PROPERTIES = {
   "pt" => {
     :stop_word => Set.new([
      'a', 'à', 'acerca', 'agora', 'alguns', 'algum', 'algumas', 'às','ao', 'aos', 'as', 'asim', 'assim', 'ate', 'até', 'ateh', 
-     'c', 'cima', 'co', 'com', 'como', 
+     'c', 'cima', 'cmg', 'co', 'com', 'como', 
      'd', 'da', 'das', 'de', 'dele', 'deles', 'depois', 'deverá', 'devera', 'do', 'dos', 
-     'e', 'e', 'é', 'eh', 'ela', 'elas', 'ele', 'eles', 'em', 'enquanto', 'entre', 'era', 'essa', 'esa', 'essas', 'esas', ' esse', 'ese', 'esses', 'eses', 'este', 'estes', 'está', 'estao', 'estão', 'eu', 
-     'f', 'foi', 'foram', 'fosse',
+     'e', 'e', 'é', 'eh', 'ela', 'elas', 'ele', 'eles', 'em', 'enquanto', 'entre', 'era', 'eram', 'essa', 'esa', 'essas', 'esas', ' esse', 'ese', 'esses', 'eses', 'este', 'estes', 'está', 'estao', 'estão', 'estava', 'estavam', 'eu', 
+     'f', 'falei', 'falaram', 'falou', 'fica', 'fico', 'ficam', 'ficaram', 'foi', 'foram', 'fosse', 
      'h', 'há', 'havia', 'horas',
-     'i', 'ir', 'isso', 'isto',
+     'i', 'ia', 'ir', 'isso', 'isto',
      'j', 'ja', 'já', 'jah',
      'k',
      'l', 'lhe',
      'm', 'mai', 'mas', 'mais', 'maioria', 'me', 'mesmo', 'meu', 'minha', 'muito', 
      'na', 'nas', 'no', 'nois', 'nós', 'nos', 'noso', 'nosso', 'num', 'numa', 
      'o', 'os', 'ou', 
-     'p', 'pa', 'para', 'parte', 'pela', 'pelas', 'pelo', 'pelos', 'pode', 'por', 'porque', 'povo', 'pq',
-     'q', 'qual', 'quando', 'que', 'quem', 'quero',
+     'p', 'pa', 'para', 'parte', 'pela', 'pelas', 'pelo', 'pelos', 'pode', 'pois', 'por', 'porque', 'povo', 'pq',
+     'q', 'qual', 'quando', 'que', 'quem', 'queria', 'quero', 
      's', 'sao', 'são', 'se', 'seja', 'sem', 'ser', 'será', 'seu', 'seus', 'só', 'soh', 'somente', 'sua', 'suas', 
-     't', 'tambem', 'também', 'tem', 'têm', 'tempo', 'tenho', 'tentar', 'ter', 'tinha', 'tmb', 'to', 'todo', 'todos', 'tu',
+     't', 'tambem', 'também', 'tem', 'têm', 'tempo', 'tenho', 'tentar', 'ter', 'tinha', 'tmb', 'to', 'tou', 'todo', 'todos', 'tu',
      'u', 'último', 'ultimo', 'um', 'uma', 'uns', 'usa', 'usar',
-     'v', 'ver', 'veja', 'verdade', 'verdadeiro', 'vc', 'voce', 'você', 'vs'           
+     'v', 'ver', 'veja', 'verdade', 'verdadeiro', 'vc', 'voce', 'você', 'vs'          
     ]),
     :negation_word => Set.new([
-     'n', 'nao', 'não', 'naum', 'nem', 'not'
+     'n', 'ñ', 'nao', 'não', 'naum', 'nem', 'not',
+      'sem'
     ])
   }
 }

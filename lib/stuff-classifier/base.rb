@@ -208,7 +208,7 @@ class StuffClassifier::Base
 
     return default unless best
 
-    threshold = @thresholds[best] || 1.5
+    threshold = @thresholds[best] || 1.3
 
     scores.each do |score|
       cat, prob = score

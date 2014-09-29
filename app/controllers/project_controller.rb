@@ -104,14 +104,14 @@ respond_to :html
 				config.access_token_secret = "fizJverUWl7d4tfYQj41GS03KQsCY4T68KZCNGWXmsCDA"
 			end
 
-			client.search(session[:product]+' -rt', :lang => "pt", :result_type => "recent", :exclude => "links").take(100).collect do |tweet|
+			client.search(session[:product]+' -rt', :lang => "pt", :result_type => "recent", :exclude => "links").take(50).collect do |tweet|
 				
 				txt = filter_tweet("#{tweet.text}", session[:product])
 
 				if !list.include?(txt)
 
 					sentiment = @sentClassifier.classify(txt)
-					tag_words += @tokenizer.each_word_tag_cloud(txt)
+					tag_words += @tokenizer.each_word_tag_cloud("#{tweet.text}")
 					d = DateTime.parse("#{tweet.created_at}")
 
 					list << "#{tweet.user.screen_name}"

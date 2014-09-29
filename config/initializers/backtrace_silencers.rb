@@ -15,8 +15,8 @@ store = StuffClassifier::FileStorage.new("lib/categories_store.db")
 StuffClassifier::Base.storage = store
 
 StuffClassifier::Bayes.open("Positive vs Negative") do |cls|
-   	#cls.train_positive()
-    #cls.train_negative()
+   	cls.train_positive()
+    cls.train_negative()
 end
 
 StuffClassifier::Base.storage = StuffClassifier::FileStorage.new("lib/categories_store.db")

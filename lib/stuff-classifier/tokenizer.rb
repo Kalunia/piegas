@@ -69,9 +69,10 @@ class StuffClassifier::Tokenizer
           end
 
           if neg
-            w = 'NO'+w
-            #puts w
+            w = 'NOT'+w
           end      
+
+          #puts w
 
           neg = false
 
@@ -79,6 +80,8 @@ class StuffClassifier::Tokenizer
         end
       end
     end
+
+    #puts words
 
     return words
   end

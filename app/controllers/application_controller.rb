@@ -37,14 +37,19 @@ before_action :configure_permitted_parameters, if: :devise_controller?
 
 	#Filtra o tweet com palavras inutilizadas 
 	def filter_tweet(text, query)
-		
+
 		trash_set = Set.new([
 	     '=)', '=P', '=p', '=*', '=D', '=]', '=[', '=(', ':)', ':(', ':]', ':[', ':P', ':p', ':*', 'T.T', '^^',
 	     'caramba',
 	     'eita',
-	     'ish', 
+	     'ish',
+	     'ne', 'né', 'neh',
 	     'vish',
-	     'lol', 'LOL', 'Lol'
+	     'lol', 'LOL', 'Lol',
+	     'menino', 'menina', 'homem', 'mulher',
+	     'amanha', 'amanhã', 'ontem',
+	     'manhã', 'tarde', 'noite',
+	     'um', 'dois', 'tres', 'três', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove', 'dez'
 	    ])
 		
 	    #Remove palavras inutilizaveis
@@ -53,16 +58,10 @@ before_action :configure_permitted_parameters, if: :devise_controller?
 	    end
 
 	    # Remove o query
-	    text.gsub! query, ''
+	    text.gsub!(/#{query}/i, '')
 
 	    # Remove numeros
 	    text = text.gsub /(W|\d)/, ''
-
-	    #Remove Links HTTPS
-	    # text = text.gsub /https?:\/\/[\S]+/, ''
-
-	    # #Remove Links HTTP
-	    # text = text.gsub /http?:\/\/[\S]+/, ''
 
 	    #Remove risadas "kkkkkkkkk"
 	    text = text.gsub /k.k*/, ''
@@ -83,7 +82,7 @@ before_action :configure_permitted_parameters, if: :devise_controller?
 	    #Remove caracteres repetidos
 	    text = text.squeeze
 
-	    #puts text
+	    puts text
 
 	    return text
   	end
