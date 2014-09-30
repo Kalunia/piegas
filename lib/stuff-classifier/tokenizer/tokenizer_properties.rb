@@ -17,7 +17,7 @@ StuffClassifier::Tokenizer::TOKENIZER_PROPERTIES = {
      'j', 'ja', 'já', 'jah',
      'k',
      'l', 'lhe',
-     'm', 'mai', 'mas', 'mais', 'maioria', 'me', 'mesmo', 'meu', 'minha', 'muito', 
+     'm', 'mai', 'mas', 'mais', 'maioria', 'me', 'mesmo', 'meu', 'minha', 'mt', 'mto', 'muito', 
      'na', 'nas', 'no', 'nois', 'nós', 'nos', 'noso', 'nosso', 'num', 'numa', 
      'o', 'os', 'ou', 
      'p', 'pa', 'para', 'parte', 'pela', 'pelas', 'pelo', 'pelos', 'pode', 'pois', 'por', 'porque', 'povo', 'pq',

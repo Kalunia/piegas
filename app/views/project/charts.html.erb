@@ -251,63 +251,129 @@ $(document).ready(function() {
 			
 			// Build the chart
       // chart = new Hightcharts.Chart({
-       $('#container').highcharts({
-          chart: {
-              plotBackgroundColor: null,
-              plotBorderWidth: null,
-              plotShadow: false,
-              backgroundColor: null
-          },
-          title: {
-              text: 'Gráfico de seções - avaliações positivas, negativas e neutras',
-              color: 'black'
-          },
-          tooltip: {
-      	    pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-          },
-          plotOptions: {
-              pie: {
-                  allowPointSelect: true,
-                  cursor: 'pointer',
-                  dataLabels: {
-                      enabled: true,
-                      color: 'black',
-                      connectorColor: '#000000',
-                      formatter: function() {
-                          return '<b>'+ this.point.name +'</b>: '+ this.percentage +' %';
+
+      <% if user_signed_in? and current_user.anti_spam == 1 %>
+          $('#container').highcharts({
+              chart: {
+                  plotBackgroundColor: null,
+                  plotBorderWidth: null,
+                  plotShadow: false,
+                  backgroundColor: null
+              },
+              title: {
+                  text: 'Gráfico de seções - avaliações positivas, negativas e neutras',
+                  color: 'black'
+              },
+              tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+              },
+              plotOptions: {
+                  pie: {
+                      allowPointSelect: true,
+                      cursor: 'pointer',
+                      dataLabels: {
+                          enabled: true,
+                          color: 'black',
+                          connectorColor: '#000000',
+                          formatter: function() {
+                              return '<b>'+ this.point.name +'</b>: '+ this.percentage +' %';
+                          }
                       }
                   }
-              }
-          },
-          series: [{
-              type: 'pie',
-              name: 'Browser share',
-              data: [
-                  {
-                      name: 'Positivos',
-                      y: parseInt('<%= session[:positives] %>'),
-                      sliced: true,
-                      selected: true,
-                      color: 'green'
-                  },
-                  {
-                      name: 'Negativos',
-                      y: parseInt('<%= session[:negatives] %>'),
-                      sliced: false,
-                      selected: false,
-                      color: 'red'
-                  },
-                  {
-                      name: 'Neutros',
-                      y: parseInt('<%= session[:neutros] %>'),
-                      sliced: false,
-                      selected: false,
-                      color: 'gray'
-                  },
-              ]
-          }]
-      });
-
+              },
+              series: [{
+                  type: 'pie',
+                  name: 'Browser share',
+                  data: [
+                      {
+                          name: 'Positivos',
+                          y: parseInt('<%= session[:positives] %>'),
+                          sliced: true,
+                          selected: true,
+                          color: 'green'
+                      },
+                      {
+                          name: 'Negativos',
+                          y: parseInt('<%= session[:negatives] %>'),
+                          sliced: false,
+                          selected: false,
+                          color: 'red'
+                      },
+                      {
+                          name: 'Neutros',
+                          y: parseInt('<%= session[:neutros] %>'),
+                          sliced: false,
+                          selected: false,
+                          color: 'gray'
+                      },
+                      {
+                          name: 'Spams',
+                          y: parseInt(0),
+                          sliced: false,
+                          selected: false,
+                          color: 'brown'
+                      }
+                  ]
+              }]
+          });
+      <% else %>
+          $('#container').highcharts({
+              chart: {
+                  plotBackgroundColor: null,
+                  plotBorderWidth: null,
+                  plotShadow: false,
+                  backgroundColor: null
+              },
+              title: {
+                  text: 'Gráfico de seções - avaliações positivas, negativas e neutras',
+                  color: 'black'
+              },
+              tooltip: {
+                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+              },
+              plotOptions: {
+                  pie: {
+                      allowPointSelect: true,
+                      cursor: 'pointer',
+                      dataLabels: {
+                          enabled: true,
+                          color: 'black',
+                          connectorColor: '#000000',
+                          formatter: function() {
+                              return '<b>'+ this.point.name +'</b>: '+ this.percentage +' %';
+                          }
+                      }
+                  }
+              },
+              series: [{
+                  type: 'pie',
+                  name: 'Browser share',
+                  data: [
+                      {
+                          name: 'Positivos',
+                          y: parseInt('<%= session[:positives] %>'),
+                          sliced: true,
+                          selected: true,
+                          color: 'green'
+                      },
+                      {
+                          name: 'Negativos',
+                          y: parseInt('<%= session[:negatives] %>'),
+                          sliced: false,
+                          selected: false,
+                          color: 'red'
+                      },
+                      {
+                          name: 'Neutros',
+                          y: parseInt(0),
+                          sliced: false,
+                          selected: false,
+                          color: 'gray'
+                      }
+                  ]
+              }]
+          });
+      <% end %>
       
       $('#container').createCanvas;
 

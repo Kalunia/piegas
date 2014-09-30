@@ -154,26 +154,23 @@ class StuffClassifier::Base
 
     #Remove palavras inutilizaveis
     @filter.each do |trash_word|
-      text.gsub! trash_word, ''
+      text.gsub! /\b#{trash_word}\b/i, ''
     end
 
     #Remove Links HTTPS
-    text = text.gsub /https?:\/\/[\S]+/, ''
+    text = text.gsub /https?:\/\/[\S]+/i, ''
 
     #Remove Links HTTP
-    text = text.gsub /http?:\/\/[\S]+/, ''
+    text = text.gsub /http?:\/\/[\S]+/i, ''
 
-    # Remove numeros
-    text = text.gsub /(W|\d)/, ''
-
-    #Remove risadas "kkkkkkkkk"
-    text = text.gsub /k.k*/, ''
+    # Remove tudo que é caracter inválido
+    text.encode('UTF-8', :invalid => :replace, :undef => :replace)
 
     #Remove risadas "sauhsauhsua", "hahaha", "hehehe" 
-    text = text.gsub(/\b[hsuae]+\b/, '')
+    text = text.gsub(/\b[hsuae]+\b/i, '')
 
     #Remove risadas "rsrsrs"
-    text = text.gsub(/\b[rs]+\b/, '')
+    text = text.gsub(/\b[rs]+\b/i, '')
 
     #Remove hashtags
     #text = text.gsub /(?:\s|^)(?:#(?!(?:\d+|\w+?_|_\w+?)(?:\s|$)))(\w+)(?=\s|$)/i, ''
@@ -181,6 +178,9 @@ class StuffClassifier::Base
 
     #Remove @usuario
     text = text.gsub /(?:\s|^)(?:@(?!(?:\d+|\w+?_|_\w+?)(?:\s|$)))(\w+)(?=\s|$)/i, ''
+
+    # Remove numeros
+    text = text.gsub /(W|\d)/, ''
    
     #Remove caracteres repetidos
     text = text.squeeze

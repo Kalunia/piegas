@@ -38,39 +38,24 @@ before_action :configure_permitted_parameters, if: :devise_controller?
 	#Filtra o tweet com palavras inutilizadas 
 	def filter_tweet(text, query)
 
-		trash_set = Set.new([
-	     '=)', '=P', '=p', '=*', '=D', '=]', '=[', '=(', ':)', ':(', ':]', ':[', ':P', ':p', ':*', 'T.T', '^^',
-	     'caramba',
-	     'eita',
-	     'ish',
-	     'ne', 'né', 'neh',
-	     'vish',
-	     'lol', 'LOL', 'Lol',
-	     'menino', 'menina', 'homem', 'mulher',
-	     'amanha', 'amanhã', 'ontem',
-	     'manhã', 'tarde', 'noite',
-	     'um', 'dois', 'tres', 'três', 'quatro', 'cinco', 'seis', 'sete', 'oito', 'nove', 'dez'
-	    ])
+		@filter = StuffClassifier::Filter[:trash_word]
 		
 	    #Remove palavras inutilizaveis
-	    trash_set.each do |trash_word|
-	      text.gsub! trash_word, ''
+	    @filter.each do |trash_word|
+	      text.gsub! /\b#{trash_word}\b/i, ''
 	    end
+
+	    # Remove tudo que é caracter inválido (ex: emoticons)
+	    text.encode('UTF-8', :invalid => :replace, :undef => :replace)
 
 	    # Remove o query
 	    text.gsub!(/#{query}/i, '')
 
-	    # Remove numeros
-	    text = text.gsub /(W|\d)/, ''
-
-	    #Remove risadas "kkkkkkkkk"
-	    text = text.gsub /k.k*/, ''
-
 	    #Remove risadas "sauhsauhsua", "hahaha", "hehehe" 
-	    text = text.gsub(/\b[hsuae]+\b/, '')
+	    text = text.gsub(/\b[hsuae]+\b/i, '')
 
 	    #Remove risadas "rsrsrs"
-	    text = text.gsub(/\b[rs]+\b/, '')
+	    text = text.gsub(/\b[rs]+\b/i, '')
 
 	    #Remove #hashtags
 	    #text = text.gsub /(?:\s|^)(?:#(?!(?:\d+|\w+?_|_\w+?)(?:\s|$)))(\w+)(?=\s|$)/i, ''
@@ -79,12 +64,20 @@ before_action :configure_permitted_parameters, if: :devise_controller?
 	    #Remove @usuario
 	    text = text.gsub /(?:\s|^)(?:@(?!(?:\d+|\w+?_|_\w+?)(?:\s|$)))(\w+)(?=\s|$)/i, ''
 	   
+	    # Remove numeros
+	    text = text.gsub /(W|\d)/, ''
+	   
 	    #Remove caracteres repetidos
 	    text = text.squeeze
 
-	    puts text
+	   	# Remove saudações
+	    text = text.gsub /bom dia/i, ''
+	    text = text.gsub /boa tarde/i, ''
+	    text = text.gsub /boa noite/i, ''
 
-	    return text
+	    puts text || ""
+
+	    return text unless text == nil
   	end
 
 	private

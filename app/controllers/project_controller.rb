@@ -83,6 +83,7 @@ respond_to :html
 	# Resgata os posts do Twitter em relacao ao produto no momento
 	def get_posts
 
+		num_tweets = 50
 		txt = ""
 		sentiment = ""
 		session[:positives] = 0
@@ -93,6 +94,7 @@ respond_to :html
 		@sentClassifier = StuffClassifier::Bayes.open("Positive vs Negative")
 
 		list = Array.new
+		list_text = Array.new
 		tag_words = ""
 
 		begin
@@ -104,11 +106,11 @@ respond_to :html
 				config.access_token_secret = "fizJverUWl7d4tfYQj41GS03KQsCY4T68KZCNGWXmsCDA"
 			end
 
-			client.search(session[:product]+' -rt', :lang => "pt", :result_type => "recent", :exclude => "links").take(50).collect do |tweet|
+			client.search(session[:product]+' -rt', :lang => "pt", :result_type => "recent", :exclude => "links").take(num_tweets).collect do |tweet|
 				
 				txt = filter_tweet("#{tweet.text}", session[:product])
 
-				if !list.include?(txt)
+				if !list_text.include?(txt) and !"#{tweet.user.screen_name}".match(/#{session[:product]}/i)
 
 					sentiment = @sentClassifier.classify(txt)
 					tag_words += @tokenizer.each_word_tag_cloud("#{tweet.text}")
@@ -119,6 +121,8 @@ respond_to :html
 					list << d.strftime('%H:%M %p - %d/%m/%y')
 					list << "#{tweet.user.profile_image_url}"
 					list << sentiment
+
+					list_text << txt
 
 					#puts sentiment
 					if sentiment.include?('positive')

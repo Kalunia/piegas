@@ -28,7 +28,6 @@ class StuffClassifier::Bayes < StuffClassifier::Base
   def word_weighted_average(word, cat, opts={})
     func = opts[:func]
 
-    puts word
     # Calcula a probabilidade atual
     basic_prob = func ? func.call(word, cat) : word_prob(word, cat)
     
