@@ -116,7 +116,7 @@ $(document).ready(function(){
               <i class="fa fa-bug fa-5x"></i>
             </div>
               <div class="col-xs-6 text-right">
-                <p class="announcement-heading"><%= get_spams_detected %></p>
+                <p class="announcement-heading"><%= session[:spams] %></p>
                 <p class="announcement-text">Spam(s) Detectado(s)!</p>
               </div>
             </div>
@@ -184,7 +184,7 @@ $(document).ready(function(){
               <i class="fa fa-bug fa-2x"> Spam</i>
             <% end %>
           </div>
-        
+          
           <% if user_signed_in? and current_user.anti_spam == 1 %>
 
               <% if @favoriteds.include? filter(@tweets[i+1])  %>
@@ -207,8 +207,9 @@ $(document).ready(function(){
                     $.ajax({
                       type: 'GET',
                       url: '/project/add_spam',
-                      data: { post: '<%= filter(@tweets[i+1]) %>' },
+                      data: { post: '<%= i+1 %>' },
                       success: function(output){
+                        alert('Reportado com sucesso!');
                         console.log(output);
                       }
                     });
@@ -218,8 +219,9 @@ $(document).ready(function(){
                     $.ajax({
                       type: 'GET',
                       url: '/project/add_favorited',
-                      data: { post: '<%= filter(@tweets[i+1]) %>' },
+                      data: { post: '<%= i+1 %>' },
                       success: function(output){
+                        alert('Adicionado com sucesso!');
                         console.log(output);
                       }
                     });

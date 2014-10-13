@@ -1,14 +1,38 @@
+<script type="text/javascript">
+    $(document).ready(function(){
+      $('#delete_spams_id').click(function() {
+        $.ajax({
+          type: 'GET',
+          url: '/project/delete_spams',
+          success: function(output){
+            window.location.reload();
+            alert('Spams deletados com sucesso!');
+            console.log(output);
+          }
+        });
+      });
+    });
+</script>
+
+
 <div class="row">
   <div class="col-lg-12">
-    <h1>Lista de spams registrado no sistema</h1>
+    <h1>Lista de spams registrado pelo usuário <small> <%= current_user.email %></small></h1>
   </div>
 </div>
+
+<% if count_rows_spams.to_i < 5 %>
+  <div class="col-lg-12">
+    <h3> Para habilitar o recurso de anti-spam, relate mais <%= 5-count_rows_spams.to_i %> spams!</h3>
+    <br />
+  </div>
+<% end %>
 
 <div class="row">
 
   <div id="content" style="text-align:left;margin-left: 5%;">
 
-  		 <% sql = "SELECT * FROM spams;" %>
+  	 <% sql = "SELECT * FROM spams WHERE user = '#{current_user.email}';" %>
 		 <% posts_array = ActiveRecord::Base.connection.select_all(sql) %>
 
 		 <% posts_array.each do |row| %>
@@ -17,6 +41,10 @@
    		 	<%= row["post"] %>
    		 	<br /><br />
 		 <%	end %>
+
+    <button type="button" id="delete_spams_id" class="btn btn-primary pull-left">
+      Deletar spams salvos deste usuário
+    </button>
 
   </div>
 

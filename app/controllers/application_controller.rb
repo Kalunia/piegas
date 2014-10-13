@@ -6,6 +6,7 @@ protect_from_forgery with: :exception
 
 require 'rubygems'
 require 'set'
+require "stuff-classifier/tokenizer/tokenizer_properties"
 
 attr_accessor :posts
 attr_accessor :product
@@ -18,17 +19,17 @@ before_action :configure_permitted_parameters, if: :devise_controller?
 		devise_parameter_sanitizer.for(:account_update) << :anti_spam
 	end
 	
-
 	def txt (str)
 		str.sub(" ", "_")
 	end
 
 	def filter (str)
-		str.sub("%", " ")
-		str.sub("|", " ")
-		str.sub("@", " ")
-		str.sub("'", " ")
-		str.sub("\n", " ")
+		str = str.gsub("%", " ")
+		str = str.gsub("|", " ")
+		str = str.gsub("'", " ")
+		str = str.gsub(/^[ \t]+|[ \t]+$/, "")
+		str = str.gsub("\r", " ")
+		str = str.gsub("\n", " ")
 	end
 
 	def wiki (str)
@@ -66,7 +67,7 @@ before_action :configure_permitted_parameters, if: :devise_controller?
 	   
 	    # Remove numeros
 	    text = text.gsub /(W|\d)/, ''
-	   
+
 	    #Remove caracteres repetidos
 	    text = text.squeeze
 
@@ -75,9 +76,30 @@ before_action :configure_permitted_parameters, if: :devise_controller?
 	    text = text.gsub /boa tarde/i, ''
 	    text = text.gsub /boa noite/i, ''
 
-	    puts text || ""
+	    #puts text || ""
 
-	    return text unless text == nil
+	    return text || ""
+  	end
+
+  	#Filtra o tweet com palavras inutilizadas 
+	def filter_text_for_tag_word(text)
+
+		@filter = StuffClassifier::Tokenizer::TOKENIZER_PROPERTIES['pt']
+
+		#Remove palavras inutilizaveis
+	    @filter[:stop_word].each do |stop_word|
+	      text.gsub! /\b#{stop_word}\b/i, ''
+	    end
+
+	    #Remove palavras inutilizaveis
+	    @filter[:negation_word].each do |negation_word|
+	      text.gsub! /\b#{negation_word}\b/i, ''
+	    end
+
+		#Remove #hashtags
+		text = text.gsub /(?:\s|^)(?:#(?!(?:\d+|\w+?_|_\w+?)(?:\s|$)))(\w+)(?=\s|$)/i, ''
+
+	    return text
   	end
 
 	private

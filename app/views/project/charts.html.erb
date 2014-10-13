@@ -10,6 +10,8 @@
 // O código de construcao de Tweets foi inspirado através de 
 // https://github.com/lucaong/jQCloud/blob/master/src/jqcloud/jqcloud.js.erb
 
+<% @sentClassifier = StuffClassifier::Bayes.open("Positive vs Negative") %>
+
 (function( $ ) {
   "use strict";
   $.fn.jQCloud = function(word_array, options) {
@@ -75,14 +77,14 @@
             quarter_turns = 0.0,
 
             weight = 5,
-            custom_class = "",
             inner_html = "",
+            color = 'yellow',
             word_span;
 
         word.html = $.extend(word.html, {id: word_id});
 
         if (word.html && word.html["class"]) {
-          custom_class = word.html["class"];
+          color = word.html["class"];
           delete word.html["class"];
         }
 
@@ -90,21 +92,21 @@
           weight = Math.round((word.weight - word_array[word_array.length - 1].weight) /
                               (word_array[0].weight - word_array[word_array.length - 1].weight) * 9.0) + 1;
         }
-        word_span = $('<span>').attr(word.html).addClass('w' + weight + " " + custom_class);
+        word_span = $('<span>').attr(word.html).addClass('w' + weight + " " + color);
 
-        if (word.link) {
-          if (typeof word.link === "string") {
-            word.link = {href: word.link};
-          }
+        // if (word.link) {
+        //   if (typeof word.link === "string") {
+        //     word.link = {href: word.link};
+        //   }
 
-          if ( options.encodeURI ) {
-            word.link = $.extend(word.link, { href: encodeURI(word.link.href).replace(/'/g, "%27") });
-          }
+        //   if ( options.encodeURI ) {
+        //     word.link = $.extend(word.link, { href: encodeURI(word.link.href).replace(/'/g, "%27") });
+        //   }
 
-          inner_html = $('<a>').attr(word.link).text(word.text);
-        } else {
+        //   inner_html = $('<a>').attr(word.link).text(word.text);
+        // } else {
           inner_html = word.text;
-        }
+        // }
         word_span.append(inner_html);
 
         if (!!word.handlers) {
@@ -126,6 +128,7 @@
         word_style.position = "absolute";
         word_style.left = left + "px";
         word_style.top = top + "px";
+        word_style.color = word.color;
 
         while(hitTest(word_span[0], already_placed_words)) {
           if (options.shape === "rectangular") {
@@ -172,31 +175,31 @@
         }
       };
 
-      var drawOneWordDelayed = function(index) {
-        index = index || 0;
-        if (!$this.is(':visible')) { 
-          setTimeout(function(){drawOneWordDelayed(index);},10);
-          return;
-        }
-        if (index < word_array.length) {
-          drawOneWord(index, word_array[index]);
-          setTimeout(function(){drawOneWordDelayed(index + 1);}, 10);
-        } else {
-          if ($.isFunction(options.afterCloudRender)) {
-            options.afterCloudRender.call($this);
-          }
-        }
-      };
+      // var drawOneWordDelayed = function(index) {
+      //   index = index || 0;
+      //   if (!$this.is(':visible')) { 
+      //     setTimeout(function(){drawOneWordDelayed(index);},10);
+      //     return;
+      //   }
+      //   if (index < word_array.length) {
+      //     drawOneWord(index, word_array[index]);
+      //     setTimeout(function(){drawOneWordDelayed(index + 1);}, 10);
+      //   } else {
+      //     if ($.isFunction(options.afterCloudRender)) {
+      //       options.afterCloudRender.call($this);
+      //     }
+      //   }
+      // };
 
-      if (options.delayedMode){
-        drawOneWordDelayed();
-      }
-      else {
+      // if (options.delayedMode){
+      //   drawOneWordDelayed();
+      // }
+      // else {
         $.each(word_array, drawOneWord);
         if ($.isFunction(options.afterCloudRender)) {
           options.afterCloudRender.call($this);
         }
-      }
+    //   }
     };
 
     setTimeout(function(){drawWordCloud();}, 10);
@@ -205,26 +208,65 @@
 })(jQuery);
 
 var word_array = [
-          {text: '<%= session[:tag_cloud_words][0] ? session[:tag_cloud_words][0][0] : '' %>', weight: 20},
-          {text: '<%= session[:tag_cloud_words][1] ? session[:tag_cloud_words][1][0] : ''%>', weight: 19},
-          {text: '<%= session[:tag_cloud_words][2] ? session[:tag_cloud_words][2][0] : ''%>', weight: 18},
-          {text: '<%= session[:tag_cloud_words][3] ? session[:tag_cloud_words][3][0] : ''%>', weight: 17},
-          {text: '<%= session[:tag_cloud_words][4] ? session[:tag_cloud_words][4][0] : ''%>', weight: 16},
-          {text: '<%= session[:tag_cloud_words][5] ? session[:tag_cloud_words][5][0] : ''%>', weight: 15},
-          {text: '<%= session[:tag_cloud_words][6] ? session[:tag_cloud_words][6][0] : ''%>', weight: 14},
-          {text: '<%= session[:tag_cloud_words][7] ? session[:tag_cloud_words][7][0] : ''%>', weight: 13},
-          {text: '<%= session[:tag_cloud_words][8] ? session[:tag_cloud_words][8][0] : ''%>', weight: 12},
-          {text: '<%= session[:tag_cloud_words][9] ? session[:tag_cloud_words][9][0] : ''%>', weight: 11},
-          {text: '<%= session[:tag_cloud_words][10] ? session[:tag_cloud_words][10][0] : ''%>', weight: 10},
-          {text: '<%= session[:tag_cloud_words][11] ? session[:tag_cloud_words][11][0] : ''%>', weight: 9},
-          {text: '<%= session[:tag_cloud_words][12] ? session[:tag_cloud_words][12][0] : ''%>', weight: 8},
-          {text: '<%= session[:tag_cloud_words][13] ? session[:tag_cloud_words][13][0] : ''%>', weight: 7},
-          {text: '<%= session[:tag_cloud_words][14] ? session[:tag_cloud_words][14][0] : ''%>', weight: 6},
-          {text: '<%= session[:tag_cloud_words][15] ? session[:tag_cloud_words][15][0] : ''%>', weight: 5},
-          {text: '<%= session[:tag_cloud_words][16] ? session[:tag_cloud_words][16][0] : ''%>', weight: 4},
-          {text: '<%= session[:tag_cloud_words][17] ? session[:tag_cloud_words][17][0] : ''%>', weight: 3},
-          {text: '<%= session[:tag_cloud_words][18] ? session[:tag_cloud_words][18][0] : ''%>', weight: 2},
-          {text: '<%= session[:tag_cloud_words][19] ? session[:tag_cloud_words][19][0] : ''%>', weight: 1}
+          {text: '<%= session[:tag_cloud_words][0] ? session[:tag_cloud_words][0][0] : '' %>', weight: 20,
+              color: 'orange'},
+
+          {text: '<%= session[:tag_cloud_words][1] ? session[:tag_cloud_words][1][0] : ''%>', weight: 19, 
+              color: '<%= @sentClassifier.tag_word_prob(session[:tag_cloud_words][1][0]) %>'},
+
+          {text: '<%= session[:tag_cloud_words][2] ? session[:tag_cloud_words][2][0] : ''%>', weight: 18,
+              color: '<%= @sentClassifier.tag_word_prob(session[:tag_cloud_words][2][0]) %>'},
+
+          {text: '<%= session[:tag_cloud_words][3] ? session[:tag_cloud_words][3][0] : ''%>', weight: 17,
+              color: '<%= @sentClassifier.tag_word_prob(session[:tag_cloud_words][3][0]) %>'},
+
+          {text: '<%= session[:tag_cloud_words][4] ? session[:tag_cloud_words][4][0] : ''%>', weight: 16,
+              color: '<%= @sentClassifier.tag_word_prob(session[:tag_cloud_words][4][0]) %>'},
+
+          {text: '<%= session[:tag_cloud_words][5] ? session[:tag_cloud_words][5][0] : ''%>', weight: 15,
+              color: '<%= @sentClassifier.tag_word_prob(session[:tag_cloud_words][5][0]) %>'},
+
+          {text: '<%= session[:tag_cloud_words][6] ? session[:tag_cloud_words][6][0] : ''%>', weight: 14,
+              color: '<%= @sentClassifier.tag_word_prob(session[:tag_cloud_words][6][0]) %>'},
+
+          {text: '<%= session[:tag_cloud_words][7] ? session[:tag_cloud_words][7][0] : ''%>', weight: 13,
+              color: '<%= @sentClassifier.tag_word_prob(session[:tag_cloud_words][7][0]) %>'},
+
+          {text: '<%= session[:tag_cloud_words][8] ? session[:tag_cloud_words][8][0] : ''%>', weight: 12,
+              color: '<%= @sentClassifier.tag_word_prob(session[:tag_cloud_words][8][0]) %>'},
+
+          {text: '<%= session[:tag_cloud_words][9] ? session[:tag_cloud_words][9][0] : ''%>', weight: 11,
+              color: '<%= @sentClassifier.tag_word_prob(session[:tag_cloud_words][9][0]) %>'},
+
+          {text: '<%= session[:tag_cloud_words][10] ? session[:tag_cloud_words][10][0] : ''%>', weight: 10,
+              color: '<%= @sentClassifier.tag_word_prob(session[:tag_cloud_words][10][0]) %>'},
+
+          {text: '<%= session[:tag_cloud_words][11] ? session[:tag_cloud_words][11][0] : ''%>', weight: 9,
+              color: '<%= @sentClassifier.tag_word_prob(session[:tag_cloud_words][11][0]) %>'},
+
+          {text: '<%= session[:tag_cloud_words][12] ? session[:tag_cloud_words][12][0] : ''%>', weight: 8,
+              color: '<%= @sentClassifier.tag_word_prob(session[:tag_cloud_words][12][0]) %>'},
+
+          {text: '<%= session[:tag_cloud_words][13] ? session[:tag_cloud_words][13][0] : ''%>', weight: 7,
+              color: '<%= @sentClassifier.tag_word_prob(session[:tag_cloud_words][13][0]) %>'},
+
+          {text: '<%= session[:tag_cloud_words][14] ? session[:tag_cloud_words][14][0] : ''%>', weight: 6,
+              color: '<%= @sentClassifier.tag_word_prob(session[:tag_cloud_words][14][0]) %>'},
+
+          {text: '<%= session[:tag_cloud_words][15] ? session[:tag_cloud_words][15][0] : ''%>', weight: 5,
+              color: '<%= @sentClassifier.tag_word_prob(session[:tag_cloud_words][15][0]) %>'},
+
+          {text: '<%= session[:tag_cloud_words][16] ? session[:tag_cloud_words][16][0] : ''%>', weight: 4,
+              color: '<%= @sentClassifier.tag_word_prob(session[:tag_cloud_words][16][0]) %>'},
+
+          {text: '<%= session[:tag_cloud_words][17] ? session[:tag_cloud_words][17][0] : ''%>', weight: 3,
+              color: '<%= @sentClassifier.tag_word_prob(session[:tag_cloud_words][17][0]) %>'},
+
+          {text: '<%= session[:tag_cloud_words][18] ? session[:tag_cloud_words][18][0] : ''%>', weight: 2,
+              color: '<%= @sentClassifier.tag_word_prob(session[:tag_cloud_words][18][0]) %>'},
+
+          {text: '<%= session[:tag_cloud_words][19] ? session[:tag_cloud_words][19][0] : ''%>', weight: 1,
+              color: '<%= @sentClassifier.tag_word_prob(session[:tag_cloud_words][19][0]) %>'}
       ];
 
 $(function() {

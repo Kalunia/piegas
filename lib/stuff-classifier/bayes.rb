@@ -82,4 +82,16 @@ class StuffClassifier::Bayes < StuffClassifier::Base
     
   end
 
+
+  def tag_word_prob(word)
+
+    if word_weighted_average(word, 'positive').to_i > word_weighted_average(word, 'negative').to_i
+      return 'green'
+    elsif word_weighted_average(word, 'negative').to_i > word_weighted_average(word, 'positive').to_i
+      return 'red'
+    else
+      return 'yellow'
+    end
+  end
+
 end

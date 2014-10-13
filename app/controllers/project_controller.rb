@@ -20,6 +20,8 @@ helper_method :add_spam
 helper_method :get_spams_detected
 helper_method :get_spams_tweets
 helper_method :get_pdf
+helper_method :count_rows_spams
+helper_method :count_rows_favoriteds
 
 respond_to :html
 
@@ -61,10 +63,11 @@ respond_to :html
 	# Obtem a URL do produto pesquisado
 	def product_image
 
+		product = URI.encode(session[:product].split.map(&:capitalize).join('_'))
 	  	suckr = ImageSuckr::GoogleSuckr.new
 
 		  	begin
-		  		suckr.get_image_url({"q" => session[:product], as_filetype: "png", safe: "active"}) do
+		  		suckr.get_image_url({"q" => product, as_filetype: "png", safe: "active"}) do
 		  		end
 		  	rescue OpenURI::HTTPError => e
 				if e.message == '404 Not Found'
@@ -89,6 +92,7 @@ respond_to :html
 		session[:positives] = 0
 		session[:negatives] = 0
 		session[:neutros] = 0
+		session[:spams] = 0
 
 		@tokenizer = StuffClassifier::Tokenizer.new
 		@sentClassifier = StuffClassifier::Bayes.open("Positive vs Negative")
@@ -108,29 +112,37 @@ respond_to :html
 
 			client.search(session[:product]+' -rt', :lang => "pt", :result_type => "recent", :exclude => "links").take(num_tweets).collect do |tweet|
 				
+				#puts "#{tweet.text}"
+
 				txt = filter_tweet("#{tweet.text}", session[:product])
 
 				if !list_text.include?(txt) and !"#{tweet.user.screen_name}".match(/#{session[:product]}/i)
 
 					sentiment = @sentClassifier.classify(txt)
-					tag_words += @tokenizer.each_word_tag_cloud("#{tweet.text}")
+					tag_words += @tokenizer.each_word_tag_cloud(filter_text_for_tag_word("#{tweet.text}"))
 					d = DateTime.parse("#{tweet.created_at}")
 
 					list << "#{tweet.user.screen_name}"
-					list << "#{tweet.text}"
+					list << filter("#{tweet.text}")
 					list << d.strftime('%H:%M %p - %d/%m/%y')
 					list << "#{tweet.user.profile_image_url}"
-					list << sentiment
 
 					list_text << txt
 
 					#puts sentiment
-					if sentiment.include?('positive')
-						session[:positives] += 1
-					elsif  sentiment.include?('negative')
-						session[:negatives] += 1
-					elsif sentiment.include?('neutro')
-						session[:neutros] += 1
+					if user_signed_in? and current_user.anti_spam == 1 and ClassifierClass.classify_tweet(filter("#{tweet.text}")) == 'Spam' and count_rows_spams.to_i >= 5 and count_rows_favoriteds.to_i >= 5
+						session[:spams] += 1
+						list << 'spam'
+					else
+						list << sentiment
+
+						if sentiment.include?('positive')
+							session[:positives] += 1
+						elsif  sentiment.include?('negative')
+							session[:negatives] += 1
+						elsif sentiment.include?('neutro')
+							session[:neutros] += 1
+						end
 					end
 				end
 			end
@@ -139,6 +151,10 @@ respond_to :html
 			tag_words_list = tag_words.split.inject(Hash.new(0)) { |h,v| h[v] += 1; h }
 			tag_words_list_sorted = tag_words_list.sort_by{|k,v| v}.reverse
 			session[:tag_cloud_words] = tag_words_list_sorted
+
+			# session[:tag_cloud_words][0].each do |tag_word|
+			# 	puts @sentClassifier.word_classification_detail(tag_word.to_s)
+			# end
 
 			session[:posts] = list
 
@@ -348,45 +364,54 @@ respond_to :html
 	# Classifica o post em "Spam" ou "Nao Spam"
 	def classify_spam
 
-		@spams_detected = 0
+		#@spams_detected = 0
 		@tweets = Array.new
 		@tweets_spams = Array.new
 
 		for i in (0..session[:posts].length-1).step(5)
 
-			if session[:spam_on] == 1
-	           if ClassifierClass.classify_tweet(session[:posts][i+1]) != 'Spam'
+			# if current_user.anti_spam == 1
+	  #          if ClassifierClass.classify_tweet(session[:posts][i+1]) != 'Spam'
 
+	  			if !session[:posts][i+4].include?('spam')
 	                @tweets << session[:posts][i]
 					@tweets << session[:posts][i+1]
 					@tweets << session[:posts][i+2]
 					@tweets << session[:posts][i+3]
 					@tweets << session[:posts][i+4]
 
-	           else
-	              	@spams_detected += 1
+	            else
 	              	@tweets_spams << session[:posts][i]
 				    @tweets_spams << session[:posts][i+1]
 					@tweets_spams << session[:posts][i+2]
 					@tweets_spams << session[:posts][i+3]
 					@tweets_spams << session[:posts][i+4]
-	           end
-	        else
+				end
+
+					# if session[:posts][i+4].include?('positive')
+					# 	session[:positives] -= 1
+					# elsif  session[:posts][i+4].include?('negative')
+					# 	session[:negatives] -= 1
+					# elsif session[:posts][i+4].include?('neutro')
+					# 	session[:neutros] -= 1
+					# end
+	  #          end
+	  #       else
           
-          		@tweets << session[:posts][i]
-				@tweets << session[:posts][i+1]
-				@tweets << session[:posts][i+2]
-				@tweets << session[:posts][i+3]
-				@tweets << session[:posts][i+4]
-			end
+   #         		@tweets << session[:posts][i]
+			# 	@tweets << session[:posts][i+1]
+			# 	@tweets << session[:posts][i+2]
+			# 	@tweets << session[:posts][i+3]
+			# 	@tweets << session[:posts][i+4]
+			# end
         end
 
         @tweets
 	end
 
-	def get_spams_detected
-		@spams_detected
-	end
+	# def get_spams_detected
+	# 	@spams_detected
+	# end
 
 	def get_spams_tweets
 		@tweets_spams
@@ -396,23 +421,55 @@ respond_to :html
 	# Adiciona post à lista de Spams
 	def add_spam
 
-		#ClassifierClass.add_spam (filter(params[:post]))
+		index = params[:post].to_i
+		classify_spam
 
-		sql = "INSERT INTO spams (user, query, post) VALUES ('"+current_user.email+"','"+session[:product]+"','"+filter(params[:post])+"');"
+		sql = "INSERT INTO spams (user, query, post) VALUES ('"+current_user.email+"','"+session[:product]+"','"+@tweets[index]+"');"
 		records_array = ActiveRecord::Base.connection.execute(sql)
 
-		#render :json => {:success => true}
+		return render :json => {:success => true}
 	end
 
 	# Adiciona post à lista de Favoritos
 	def add_favorited
 
-		#ClassifierClass.add_not_spam (filter(params[:post]))
+		index = params[:post].to_i
+		classify_spam
 
-		sql = "INSERT INTO favoriteds (user, query, post) VALUES ('"+current_user.email+"','"+session[:product]+"','"+filter(params[:post])+"');"
+		sql = "INSERT INTO favoriteds (user, query, post) VALUES ('"+current_user.email+"','"+session[:product]+"','"+@tweets[index]+"');"
 		records_array = ActiveRecord::Base.connection.execute(sql)
 
-		#render :json => {:success => true}
+		return render :json => {:success => true}
+	end
+
+	def delete_spams
+
+		sql = "DELETE FROM spams WHERE user = '"+current_user.email+"';"
+		records_array = ActiveRecord::Base.connection.execute(sql)
+
+		return render :json => {:success => true}
+	end
+
+	def delete_favoriteds
+
+		sql = "DELETE FROM favoriteds WHERE user = '"+current_user.email+"';"
+		records_array = ActiveRecord::Base.connection.execute(sql)
+
+		return render :json => {:success => true}
+	end
+
+	def count_rows_spams
+
+		sql = "SELECT COUNT(*) FROM spams WHERE user = '"+current_user.email+"';"
+
+		return Spam.count_by_sql(sql)
+	end
+
+	def count_rows_favoriteds
+
+		sql = "SELECT COUNT(*) FROM favoriteds WHERE user = '"+current_user.email+"';"
+
+		return Favorited.count_by_sql(sql)
 	end
 
 end

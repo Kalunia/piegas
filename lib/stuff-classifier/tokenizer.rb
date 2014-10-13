@@ -97,7 +97,7 @@ class StuffClassifier::Tokenizer
     string.split("\n").each do |line|
 
       line.gsub(/\p{Word}+/).each do |w|
-          next if w == '' || ignore_words.member?(w.downcase)
+          next if w == '' || ignore_words.member?(w.downcase) || negation_words.member?(w.downcase)
 
         words += " " + (block_given? ? (yield w) : w).downcase
       end
