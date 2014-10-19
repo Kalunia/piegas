@@ -7,7 +7,6 @@
 # Rails.backtrace_cleaner.remove_silencers!
 
 require 'stuff-classifier'
-require 'classifierclass'
 
 #StuffClassifier::Base.storage = StuffClassifier::InMemoryStorage.new
 
@@ -20,12 +19,6 @@ StuffClassifier::Bayes.open("Positive vs Negative") do |cls|
 end
 
 StuffClassifier::Base.storage = StuffClassifier::FileStorage.new("lib/categories_store.db")
-
-ClassifierClass.initialize_classifier
-
-
-
-
 
 # StuffClassifier::Bayes.open("Teste") do |cls|
 #     cls.train('positivo', "Eu amo programar! Adoro computador!")

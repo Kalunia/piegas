@@ -20,7 +20,16 @@ module Piegas
     # config.i18n.load_path += Dir[Rails.root.join('my', 'locales', '*.{rb,yml}').to_s]
     # config.i18n.default_locale = :de
     #config.i18n.load_path += Dir[Rails.root.join('lib').to_s]
-    config.i18n.default_locale = :'pt-BR'
+    config.middleware.insert_before "ActionDispatch::Static", "Rack::Cors" do
+      allow do
+        origins '*'
+        resource '*',
+          :headers => :any,
+          :methods => [:get, :post, :put, :patch, :options],
+          :max_age => 15
+      end
+    end
+    config.i18n.default_locale = :'pt'
     config.autoload_paths += %W(#{config.root}/lib)
     config.to_prepare do
         Devise::SessionsController.layout "home"

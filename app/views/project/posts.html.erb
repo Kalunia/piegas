@@ -47,6 +47,7 @@ $(document).ready(function(){
   });
 });
 </script>
+<script type="text/javascript" src="/bootstrap-3.1.1-dist/js/bootbox.min.js"></script>
 
 <% @tweets = classify_spam %>
 <% @tweets_spams = get_spams_tweets %>
@@ -140,14 +141,6 @@ $(document).ready(function(){
   
   <div class="row">
 
-    <% @favoriteds = Array.new  %>
-    <% sql = "SELECT post FROM favoriteds;" %>
-    <% favoriteds_array = ActiveRecord::Base.connection.select_all(sql) %>
-
-    <% favoriteds_array.each do |row| %>
-        <% @favoriteds << row["post"] %>
-     <% end %>
-
     <% for i in (0..@tweets.length-1).step(5) %>
 
       <% if (@tweets[i+4]).include?('negative') %>
@@ -187,7 +180,7 @@ $(document).ready(function(){
           
           <% if user_signed_in? and current_user.anti_spam == 1 %>
 
-              <% if @favoriteds.include? filter(@tweets[i+1])  %>
+              <% if select_favoriteds.include? filter(@tweets[i+1])  %>
                 <button type="button" id="<%= "favorited"+i.to_s %>" class="btn btn-success pull-right disabled" aria-hidden="true">
                 Favoritado!
               <% else %>
@@ -209,8 +202,8 @@ $(document).ready(function(){
                       url: '/project/add_spam',
                       data: { post: '<%= i+1 %>' },
                       success: function(output){
-                        alert('Reportado com sucesso!');
-                        console.log(output);
+                        bootbox.alert('Reportado com sucesso!', function(){window.location.reload()});
+                        //console.log(output);
                       }
                     });
                   });
@@ -221,8 +214,8 @@ $(document).ready(function(){
                       url: '/project/add_favorited',
                       data: { post: '<%= i+1 %>' },
                       success: function(output){
-                        alert('Adicionado com sucesso!');
-                        console.log(output);
+                        bootbox.alert('Adicionado com sucesso!', function(){window.location.reload()});
+                        //console.log(output);
                       }
                     });
                   });

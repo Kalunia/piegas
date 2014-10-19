@@ -93,20 +93,7 @@
                               (word_array[0].weight - word_array[word_array.length - 1].weight) * 9.0) + 1;
         }
         word_span = $('<span>').attr(word.html).addClass('w' + weight + " " + color);
-
-        // if (word.link) {
-        //   if (typeof word.link === "string") {
-        //     word.link = {href: word.link};
-        //   }
-
-        //   if ( options.encodeURI ) {
-        //     word.link = $.extend(word.link, { href: encodeURI(word.link.href).replace(/'/g, "%27") });
-        //   }
-
-        //   inner_html = $('<a>').attr(word.link).text(word.text);
-        // } else {
-          inner_html = word.text;
-        // }
+        inner_html = word.text;
         word_span.append(inner_html);
 
         if (!!word.handlers) {
@@ -174,32 +161,10 @@
           word.afterWordRender.call(word_span);
         }
       };
-
-      // var drawOneWordDelayed = function(index) {
-      //   index = index || 0;
-      //   if (!$this.is(':visible')) { 
-      //     setTimeout(function(){drawOneWordDelayed(index);},10);
-      //     return;
-      //   }
-      //   if (index < word_array.length) {
-      //     drawOneWord(index, word_array[index]);
-      //     setTimeout(function(){drawOneWordDelayed(index + 1);}, 10);
-      //   } else {
-      //     if ($.isFunction(options.afterCloudRender)) {
-      //       options.afterCloudRender.call($this);
-      //     }
-      //   }
-      // };
-
-      // if (options.delayedMode){
-      //   drawOneWordDelayed();
-      // }
-      // else {
         $.each(word_array, drawOneWord);
         if ($.isFunction(options.afterCloudRender)) {
           options.afterCloudRender.call($this);
         }
-    //   }
     };
 
     setTimeout(function(){drawWordCloud();}, 10);
@@ -209,64 +174,64 @@
 
 var word_array = [
           {text: '<%= session[:tag_cloud_words][0] ? session[:tag_cloud_words][0][0] : '' %>', weight: 20,
-              color: 'orange'},
+              color: '<%= @sentClassifier.classify_tagword(session[:tag_cloud_words][0][0]) %>'},
 
           {text: '<%= session[:tag_cloud_words][1] ? session[:tag_cloud_words][1][0] : ''%>', weight: 19, 
-              color: '<%= @sentClassifier.tag_word_prob(session[:tag_cloud_words][1][0]) %>'},
+              color: '<%= @sentClassifier.classify_tagword(session[:tag_cloud_words][1][0]) %>'},
 
           {text: '<%= session[:tag_cloud_words][2] ? session[:tag_cloud_words][2][0] : ''%>', weight: 18,
-              color: '<%= @sentClassifier.tag_word_prob(session[:tag_cloud_words][2][0]) %>'},
+              color: '<%= @sentClassifier.classify_tagword(session[:tag_cloud_words][2][0]) %>'},
 
           {text: '<%= session[:tag_cloud_words][3] ? session[:tag_cloud_words][3][0] : ''%>', weight: 17,
-              color: '<%= @sentClassifier.tag_word_prob(session[:tag_cloud_words][3][0]) %>'},
+              color: '<%= @sentClassifier.classify_tagword(session[:tag_cloud_words][3][0]) %>'},
 
           {text: '<%= session[:tag_cloud_words][4] ? session[:tag_cloud_words][4][0] : ''%>', weight: 16,
-              color: '<%= @sentClassifier.tag_word_prob(session[:tag_cloud_words][4][0]) %>'},
+              color: '<%= @sentClassifier.classify_tagword(session[:tag_cloud_words][4][0]) %>'},
 
           {text: '<%= session[:tag_cloud_words][5] ? session[:tag_cloud_words][5][0] : ''%>', weight: 15,
-              color: '<%= @sentClassifier.tag_word_prob(session[:tag_cloud_words][5][0]) %>'},
+              color: '<%= @sentClassifier.classify_tagword(session[:tag_cloud_words][5][0]) %>'},
 
           {text: '<%= session[:tag_cloud_words][6] ? session[:tag_cloud_words][6][0] : ''%>', weight: 14,
-              color: '<%= @sentClassifier.tag_word_prob(session[:tag_cloud_words][6][0]) %>'},
+              color: '<%= @sentClassifier.classify_tagword(session[:tag_cloud_words][6][0]) %>'},
 
           {text: '<%= session[:tag_cloud_words][7] ? session[:tag_cloud_words][7][0] : ''%>', weight: 13,
-              color: '<%= @sentClassifier.tag_word_prob(session[:tag_cloud_words][7][0]) %>'},
+              color: '<%= @sentClassifier.classify_tagword(session[:tag_cloud_words][7][0]) %>'},
 
           {text: '<%= session[:tag_cloud_words][8] ? session[:tag_cloud_words][8][0] : ''%>', weight: 12,
-              color: '<%= @sentClassifier.tag_word_prob(session[:tag_cloud_words][8][0]) %>'},
+              color: '<%= @sentClassifier.classify_tagword(session[:tag_cloud_words][8][0]) %>'},
 
           {text: '<%= session[:tag_cloud_words][9] ? session[:tag_cloud_words][9][0] : ''%>', weight: 11,
-              color: '<%= @sentClassifier.tag_word_prob(session[:tag_cloud_words][9][0]) %>'},
+              color: '<%= @sentClassifier.classify_tagword(session[:tag_cloud_words][9][0]) %>'},
 
           {text: '<%= session[:tag_cloud_words][10] ? session[:tag_cloud_words][10][0] : ''%>', weight: 10,
-              color: '<%= @sentClassifier.tag_word_prob(session[:tag_cloud_words][10][0]) %>'},
+              color: '<%= @sentClassifier.classify_tagword(session[:tag_cloud_words][10][0]) %>'},
 
           {text: '<%= session[:tag_cloud_words][11] ? session[:tag_cloud_words][11][0] : ''%>', weight: 9,
-              color: '<%= @sentClassifier.tag_word_prob(session[:tag_cloud_words][11][0]) %>'},
+              color: '<%= @sentClassifier.classify_tagword(session[:tag_cloud_words][11][0]) %>'},
 
           {text: '<%= session[:tag_cloud_words][12] ? session[:tag_cloud_words][12][0] : ''%>', weight: 8,
-              color: '<%= @sentClassifier.tag_word_prob(session[:tag_cloud_words][12][0]) %>'},
+              color: '<%= @sentClassifier.classify_tagword(session[:tag_cloud_words][12][0]) %>'},
 
           {text: '<%= session[:tag_cloud_words][13] ? session[:tag_cloud_words][13][0] : ''%>', weight: 7,
-              color: '<%= @sentClassifier.tag_word_prob(session[:tag_cloud_words][13][0]) %>'},
+              color: '<%= @sentClassifier.classify_tagword(session[:tag_cloud_words][13][0]) %>'},
 
           {text: '<%= session[:tag_cloud_words][14] ? session[:tag_cloud_words][14][0] : ''%>', weight: 6,
-              color: '<%= @sentClassifier.tag_word_prob(session[:tag_cloud_words][14][0]) %>'},
+              color: '<%= @sentClassifier.classify_tagword(session[:tag_cloud_words][14][0]) %>'},
 
           {text: '<%= session[:tag_cloud_words][15] ? session[:tag_cloud_words][15][0] : ''%>', weight: 5,
-              color: '<%= @sentClassifier.tag_word_prob(session[:tag_cloud_words][15][0]) %>'},
+              color: '<%= @sentClassifier.classify_tagword(session[:tag_cloud_words][15][0]) %>'},
 
           {text: '<%= session[:tag_cloud_words][16] ? session[:tag_cloud_words][16][0] : ''%>', weight: 4,
-              color: '<%= @sentClassifier.tag_word_prob(session[:tag_cloud_words][16][0]) %>'},
+              color: '<%= @sentClassifier.classify_tagword(session[:tag_cloud_words][16][0]) %>'},
 
           {text: '<%= session[:tag_cloud_words][17] ? session[:tag_cloud_words][17][0] : ''%>', weight: 3,
-              color: '<%= @sentClassifier.tag_word_prob(session[:tag_cloud_words][17][0]) %>'},
+              color: '<%= @sentClassifier.classify_tagword(session[:tag_cloud_words][17][0]) %>'},
 
           {text: '<%= session[:tag_cloud_words][18] ? session[:tag_cloud_words][18][0] : ''%>', weight: 2,
-              color: '<%= @sentClassifier.tag_word_prob(session[:tag_cloud_words][18][0]) %>'},
+              color: '<%= @sentClassifier.classify_tagword(session[:tag_cloud_words][18][0]) %>'},
 
           {text: '<%= session[:tag_cloud_words][19] ? session[:tag_cloud_words][19][0] : ''%>', weight: 1,
-              color: '<%= @sentClassifier.tag_word_prob(session[:tag_cloud_words][19][0]) %>'}
+              color: '<%= @sentClassifier.classify_tagword(session[:tag_cloud_words][19][0]) %>'}
       ];
 
 $(function() {
@@ -274,264 +239,129 @@ $(function() {
 });
 
 
-	
 $(document).ready(function() {
-        //chart = new Highcharts.Chart({
-
- // $(function () {
-	    	
-	    	// Radialize the colors
-			// Highcharts.getOptions().colors = Highcharts.map(Highcharts.getOptions().colors, function(color) {
-			//     return {
-			//         radialGradient: { cx: 0.5, cy: 0.3, r: 0.7 },
-			//         stops: [
-			//             [0, color],
-			//             [1, Highcharts.Color(color).brighten(-0.3).get('rgb')] // darken
-			//         ]
-			//     };
-			// });
-			
-			// Build the chart
-      // chart = new Hightcharts.Chart({
-
-      <% if user_signed_in? and current_user.anti_spam == 1 %>
-          $('#container').highcharts({
-              chart: {
-                  plotBackgroundColor: null,
-                  plotBorderWidth: null,
-                  plotShadow: false,
-                  backgroundColor: null
-              },
-              title: {
-                  text: 'Gráfico de seções - avaliações positivas, negativas e neutras',
-                  color: 'black'
-              },
-              tooltip: {
-                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-              },
-              plotOptions: {
-                  pie: {
-                      allowPointSelect: true,
-                      cursor: 'pointer',
-                      dataLabels: {
-                          enabled: true,
-                          color: 'black',
-                          connectorColor: '#000000',
-                          formatter: function() {
-                              return '<b>'+ this.point.name +'</b>: '+ this.percentage +' %';
-                          }
-                      }
-                  }
-              },
-              series: [{
-                  type: 'pie',
-                  name: 'Browser share',
-                  data: [
-                      {
-                          name: 'Positivos',
-                          y: parseInt('<%= session[:positives] %>'),
-                          sliced: true,
-                          selected: true,
-                          color: 'green'
-                      },
-                      {
-                          name: 'Negativos',
-                          y: parseInt('<%= session[:negatives] %>'),
-                          sliced: false,
-                          selected: false,
-                          color: 'red'
-                      },
-                      {
-                          name: 'Neutros',
-                          y: parseInt('<%= session[:neutros] %>'),
-                          sliced: false,
-                          selected: false,
-                          color: 'gray'
-                      },
-                      {
-                          name: 'Spams',
-                          y: parseInt(0),
-                          sliced: false,
-                          selected: false,
-                          color: 'brown'
-                      }
-                  ]
-              }]
-          });
-      <% else %>
-          $('#container').highcharts({
-              chart: {
-                  plotBackgroundColor: null,
-                  plotBorderWidth: null,
-                  plotShadow: false,
-                  backgroundColor: null
-              },
-              title: {
-                  text: 'Gráfico de seções - avaliações positivas, negativas e neutras',
-                  color: 'black'
-              },
-              tooltip: {
-                pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
-              },
-              plotOptions: {
-                  pie: {
-                      allowPointSelect: true,
-                      cursor: 'pointer',
-                      dataLabels: {
-                          enabled: true,
-                          color: 'black',
-                          connectorColor: '#000000',
-                          formatter: function() {
-                              return '<b>'+ this.point.name +'</b>: '+ this.percentage +' %';
-                          }
-                      }
-                  }
-              },
-              series: [{
-                  type: 'pie',
-                  name: 'Browser share',
-                  data: [
-                      {
-                          name: 'Positivos',
-                          y: parseInt('<%= session[:positives] %>'),
-                          sliced: true,
-                          selected: true,
-                          color: 'green'
-                      },
-                      {
-                          name: 'Negativos',
-                          y: parseInt('<%= session[:negatives] %>'),
-                          sliced: false,
-                          selected: false,
-                          color: 'red'
-                      },
-                      {
-                          name: 'Neutros',
-                          y: parseInt(0),
-                          sliced: false,
-                          selected: false,
-                          color: 'gray'
-                      }
-                  ]
-              }]
-          });
-      <% end %>
       
-      $('#container').createCanvas;
-
-      <% if user_signed_in? and current_user.anti_spam == 1 %>
-        $('#barchart').highcharts({
-              chart: {
-                  type: 'bar'
+  $('#piechart').highcharts({
+      chart: {
+          plotBackgroundColor: null,
+          plotBorderWidth: null,
+          plotShadow: false,
+          backgroundColor: null
+      },
+      title: {
+          text: 'Gráfico de seções - avaliações positivas, negativas e neutras',
+          color: 'black'
+      },
+      tooltip: {
+        pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+      },
+      plotOptions: {
+          pie: {
+              allowPointSelect: true,
+              cursor: 'pointer',
+              dataLabels: {
+                  enabled: true,
+                  color: 'black',
+                  connectorColor: '#000000',
+                  formatter: function() {
+                      return '<b>'+ this.point.name +'</b>: '+ this.percentage +' %';
+                  }
+              }
+          }
+      },
+      series: [{
+          type: 'pie',
+          data: [
+              {
+                  name: 'Positivos',
+                  y: <%= session[:positives] %>,
+                  selected: true,
+                  color: 'green'
               },
+              {
+                  name: 'Negativos',
+                  y: <%= session[:negatives] %>,
+                  color: 'red'
+              },
+              {
+                  name: 'Neutros',
+                  y: <%= session[:neutros] %>,
+                  color: 'gray'
+              },
+              <% if user_signed_in? and current_user.anti_spam == 1 %>
+              {
+                  name: 'Spams',
+                  y: <%= session[:spams] %>,
+                  color: 'brown'
+              }
+              <% end %>
+          ]
+      }]
+  });
+      
+    $('#barchart').highcharts({
+          chart: {
+              type: 'bar'
+          },
+          title: {
+              text: 'Gráfico de Barras - Avaliações positivas, negativas e neutras'
+          },
+          subtitle: {
+              text: 'Pesquisa: <%= session[:product] %>'
+          },
+          xAxis: {
+              <% if user_signed_in? and current_user.anti_spam == 1 %>
+                categories: ['Positivos', 'Negativos', 'Neutros', 'Spams'],
+              <% else %>
+                categories: ['Positivos', 'Negativos', 'Neutros'],
+              <% end %>
               title: {
-                  text: 'Gráfico de Barras - Avaliações positivas, negativas e neutras'
-              },
-              subtitle: {
-                  text: 'Pesquisa: <%= session[:product] %>'
-              },
-              xAxis: {
-                  categories: ['Positivos', 'Negativos', 'Neutros', 'Spams'],
-                  title: {
-                      text: null
-                  }
-              },
-              yAxis: {
-                  min: 0,
-                  title: {
-                      text: 'Tweets',
-                      align: 'high'
-                  },
-                  labels: {
-                      overflow: 'justify'
-                  }
-              },
-              tooltip: {
-                  valueSuffix: ' Comentários'
-              },
-              plotOptions: {
-                  bar: {
-                      dataLabels: {
-                          enabled: true
-                      }
-                  }
-              },
-              legend: {
-                  layout: 'vertical',
-                  align: 'right',
-                  verticalAlign: 'top',
-                  x: -40,
-                  y: 100,
-                  floating: true,
-                  borderWidth: 1,
-                  backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor || '#FFFFFF'),
-                  shadow: true
-              },
-              credits: {
-                  enabled: false
-              },
-              series: [{
-                  name: 'Tweets',
-                  data: [parseInt('<%= session[:positives] %>'), parseInt('<%= session[:negatives] %>'), parseInt('<%= session[:neutros] %>'), 0]
-              }]
-          });
-      <% else %>
-          $('#barchart').highcharts({
-              chart: {
-                  type: 'bar'
-              },
+                  text: null
+              }
+          },
+          yAxis: {
+              min: 0,
               title: {
-                  text: 'Gráfico de Barras - Avaliações positivas, negativas e neutras'
+                  text: 'Tweets',
+                  align: 'high'
               },
-              subtitle: {
-                  text: 'Pesquisa: <%= session[:product] %>'
-              },
-              xAxis: {
-                  categories: ['Positivos', 'Negativos', 'Neutros'],
-                  title: {
-                      text: null
+              labels: {
+                  overflow: 'justify'
+              }
+          },
+          tooltip: {
+              valueSuffix: ' Comentários'
+          },
+          plotOptions: {
+              bar: {
+                  dataLabels: {
+                      enabled: true
                   }
-              },
-              yAxis: {
-                  min: 0,
-                  title: {
-                      text: 'Tweets',
-                      align: 'high'
-                  },
-                  labels: {
-                      overflow: 'justify'
-                  }
-              },
-              tooltip: {
-                  valueSuffix: ' Comentários'
-              },
-              plotOptions: {
-                  bar: {
-                      dataLabels: {
-                          enabled: true
-                      }
-                  }
-              },
-              legend: {
-                  layout: 'vertical',
-                  align: 'right',
-                  verticalAlign: 'top',
-                  x: -40,
-                  y: 100,
-                  floating: true,
-                  borderWidth: 1,
-                  backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor || '#FFFFFF'),
-                  shadow: true
-              },
-              credits: {
-                  enabled: false
-              },
-              series: [{
-                  name: 'Tweets',
-                  data: [parseInt('<%= session[:positives] %>'), parseInt('<%= session[:negatives] %>'), parseInt('<%= session[:neutros] %>')]
-              }]
-          });
-      <% end %>
+              }
+          },
+          legend: {
+              layout: 'vertical',
+              align: 'right',
+              verticalAlign: 'top',
+              x: -40,
+              y: 100,
+              floating: true,
+              borderWidth: 1,
+              backgroundColor: (Highcharts.theme && Highcharts.theme.legendBackgroundColor || '#FFFFFF'),
+              shadow: true
+          },
+          credits: {
+              enabled: false
+          },
+          series: [{
+              name: 'Tweets',
+              <% if user_signed_in? and current_user.anti_spam == 1 %>
+                data: [<%= session[:positives] %>, <%= session[:negatives] %>, <%= session[:neutros] %>, <%= session[:spams] %>]
+              <% else %>
+                data: [<%= session[:positives] %>, <%= session[:negatives] %>, <%= session[:neutros] %>]
+              <% end %>
+          }]
+      });
     });
 </script>
 
@@ -547,6 +377,6 @@ $(document).ready(function() {
 <h3 align="center"> Nuvem de palavras </h3>
 <div id="tag-cloud" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 <br /><br/>
-<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
+<div id="piechart" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 <br /><br/>
 <div id="barchart" style="min-width: 310px; height: 400px; margin: 0 auto"></div>

@@ -21,3 +21,11 @@
 
 en:
   hello: "Hello world"
+pt:
+activerecord:
+    models:
+      user:
+        attributes:
+          current_password:
+            invalid: "Senha inválida!"
+            blank: "Favor inserir a senha atual antes de realizar qualquer alteração!"

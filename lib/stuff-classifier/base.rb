@@ -219,6 +219,20 @@ class StuffClassifier::Base
     return best
   end
 
+
+  def classify_tagword(word)
+
+    sentiment = classify(word)
+
+    if sentiment.include?('positive')
+      return 'green'
+    elsif  sentiment.include?('negative')
+      return 'red'
+    elsif sentiment.include?('neutro')
+      return 'gray'
+    end
+  end
+
   # Salva estado atual do classificador
   def save_state
     @storage.save_state(self)

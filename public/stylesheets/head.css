@@ -58,7 +58,7 @@ body {
     text-align: center;
     font-size: 15px;
     color: white;
-    position: fixed;
+    /*position: fixed;*/
 }
 
 .reload {
@@ -112,9 +112,9 @@ div.jqcloud span.w4 { color: #90c5f0; }
 div.jqcloud span.w3 { color: #a0ddff; }
 div.jqcloud span.w2 { color: #99ccee; }
 
-div.jqcloud .yellow { color: yellow; }
-div.jqcloud .red { color: red; }
-div.jqcloud .green { color: yellow; }
+div.jqcloud .neutro { color: yellow; }
+div.jqcloud .negative { color: red; }
+div.jqcloud .positive { color: green; }
 
 /* layout */
 

@@ -22,6 +22,7 @@ helper_method :get_spams_tweets
 helper_method :get_pdf
 helper_method :count_rows_spams
 helper_method :count_rows_favoriteds
+helper_method :select_favoriteds
 
 respond_to :html
 
@@ -88,6 +89,7 @@ respond_to :html
 
 		num_tweets = 50
 		txt = ""
+		filtered = "" 
 		sentiment = ""
 		session[:positives] = 0
 		session[:negatives] = 0
@@ -96,6 +98,9 @@ respond_to :html
 
 		@tokenizer = StuffClassifier::Tokenizer.new
 		@sentClassifier = StuffClassifier::Bayes.open("Positive vs Negative")
+		if user_signed_in? and current_user.anti_spam == 1
+			ClassifierClass.initialize_classifier(select_spams, select_favoriteds)
+		end
 
 		list = Array.new
 		list_text = Array.new
@@ -112,9 +117,10 @@ respond_to :html
 
 			client.search(session[:product]+' -rt', :lang => "pt", :result_type => "recent", :exclude => "links").take(num_tweets).collect do |tweet|
 				
-				#puts "#{tweet.text}"
+				puts "#{tweet.text}"
 
 				txt = filter_tweet("#{tweet.text}", session[:product])
+				filtered = filter("#{tweet.text}")
 
 				if !list_text.include?(txt) and !"#{tweet.user.screen_name}".match(/#{session[:product]}/i)
 
@@ -123,7 +129,7 @@ respond_to :html
 					d = DateTime.parse("#{tweet.created_at}")
 
 					list << "#{tweet.user.screen_name}"
-					list << filter("#{tweet.text}")
+					list << filtered
 					list << d.strftime('%H:%M %p - %d/%m/%y')
 					list << "#{tweet.user.profile_image_url}"
 
@@ -131,6 +137,9 @@ respond_to :html
 
 					#puts sentiment
 					if user_signed_in? and current_user.anti_spam == 1 and ClassifierClass.classify_tweet(filter("#{tweet.text}")) == 'Spam' and count_rows_spams.to_i >= 5 and count_rows_favoriteds.to_i >= 5
+						session[:spams] += 1
+						list << 'spam'
+					elsif user_signed_in? and current_user.anti_spam == 1 and select_spams.include?(filtered)
 						session[:spams] += 1
 						list << 'spam'
 					else
@@ -151,10 +160,6 @@ respond_to :html
 			tag_words_list = tag_words.split.inject(Hash.new(0)) { |h,v| h[v] += 1; h }
 			tag_words_list_sorted = tag_words_list.sort_by{|k,v| v}.reverse
 			session[:tag_cloud_words] = tag_words_list_sorted
-
-			# session[:tag_cloud_words][0].each do |tag_word|
-			# 	puts @sentClassifier.word_classification_detail(tag_word.to_s)
-			# end
 
 			session[:posts] = list
 
@@ -180,27 +185,16 @@ respond_to :html
 	##################################################################### PDF
 	def create_barchart_png
 
-		data = params[:data_uri]
-		
-		image_data = Base64.decode64(data['data:image/png;base64,'.length .. -1])
-
-		File.open("#{Rails.root}/public/images/barchart.png", 'wb') do |f|
-		  f.write image_data
-		end
+		session[:barchart_url] = ""
+		session[:barchart_url] = params[:barchart]
 
 		render :json => {:success => true}
 	end
 
-
 	def create_piechart_png
 
-		data = params[:data_uri]
-		
-		image_data = Base64.decode64(data['data:image/png;base64,'.length .. -1])
-
-		File.open("#{Rails.root}/public/images/piechart.png", 'wb') do |f|
-		  f.write image_data
-		end
+		session[:piechart_url] = ""
+		session[:piechart_url] = params[:piechart]
 
 		render :json => {:success => true}
 	end
@@ -293,36 +287,50 @@ respond_to :html
 	    	pdf.move_down(40)
 	    end
 
+	    if params[:cloud].present?
+	    	pdf.indent 50 do
+	    		pdf.text "Tag Cloud", :size => 26, :styles => [:bold], :align => :center
+	    		pdf.move_down(30)
+
+	    		if session[:tag_cloud_words]	    		
+					pdf.text session[:tag_cloud_words][0][0], :size => 20, :align => :center
+					pdf.text session[:tag_cloud_words][1][0]+" "+
+							 session[:tag_cloud_words][2][0], :size => 18, :align => :center
+					pdf.text session[:tag_cloud_words][3][0]+" "+
+							 session[:tag_cloud_words][4][0]+" "+
+							 session[:tag_cloud_words][5][0], :size => 16, :align => :center
+					pdf.text session[:tag_cloud_words][6][0]+" "+
+							 session[:tag_cloud_words][7][0]+" "+
+							 session[:tag_cloud_words][8][0]+" "+
+							 session[:tag_cloud_words][9][0], :size => 14, :align => :center
+					pdf.text session[:tag_cloud_words][10][0]+" "+
+							 session[:tag_cloud_words][11][0]+" "+
+							 session[:tag_cloud_words][12][0]+" "+
+							 session[:tag_cloud_words][13][0]+" "+
+							 session[:tag_cloud_words][14][0], :size => 12, :align => :center
+					pdf.text session[:tag_cloud_words][15][0]+" "+
+							 session[:tag_cloud_words][16][0]+" "+
+							 session[:tag_cloud_words][17][0]+" "+
+							 session[:tag_cloud_words][18][0]+" "+
+							 session[:tag_cloud_words][19][0]+" "+
+							 session[:tag_cloud_words][20][0], :size => 10, :align => :center
+				elsif
+					pdf.text 'Palavras insuficientes para construir o Tag Cloud.'
+				end
+			end
+	    	pdf.move_down(40)
+	   	end
+
 	    if params[:pizza].present?
-	    	
-	    	# Load the html to convert to PDF
-		    #html = File.read("#{Rails.root}/app/views/project/charts.html.erb")
-		    # Create a new kit and define page size to be US letter
-
-		    # kit = PDFKit.new(html, :page_size => 'Letter')
-		    # kit.stylesheets << "#{Rails.root}/app/assets/javascripts/charts.js"
-		    # send_data(kit.to_pdf, :filename => 'report.pdf', :type => 'application/pdf', :disposition => 'inline')
-		    # Render the html
-		    #render :text => html
-
-		    #kit = IMGKit.new(File.new("#{Rails.root}/app/views/project/charts.html.erb"))
-
-		    #file = kit.to_file("#{Rails.root}/public/images/logo.png") 
-		    #pdf.image kit.to_png
-
-	  #   	html = render_to_string(:controller => 'project', :action => "charts")
-			# kit = PDFKit.new(html)
-			#send_data(kit.to_pdf, :filename => 'report.pdf', :type => 'application/pdf', :disposition => 'inline'
-
 			pdf.indent 50 do
-				pdf.image "#{Rails.root}/public/images//piechart.png", :height => 300
+				pdf.image open(session[:piechart_url]), :height => 200
 			end
 	    	pdf.move_down(40)
 	    end
 
 	    if params[:barras].present?
 	    	pdf.indent 50 do
-	    		pdf.image "#{Rails.root}/public/images/barchart.png", :height => 300
+	    		pdf.image open(session[:barchart_url]), :height => 200
 	    	end
 	    	pdf.move_down(40)
 	    end
@@ -370,9 +378,6 @@ respond_to :html
 
 		for i in (0..session[:posts].length-1).step(5)
 
-			# if current_user.anti_spam == 1
-	  #          if ClassifierClass.classify_tweet(session[:posts][i+1]) != 'Spam'
-
 	  			if !session[:posts][i+4].include?('spam')
 	                @tweets << session[:posts][i]
 					@tweets << session[:posts][i+1]
@@ -387,31 +392,10 @@ respond_to :html
 					@tweets_spams << session[:posts][i+3]
 					@tweets_spams << session[:posts][i+4]
 				end
-
-					# if session[:posts][i+4].include?('positive')
-					# 	session[:positives] -= 1
-					# elsif  session[:posts][i+4].include?('negative')
-					# 	session[:negatives] -= 1
-					# elsif session[:posts][i+4].include?('neutro')
-					# 	session[:neutros] -= 1
-					# end
-	  #          end
-	  #       else
-          
-   #         		@tweets << session[:posts][i]
-			# 	@tweets << session[:posts][i+1]
-			# 	@tweets << session[:posts][i+2]
-			# 	@tweets << session[:posts][i+3]
-			# 	@tweets << session[:posts][i+4]
-			# end
         end
 
         @tweets
 	end
-
-	# def get_spams_detected
-	# 	@spams_detected
-	# end
 
 	def get_spams_tweets
 		@tweets_spams
@@ -427,6 +411,22 @@ respond_to :html
 		sql = "INSERT INTO spams (user, query, post) VALUES ('"+current_user.email+"','"+session[:product]+"','"+@tweets[index]+"');"
 		records_array = ActiveRecord::Base.connection.execute(sql)
 
+		for i in (0..session[:posts].length-1).step(5)
+			if session[:posts][i+1] = @tweets[index]
+				if session[:posts][i+4].include?('positive')
+					session[:positives] -= 1
+				elsif  session[:posts][i+4].include?('negative')
+					session[:negatives] -= 1
+				elsif session[:posts][i+4].include?('neutro')
+					session[:neutros] -= 1
+				end
+				session[:posts][i+4] = 'spam'
+				break
+			end
+		end
+
+		session[:spams] += 1
+
 		return render :json => {:success => true}
 	end
 
@@ -440,6 +440,33 @@ respond_to :html
 		records_array = ActiveRecord::Base.connection.execute(sql)
 
 		return render :json => {:success => true}
+	end
+
+	def select_spams
+
+		spam = Array.new 
+  		sql = "SELECT post FROM spams WHERE user = '"+current_user.email+"';"
+		spam_results = ActiveRecord::Base.connection.select_all(sql)
+
+		spam_results.each do |row|
+		 	spam << row["post"]
+		end
+
+		return spam
+	end
+
+
+	def select_favoriteds
+
+		not_spam = Array.new 
+  		sql = "SELECT post FROM favoriteds WHERE user = '"+current_user.email+"';"
+		favorited_results = ActiveRecord::Base.connection.select_all(sql)
+
+		favorited_results.each do |row|
+		 	not_spam << row["post"]
+		end
+
+		return not_spam
 	end
 
 	def delete_spams

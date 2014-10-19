@@ -24,7 +24,7 @@
 
   Senha atual <i>(precisamos da sua senha atual para alterações)</i>
   <div class="spacev" >
-    <%= f.password_field :current_password, autocomplete: "off" %>
+    <%= f.password_field :current_password, autocomplete: "off", :required => true %>
   </div>
 
   Ativar recurso anti-spam?

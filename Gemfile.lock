@@ -33,6 +33,7 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.3.6)
     arel (5.0.1.20140414130214)
+    bcrypt (3.1.7)
     bcrypt (3.1.7-x64-mingw32)
     buftok (0.2.0)
     builder (3.2.2)
@@ -88,16 +89,20 @@ GEM
     multipart-post (2.0.0)
     mysql2 (0.3.15)
     naught (1.0.0)
+    nokogiri (1.6.2.rc2)
+      mini_portile (~> 0.5.2)
     nokogiri (1.6.2.rc2-x64-mingw32)
       mini_portile (~> 0.5.2)
     orm_adapter (0.5.0)
     pdf-core (0.2.5)
+    pg (0.17.1)
     pg (0.17.1-x64-mingw32)
     polyglot (0.3.4)
     prawn (1.0.0)
       pdf-core (~> 0.2.2)
       ttfunk (~> 1.1.1)
     rack (1.5.2)
+    rack-cors (0.2.9)
     rack-test (0.6.2)
       rack (>= 1.0)
     rails (4.1.0)
@@ -194,6 +199,7 @@ DEPENDENCIES
   nokogiri (~> 1.6.2.rc1)
   pg
   prawn
+  rack-cors
   rails
   rails_12factor
   sass-rails

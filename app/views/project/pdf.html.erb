@@ -1,3 +1,95 @@
+<script>
+$(document).ready(function(){
+    var optionsJSON = {
+      // "plotOptions": {
+      //     "pie": {
+      //       "dataLabels": {
+      //         "enabled": true,
+      //         "color": 'black',
+      //         "format": '<b>{point.name}</b>: {point.percentage:.1f} %'}
+      //       }
+      // },
+      "title": [{
+          "text": 'Gráfico de seções - avaliações positivas, negativas e neutras'
+      }],
+      "series": [{
+        "type": 'pie',
+        "data": [
+            {
+                "name": 'Positivos',
+                "y": <%= session[:positives] %>,
+                "color": 'green'
+            },
+            {
+                "name": 'Negativos',
+                "y": <%= session[:negatives] %>,
+                "color": 'red'
+            },
+            {
+                "name": 'Neutros',
+                "y": <%= session[:neutros] %>,
+                "color": 'gray'
+            }
+        ]
+      }]
+    };
+    var optionsStr = JSON.stringify(optionsJSON);
+    var dataString = 'async=true&type=png&width=300&options=' + optionsStr;
+   
+    $.ajax({
+        type: 'POST',
+        data: dataString,
+        url: 'http://export.highcharts.com',
+        success: function (data) {
+            console.log('PIE: ', data);
+            $('#container1').html('<img src="http://export.highcharts.com/' + data + '"/>');
+            $.ajax({
+              type: "GET",
+              url: "/project/create_piechart_png",
+              data: { piechart: "http://export.highcharts.com/" + data },
+              success: function(data){
+                console.log("PIE Enviado!");
+              }
+            });  
+        }
+    });
+
+    var optionsJSONBar = {
+      "chart": {
+        "type": 'bar'
+      },
+      "title": {
+        "text": 'Gráfico de Barras - Avaliações positivas, negativas e neutras'
+      },
+      "xAxis": {
+        "categories": ["Positivos", "Negativos", "Neutros"]
+      },
+      "series": [{
+        "data": [<%= session[:positives] %>, <%= session[:negatives] %>, <%= session[:neutros] %>]
+      }]
+    };
+    var optionsStrBar = JSON.stringify(optionsJSONBar);
+    var dataStringBar = 'async=true&type=png&width=300&options=' + optionsStrBar;
+
+    $.ajax({
+        type: 'POST',
+        data: dataStringBar,
+        url: 'http://export.highcharts.com',
+        success: function (data) {
+            console.log('BAR: ', data);
+            $('#container2').html('<img src="http://export.highcharts.com/' + data + '"/>');
+            $.ajax({
+              type: "GET",
+              url: "/project/create_barchart_png",
+              data: { barchart: "http://export.highcharts.com/" + data },
+              success: function(data){
+                console.log("BAR Enviado!");
+              }
+            });  
+        }
+    });
+});
+</script>
 
 <div class="row">
   <div class="col-lg-12">
@@ -41,9 +133,10 @@
           <%= radio_button_tag(:info, "infoY") %>
           <%= label_tag(:info_Y, "Sim") %>
           <br />
-          <%= radio_button_tag(:info, "infoN") %>
-          <%= label_tag(:info_N, "Nao") %>
+          <%= radio_button_tag(:info, "infoN", :checked => true) %>
+          <%= label_tag(:info_N, "Nao",) %>
 
+          <%= hidden_field :chart_url, :value => 1 %>
 
            <br /><br />
   			  <%= submit_tag("Gerar PDF do resultado!") %>
@@ -53,3 +146,5 @@
     </td>
   </table>
 </div>
+<div id="container1"> </div>
+<div id="container2"> </div>

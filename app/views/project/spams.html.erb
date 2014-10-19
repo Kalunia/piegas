@@ -1,3 +1,4 @@
+<script type="text/javascript" src="/bootstrap-3.1.1-dist/js/bootbox.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function(){
       $('#delete_spams_id').click(function() {
@@ -5,15 +6,16 @@
           type: 'GET',
           url: '/project/delete_spams',
           success: function(output){
-            window.location.reload();
-            alert('Spams deletados com sucesso!');
-            console.log(output);
+            bootbox.confirm('Tem certeza que deseja deletar todos os spams reportados?', function(result) {
+              if (result) {
+                  bootbox.alert('Spams deletados com sucesso!', function(){window.location.reload()});
+              }
+            });
           }
         });
       });
     });
 </script>
-
 
 <div class="row">
   <div class="col-lg-12">
@@ -23,7 +25,12 @@
 
 <% if count_rows_spams.to_i < 5 %>
   <div class="col-lg-12">
-    <h3> Para habilitar o recurso de anti-spam, relate mais <%= 5-count_rows_spams.to_i %> spams!</h3>
+    <h3> Para habilitar o recurso automático de anti-spam, relate mais <%= 5-count_rows_spams.to_i %> spams!</h3>
+    <br />
+  </div>
+<% else %>
+  <div class="col-lg-12">
+    <h3> Utilizando recurso automático de anti-spam com base nos spams abaixo:!</h3>
     <br />
   </div>
 <% end %>

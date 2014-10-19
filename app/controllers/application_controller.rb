@@ -12,7 +12,10 @@ attr_accessor :posts
 attr_accessor :product
 
 helper_method :filter
-
+before_filter :add_cors_headers
+after_filter :add_cors_headers
+before_action :add_cors_headers
+after_action :add_cors_headers
 before_action :configure_permitted_parameters, if: :devise_controller?
 	
 	def configure_permitted_parameters
@@ -76,7 +79,7 @@ before_action :configure_permitted_parameters, if: :devise_controller?
 	    text = text.gsub /boa tarde/i, ''
 	    text = text.gsub /boa noite/i, ''
 
-	    #puts text || ""
+	    puts text
 
 	    return text || ""
   	end
@@ -99,14 +102,26 @@ before_action :configure_permitted_parameters, if: :devise_controller?
 		#Remove #hashtags
 		text = text.gsub /(?:\s|^)(?:#(?!(?:\d+|\w+?_|_\w+?)(?:\s|$)))(\w+)(?=\s|$)/i, ''
 
+		# Remove numeros
+	    text = text.gsub /(W|\d)/, ''
+
 	    return text
   	end
 
+  	def add_cors_headers
+	  headers['Access-Control-Allow-Origin'] = '*'
+	  headers['Access-Control-Allow-Methods'] = 'POST, GET, OPTIONS, PUT, DELETE'
+	  headers['Access-Control-Allow-Headers'] = 'Origin, X-Requested-With, Content-Type, Accept, Authorization'
+	  headers['Access-Control-Allow-Credentials'] = 'true'
+	  headers['Access-Control-Request-Method'] = '*'
+	  headers['Access-Control-Max-Age'] = '1728000'
+	end
+
 	private
 
-	# def after_sign_in_path_for(resource_or_scope)
- #    	request.referrer
- #  	end
+	# def after_sign_in_path_for(resource)
+	# 	link_to
+	# end
 
   	
 

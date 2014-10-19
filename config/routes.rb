@@ -19,7 +19,6 @@ Piegas::Application.routes.draw do
 
   # GET para Action Controllers
   get 'project/refresh_posts' => 'project#refresh_posts'
-  get 'project/generate_pdf' => 'project#generate_pdf'
   get 'project/get_pdf' => 'project#get_pdf'
 
   get 'project/add_spam' => 'project#add_spam'
@@ -27,8 +26,8 @@ Piegas::Application.routes.draw do
   get 'project/delete_spams' => 'project#delete_spams'
   get 'project/delete_favoriteds' => 'project#delete_favoriteds'
 
-  post 'project/create_barchart_png' => 'project#create_barchart_png'
-  post 'project/create_piechart_png' => 'project#create_piechart_png'
+  get 'project/create_barchart_png' => 'project#create_barchart_png'
+  get 'project/create_piechart_png' => 'project#create_piechart_png'
  
 
   # Example of regular route:

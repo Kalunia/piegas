@@ -1,5 +1,5 @@
 # pt-BR translations for Devise
-pt-BR:
+pt:
   devise:
     confirmations:
       confirmed: 'Sua conta foi confirmada com sucesso. Você está logado.'
@@ -56,3 +56,11 @@ pt-BR:
       not_saved:
         one: "Não foi possível salvar %{resource}: 1 erro"
         other: "Não foi possível salvar %{resource}: %{count} erros."
+  activerecord:
+    errors:
+      models:
+        user:
+          attributes:
+            current_password:
+              invalid: "Senha inválida!"
+              blank: "Favor inserir a senha atual antes de realizar qualquer alteração!"

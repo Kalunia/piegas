@@ -70,6 +70,8 @@ gem 'gravtastic'
 # API Twitter
 gem 'twitter'
 
+#Requests
+gem 'rack-cors', :require => 'rack/cors'
 
 # Sentiment Classifier
 #gem 'turn'
