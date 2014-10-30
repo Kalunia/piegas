@@ -71,7 +71,7 @@ gem 'gravtastic'
 gem 'twitter'
 
 #Requests
-gem 'rack-cors', :require => 'rack/cors'
+#gem 'rack-cors', :require => 'rack/cors'
 
 # Sentiment Classifier
 #gem 'turn'
@@ -79,7 +79,7 @@ gem 'rack-cors', :require => 'rack/cors'
 #gem 'minitest'
 
 group :development, :test do
-  gem 'foreman'
+  gem 'foreman', '~> 0.75.0'
 end
 
 group :assets do
