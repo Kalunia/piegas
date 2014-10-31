@@ -93,9 +93,9 @@ Rails.application.configure do
   enable_starttls_auto: true,
   address: "smtp.gmail.com",
   port: 587,
-  domain: "gmail.com",
+  domain: ENV["GMAIL_DOMAIN"],
   authentication: "plain",
-  user_name: "piegas.heroku.software@gmail.com",
-  password: "heroku123"
+  user_name: ENV["GMAIL_USERNAME"],
+  password: ENV["GMAIL_PASSWORD"]
   }
 end
