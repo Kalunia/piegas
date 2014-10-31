@@ -79,9 +79,12 @@ before_action :configure_permitted_parameters, if: :devise_controller?
 	    text = text.gsub /boa tarde/i, ''
 	    text = text.gsub /boa noite/i, ''
 
-	    puts text
-
-	    return text || ""
+	    #puts text
+	    if text
+	    	return text 
+	    else
+	    	return 'neutro'
+	    end
   	end
 
   	#Filtra o tweet com palavras inutilizadas 

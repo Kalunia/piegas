@@ -1,17 +1,18 @@
 <script>
 $(document).ready(function(){
     var optionsJSON = {
-      // "plotOptions": {
+      // "plotOptions": [{
       //     "pie": {
-      //       "dataLabels": {
+      //       "dataLabels": [{
       //         "enabled": true,
       //         "color": 'black',
-      //         "format": '<b>{point.name}</b>: {point.percentage:.1f} %'}
-      //       }
-      // },
-      "title": [{
+      //         "format": '<b>{point.name}</b>: {point.percentage:.1f} %'
+      //       }]
+      //     }
+      // }],
+      "title": {
           "text": 'Gráfico de seções - avaliações positivas, negativas e neutras'
-      }],
+      },
       "series": [{
         "type": 'pie',
         "data": [
@@ -65,6 +66,7 @@ $(document).ready(function(){
         "categories": ["Positivos", "Negativos", "Neutros"]
       },
       "series": [{
+        "name": 'Tweets',
         "data": [<%= session[:positives] %>, <%= session[:negatives] %>, <%= session[:neutros] %>]
       }]
     };
@@ -146,5 +148,5 @@ $(document).ready(function(){
     </td>
   </table>
 </div>
-<div id="container1"> </div>
-<div id="container2"> </div>
+<!-- <div id="container1"> </div>
+<div id="container2"> </div> -->

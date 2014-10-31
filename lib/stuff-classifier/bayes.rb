@@ -25,24 +25,28 @@ class StuffClassifier::Bayes < StuffClassifier::Base
   end
 
   # Calcula a probabilidade média da palavra na categoria indicada
-  def word_weighted_average(word, cat, opts={})
-    func = opts[:func]
+  # def word_weighted_average(word, cat, opts={})
+  #   func = opts[:func]
 
-    # Calcula a probabilidade atual
-    basic_prob = func ? func.call(word, cat) : word_prob(word, cat)
+  #   # Calcula a probabilidade atual
+  #   basic_prob = func ? func.call(word, cat) : word_prob(word, cat)
     
-    # Conta o número de vezes que a palavra aparece em todas as categorias
-    totals = total_word_count(word)
+  #   # Conta o número de vezes que a palavra aparece em todas as categorias
+  #   totals = total_word_count(word)
     
-    # Média total
-    (@weight * @assumed_prob + totals * basic_prob) / (@weight + totals)
-  end
+  #   # Média total
+  #   (@weight * @assumed_prob + totals * basic_prob) / (@weight + totals)
+  # end
 
   # Calcula a probabilidade de cada palavra em um determinado texto
   def doc_prob(text, category)
-    @tokenizer.each_word(text).map {|w|
-      word_weighted_average(w, category)
-    }.inject(1) {|p,c| p * c}
+    if @tokenizer.each_word(text)
+      @tokenizer.each_word(text).map {|w|
+        word_prob(w, category)
+      }.inject(1) {|p,c| p * c}
+    else
+      return 0
+    end
   end
 
   # Calcula a probabilidade do texto na categoria indicada
@@ -62,25 +66,25 @@ class StuffClassifier::Bayes < StuffClassifier::Base
   end
 
   # Mostra os detalhes da classificação da palavra
-  def word_classification_detail(word)
+  # def word_classification_detail(word)
 
-    p "word_prob"
-    result=self.categories.inject({}) do |h,cat| h[cat]=self.word_prob(word,cat);h end
-    p result
+  #   p "word_prob"
+  #   result=self.categories.inject({}) do |h,cat| h[cat]=self.word_prob(word,cat);h end
+  #   p result
 
-    p "word_weighted_average"
-    result=categories.inject({}) do |h,cat| h[cat]=word_weighted_average(word,cat);h end  
-    p result
+  #   p "word_weighted_average"
+  #   result=categories.inject({}) do |h,cat| h[cat]=word_weighted_average(word,cat);h end  
+  #   p result
 
-    p "doc_prob"
-    result=categories.inject({}) do |h,cat| h[cat]=doc_prob(word,cat);h end  
-    p result
+  #   p "doc_prob"
+  #   result=categories.inject({}) do |h,cat| h[cat]=doc_prob(word,cat);h end  
+  #   p result
 
-    p "text_prob"
-    result=categories.inject({}) do |h,cat| h[cat]=text_prob(word,cat);h end  
-    p result
+  #   p "text_prob"
+  #   result=categories.inject({}) do |h,cat| h[cat]=text_prob(word,cat);h end  
+  #   p result
     
-  end
+  # end
 
 
   def tag_word_prob(word)

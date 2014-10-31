@@ -10,6 +10,7 @@ require 'open-uri'
 require 'base64'
 require 'twitter'
 require 'date'
+require "net/http"
 
 helper_method :get_info
 helper_method :get_posts
@@ -252,7 +253,8 @@ respond_to :html
 		# Creates a new PDF document
 	    pdf = Prawn::Document.new
 	    logo = "#{Rails.root}/public/images/piegas_logo.png"
-	    
+	    query_image = product_image
+
 	    # Draw formated text with multiple options  
 	    # pdf.formatted_text([
 	    #       { :text => "Bold and Italic!", :styles => [:bold, :italic] },
@@ -269,14 +271,33 @@ respond_to :html
 	    	end
 	    end
 
-	   	if product_image.present?
-	    	pdf.image open( product_image ), :height => 80, :width => 80, :at => [0, pdf.bounds.top + 10]
+	    url = URI.parse(query_image)
+		req = Net::HTTP.new(url.host, url.port)
+		res = req.request_head(url.path)
+
+	   	if res.code == '200'
+	    	pdf.image open( query_image ), :height => 80, :width => 80, :at => [0, pdf.bounds.top + 10]
 	    end
 
 	    pdf.formatted_text([
-			{ :text => session[:product], :styles => [:bold], :color => "#FF0F0F", :size => 30}
+			{ :text => session[:product].capitalize, :styles => [:bold], :color => "#FF0F0F", :size => 30}
 		]) 
-	    pdf.move_down(10)
+	    pdf.move_down(30)
+
+    	pdf.formatted_text([
+    		{ :text => "Resultados gerais da pesquisa", :styles => [:bold], :color => "#FF0000", :size => 18 }
+    		]) 
+    	pdf.move_down(20)
+    	pdf.formatted_text([
+    		{ :text => "Positivos: "+session[:positives].to_s, :size => 14 }
+    		])
+    	pdf.formatted_text([
+    		{ :text => "Negativos: "+session[:negatives].to_s, :size => 14 }
+    		])
+    	pdf.formatted_text([
+    		{ :text => "Neutros: "+session[:neutros].to_s, :size => 14 }
+    		])
+    	pdf.move_down(40)
 
 	    if params[:info] == "infoY"
 	    	pdf.formatted_text([
@@ -288,11 +309,13 @@ respond_to :html
 	    end
 
 	    if params[:cloud].present?
-	    	pdf.indent 50 do
-	    		pdf.text "Tag Cloud", :size => 26, :styles => [:bold], :align => :center
-	    		pdf.move_down(30)
+	    	pdf.formatted_text([
+				{ :text => "Tag Cloud", :styles => [:bold], :color => "#FF0000", :size => 18 }
+			])
+	    	pdf.indent 50 do 
+				pdf.move_down(20)
 
-	    		if session[:tag_cloud_words]	    		
+	    		if session[:tag_cloud_words]		
 					pdf.text session[:tag_cloud_words][0][0], :size => 20, :align => :center
 					pdf.text session[:tag_cloud_words][1][0]+" "+
 							 session[:tag_cloud_words][2][0], :size => 18, :align => :center
@@ -322,15 +345,23 @@ respond_to :html
 	   	end
 
 	    if params[:pizza].present?
-			pdf.indent 50 do
-				pdf.image open(session[:piechart_url]), :height => 200
+	    	pdf.formatted_text([
+				{ :text => "Gráfico de Seção", :styles => [:bold], :color => "#FF0000", :size => 18 }
+				]) 
+			pdf.move_down(20)
+			pdf.indent 140 do
+				pdf.image open(session[:piechart_url]), :height => 200, :align => :center
 			end
 	    	pdf.move_down(40)
 	    end
 
 	    if params[:barras].present?
-	    	pdf.indent 50 do
-	    		pdf.image open(session[:barchart_url]), :height => 200
+	    	pdf.formatted_text([
+				{ :text => "Gráfico de Barras", :styles => [:bold], :color => "#FF0000", :size => 18 }
+				]) 
+			pdf.move_down(20)
+	    	pdf.indent 140 do
+	    		pdf.image open(session[:barchart_url]), :height => 200, :align => :center
 	    	end
 	    	pdf.move_down(40)
 	    end
