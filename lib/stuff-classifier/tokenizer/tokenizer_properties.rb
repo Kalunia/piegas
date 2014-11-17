@@ -10,7 +10,7 @@ StuffClassifier::Tokenizer::TOKENIZER_PROPERTIES = {
      'a', 'à', 'acerca', 'agora', 'ai', 'ainda', 'alguns', 'algum', 'algumas', 'às', 'ao', 'aos', 'as', 'asim', 'assim', 'ate', 'até', 'ateh', 
      'c', 'cima', 'cmg', 'co', 'com', 'como', 
      'd', 'da', 'das', 'de', 'dela', 'delas', 'dele', 'deles', 'depois', 'deverá', 'devera', 'do', 'dos', 'du', 'dus', 
-     'e', 'e', 'é', 'eh', 'ela', 'elas', 'ele', 'eles', 'em', 'enquanto', 'entre', 'era', 'eram', 'essa', 'esa', 'essas', 'esas', ' esse', 'ese', 'esses', 'eses', 'este', 'estes', 'está', 'estao', 'estão', 'estava', 'estavam', 'estou', 'eu', 
+     'e', 'e', 'é', 'eh', 'ela', 'elas', 'ele', 'eles', 'em', 'enquanto', 'entre', 'era', 'eram', 'essa', 'esa', 'essas', 'esas', 'esse', 'ese', 'esses', 'eses', 'este', 'estes', 'está', 'estao', 'estão', 'estava', 'estavam', 'estou', 'eu', 
      'f', 'falei', 'falaram', 'falou', 'fica', 'fico', 'ficam', 'ficaram', 'foi', 'foram', 'fosse', 
      'h', 'há', 'havia', 'horas',
      'i', 'ia', 'ir', 'isso', 'isto',

@@ -118,7 +118,7 @@ respond_to :html
 
 			client.search(session[:product]+' -rt', :lang => "pt", :result_type => "recent", :exclude => "links").take(num_tweets).collect do |tweet|
 				
-				puts "#{tweet.text}"
+				#puts "#{tweet.text}"
 
 				txt = filter_tweet("#{tweet.text}", session[:product])
 				filtered = filter("#{tweet.text}")
@@ -316,27 +316,39 @@ respond_to :html
 				pdf.move_down(20)
 
 	    		if session[:tag_cloud_words]		
-					pdf.text session[:tag_cloud_words][0][0], :size => 20, :align => :center
-					pdf.text session[:tag_cloud_words][1][0]+" "+
+	    			if session[:tag_cloud_words][0]
+						pdf.text session[:tag_cloud_words][0][0], :size => 20, :align => :center
+					end
+					if session[:tag_cloud_words][1] and session[:tag_cloud_words][2]
+						pdf.text session[:tag_cloud_words][1][0]+" "+
 							 session[:tag_cloud_words][2][0], :size => 18, :align => :center
-					pdf.text session[:tag_cloud_words][3][0]+" "+
+					end
+					if session[:tag_cloud_words][3] and session[:tag_cloud_words][5]
+						pdf.text session[:tag_cloud_words][3][0]+" "+
 							 session[:tag_cloud_words][4][0]+" "+
 							 session[:tag_cloud_words][5][0], :size => 16, :align => :center
-					pdf.text session[:tag_cloud_words][6][0]+" "+
+					end
+					if session[:tag_cloud_words][6] and session[:tag_cloud_words][9]
+						pdf.text session[:tag_cloud_words][6][0]+" "+
 							 session[:tag_cloud_words][7][0]+" "+
 							 session[:tag_cloud_words][8][0]+" "+
 							 session[:tag_cloud_words][9][0], :size => 14, :align => :center
-					pdf.text session[:tag_cloud_words][10][0]+" "+
+					end
+					if session[:tag_cloud_words][10] and session[:tag_cloud_words][14]
+						pdf.text session[:tag_cloud_words][10][0]+" "+
 							 session[:tag_cloud_words][11][0]+" "+
 							 session[:tag_cloud_words][12][0]+" "+
 							 session[:tag_cloud_words][13][0]+" "+
 							 session[:tag_cloud_words][14][0], :size => 12, :align => :center
-					pdf.text session[:tag_cloud_words][15][0]+" "+
+					end
+					if session[:tag_cloud_words][15] and session[:tag_cloud_words][20]
+						pdf.text session[:tag_cloud_words][15][0]+" "+
 							 session[:tag_cloud_words][16][0]+" "+
 							 session[:tag_cloud_words][17][0]+" "+
 							 session[:tag_cloud_words][18][0]+" "+
 							 session[:tag_cloud_words][19][0]+" "+
 							 session[:tag_cloud_words][20][0], :size => 10, :align => :center
+					end
 				elsif
 					pdf.text 'Palavras insuficientes para construir o Tag Cloud.'
 				end

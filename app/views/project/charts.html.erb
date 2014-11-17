@@ -7,40 +7,33 @@
 
 <script type="text/javascript">
 
-// O código de construcao de Tweets foi inspirado através de 
-// https://github.com/lucaong/jQCloud/blob/master/src/jqcloud/jqcloud.js.erb
-
 <% @sentClassifier = StuffClassifier::Bayes.open("Positive vs Negative") %>
 
-(function( $ ) {
-  "use strict";
-  $.fn.jQCloud = function(word_array, options) {
+(function($) {
+  $.fn.Cloud = function(wrd_arr, opt) {
     var $this = this;
-    var cloud_namespace = $this.attr('id') || Math.floor((Math.random()*1000000)).toString(36);
-    var default_options = {
+    var name = $this.attr('id') || Math.floor((Math.random()*1000000)).toString(36);
+    var dft_opt = {
       width: $this.width(),
       height: $this.height(),
       center: {
-        x: ((options && options.width) ? options.width : $this.width()) / 2.0,
-        y: ((options && options.height) ? options.height : $this.height()) / 2.0
+        x: ((opt && opt.width) ? opt.width : $this.width()) / 2.0,
+        y: ((opt && opt.height) ? opt.height : $this.height()) / 2.0
       },
-      delayedMode: word_array.length > 50,
       shape: false,
       encodeURI: true,
       removeOverflowing: true
     };
 
-    options = $.extend(default_options, options || {});
+    opt = $.extend(dft_opt, opt || {});
 
-    $this.addClass("jqcloud").width(options.width).height(options.height);
+    $this.addClass("jqcloud").width(opt.width).height(opt.height);
 
-    if ($this.css("position") === "static") {
-      $this.css("position", "relative");
-    }
+    if ($this.css("position") === "static") {$this.css("position", "relative");}
 
-    var drawWordCloud = function() {
-      var hitTest = function(elem, other_elems) {
-        var overlapping = function(a, b) {
+    var create = function() {
+      var test = function(elem, other_elems) {
+        var loop = function(a, b) {
           if (Math.abs(2.0*a.offsetLeft + a.offsetWidth - 2.0*b.offsetLeft - b.offsetWidth) < a.offsetWidth + b.offsetWidth) {
             if (Math.abs(2.0*a.offsetTop + a.offsetHeight - 2.0*b.offsetTop - b.offsetHeight) < a.offsetHeight + b.offsetHeight) {
               return true;
@@ -50,36 +43,32 @@
         };
         var i = 0;
         for(i = 0; i < other_elems.length; i++) {
-          if (overlapping(elem, other_elems[i])) {
+          if (loop(elem, other_elems[i])) {
             return true;
           }
         }
         return false;
       };
 
-      for (var i = 0; i < word_array.length; i++) {
-        word_array[i].weight = parseFloat(word_array[i].weight, 10);
+      for (var i = 0; i < wrd_arr.length; i++) {
+        wrd_arr[i].weight = parseFloat(wrd_arr[i].weight, 10);
       }
 
-      word_array.sort(function(a, b) { if (a.weight < b.weight) {return 1;} else if (a.weight > b.weight) {return -1;} else {return 0;} });
+      wrd_arr.sort(function(a, b) { if (a.weight < b.weight) {return 1;} else if (a.weight > b.weight) {return -1;} else {return 0;} });
 
-      var step = (options.shape === "rectangular") ? 18.0 : 2.0,
-          already_placed_words = [],
-          aspect_ratio = options.width / options.height;
+      var step = (opt.shape === "rectangular") ? 18.0 : 2.0, already_placed_words = [], aspect_ratio = opt.width / opt.height;
 
-      var drawOneWord = function(index, word) {
-        var word_id = cloud_namespace + "_word_" + index,
-            word_selector = "#" + word_id,
+      var create_one = function(idx, word) {
+        var word_id = name + "_word_" + idx,
             angle = 6.28 * Math.random(),
+            word_selector = "#" + word_id,
             radius = 0.0,
-
-            steps_in_direction = 0.0,
-            quarter_turns = 0.0,
-
             weight = 5,
             inner_html = "",
             color = 'yellow',
             word_span;
+            steps_in_direction = 0.0,
+            quarter_turns = 0.0,            
 
         word.html = $.extend(word.html, {id: word_id});
 
@@ -88,9 +77,9 @@
           delete word.html["class"];
         }
 
-        if (word_array[0].weight > word_array[word_array.length - 1].weight) {
-          weight = Math.round((word.weight - word_array[word_array.length - 1].weight) /
-                              (word_array[0].weight - word_array[word_array.length - 1].weight) * 9.0) + 1;
+        if (wrd_arr[0].weight > wrd_arr[wrd_arr.length - 1].weight) {
+          weight = Math.round((word.weight - wrd_arr[wrd_arr.length - 1].weight) /
+                              (wrd_arr[0].weight - wrd_arr[wrd_arr.length - 1].weight) * 9.0) + 1;
         }
         word_span = $('<span>').attr(word.html).addClass('w' + weight + " " + color);
         inner_html = word.text;
@@ -107,18 +96,19 @@
         $this.append(word_span);
 
         var width = word_span.width(),
+            left = opt.center.x - width / 2.0,
             height = word_span.height(),
-            left = options.center.x - width / 2.0,
-            top = options.center.y - height / 2.0;
+            top = opt.center.y - height / 2.0;
 
-        var word_style = word_span[0].style;
-        word_style.position = "absolute";
-        word_style.left = left + "px";
-        word_style.top = top + "px";
-        word_style.color = word.color;
+        var style = word_span[0].style;
+        style.color = word.color;
+        style.left = left + "px";
+        style.position = "absolute";
+        style.top = top + "px";
+        
 
-        while(hitTest(word_span[0], already_placed_words)) {
-          if (options.shape === "rectangular") {
+        while(test(word_span[0], already_placed_words)) {
+          if (opt.shape === "rectangular") {
             steps_in_direction++;
             if (steps_in_direction * step > (1 + Math.floor(quarter_turns / 2.0)) * step * ((quarter_turns % 4 % 2) === 0 ? 1 : aspect_ratio)) {
               steps_in_direction = 0.0;
@@ -140,20 +130,19 @@
             }
           } else { 
             radius += step;
-            angle += (index % 2 === 0 ? 1 : -1)*step;
+            angle += (idx % 2 === 0 ? 1 : -1)*step;
 
-            left = options.center.x - (width / 2.0) + (radius*Math.cos(angle)) * aspect_ratio;
-            top = options.center.y + radius*Math.sin(angle) - (height / 2.0);
+            left = opt.center.x - (width / 2.0) + (radius*Math.cos(angle)) * aspect_ratio;
+            top = opt.center.y + radius*Math.sin(angle) - (height / 2.0);
           }
-          word_style.left = left + "px";
-          word_style.top = top + "px";
+          style.left = left + "px";
+          style.top = top + "px";
         }
 
-        if (options.removeOverflowing && (left < 0 || top < 0 || (left + width) > options.width || (top + height) > options.height)) {
+        if (opt.removeOverflowing && (left < 0 || top < 0 || (left + width) > opt.width || (top + height) > opt.height)) {
           word_span.remove()
           return;
         }
-
 
         already_placed_words.push(word_span[0]);
 
@@ -161,81 +150,84 @@
           word.afterWordRender.call(word_span);
         }
       };
-        $.each(word_array, drawOneWord);
-        if ($.isFunction(options.afterCloudRender)) {
-          options.afterCloudRender.call($this);
+        $.each(wrd_arr, create_one);
+        if ($.isFunction(opt.afterCloudRender)) {
+          opt.afterCloudRender.call($this);
         }
     };
 
-    setTimeout(function(){drawWordCloud();}, 10);
+    setTimeout(function(){
+      create();
+    }, 10);
+    
     return $this;
   };
 })(jQuery);
 
-var word_array = [
+var wrd_arr = [
           {text: '<%= session[:tag_cloud_words][0] ? session[:tag_cloud_words][0][0] : '' %>', weight: 20,
-              color: '<%= @sentClassifier.classify_tagword(session[:tag_cloud_words][0][0]) %>'},
+              color: '<%= session[:tag_cloud_words][0] ? @sentClassifier.classify_tagword(session[:tag_cloud_words][0][0]) : "yellow" %>'},
 
           {text: '<%= session[:tag_cloud_words][1] ? session[:tag_cloud_words][1][0] : ''%>', weight: 19, 
-              color: '<%= @sentClassifier.classify_tagword(session[:tag_cloud_words][1][0]) %>'},
+              color: '<%=  session[:tag_cloud_words][1] ? @sentClassifier.classify_tagword(session[:tag_cloud_words][1][0]) : "yellow"%>'},
 
           {text: '<%= session[:tag_cloud_words][2] ? session[:tag_cloud_words][2][0] : ''%>', weight: 18,
-              color: '<%= @sentClassifier.classify_tagword(session[:tag_cloud_words][2][0]) %>'},
+              color: '<%= session[:tag_cloud_words][2] ? @sentClassifier.classify_tagword(session[:tag_cloud_words][2][0]) : "yellow"%>'},
 
           {text: '<%= session[:tag_cloud_words][3] ? session[:tag_cloud_words][3][0] : ''%>', weight: 17,
-              color: '<%= @sentClassifier.classify_tagword(session[:tag_cloud_words][3][0]) %>'},
+              color: '<%= session[:tag_cloud_words][3] ? @sentClassifier.classify_tagword(session[:tag_cloud_words][3][0]) : "yellow"%>'},
 
           {text: '<%= session[:tag_cloud_words][4] ? session[:tag_cloud_words][4][0] : ''%>', weight: 16,
-              color: '<%= @sentClassifier.classify_tagword(session[:tag_cloud_words][4][0]) %>'},
+              color: '<%= session[:tag_cloud_words][4] ? @sentClassifier.classify_tagword(session[:tag_cloud_words][4][0]) : "yellow"%>'},
 
           {text: '<%= session[:tag_cloud_words][5] ? session[:tag_cloud_words][5][0] : ''%>', weight: 15,
-              color: '<%= @sentClassifier.classify_tagword(session[:tag_cloud_words][5][0]) %>'},
+              color: '<%= session[:tag_cloud_words][5] ? @sentClassifier.classify_tagword(session[:tag_cloud_words][5][0]) : "yellow"%>'},
 
           {text: '<%= session[:tag_cloud_words][6] ? session[:tag_cloud_words][6][0] : ''%>', weight: 14,
-              color: '<%= @sentClassifier.classify_tagword(session[:tag_cloud_words][6][0]) %>'},
+              color: '<%= session[:tag_cloud_words][6] ? @sentClassifier.classify_tagword(session[:tag_cloud_words][6][0]) : "yellow"%>'},
 
           {text: '<%= session[:tag_cloud_words][7] ? session[:tag_cloud_words][7][0] : ''%>', weight: 13,
-              color: '<%= @sentClassifier.classify_tagword(session[:tag_cloud_words][7][0]) %>'},
+              color: '<%= session[:tag_cloud_words][7] ? @sentClassifier.classify_tagword(session[:tag_cloud_words][7][0]) : "yellow"%>'},
 
           {text: '<%= session[:tag_cloud_words][8] ? session[:tag_cloud_words][8][0] : ''%>', weight: 12,
-              color: '<%= @sentClassifier.classify_tagword(session[:tag_cloud_words][8][0]) %>'},
+              color: '<%= session[:tag_cloud_words][8] ? @sentClassifier.classify_tagword(session[:tag_cloud_words][8][0]) : "yellow"%>'},
 
           {text: '<%= session[:tag_cloud_words][9] ? session[:tag_cloud_words][9][0] : ''%>', weight: 11,
-              color: '<%= @sentClassifier.classify_tagword(session[:tag_cloud_words][9][0]) %>'},
+              color: '<%= session[:tag_cloud_words][9] ? @sentClassifier.classify_tagword(session[:tag_cloud_words][9][0]) : "yellow"%>'},
 
           {text: '<%= session[:tag_cloud_words][10] ? session[:tag_cloud_words][10][0] : ''%>', weight: 10,
-              color: '<%= @sentClassifier.classify_tagword(session[:tag_cloud_words][10][0]) %>'},
+              color: '<%= session[:tag_cloud_words][10] ? @sentClassifier.classify_tagword(session[:tag_cloud_words][10][0]) : "yellow"%>'},
 
           {text: '<%= session[:tag_cloud_words][11] ? session[:tag_cloud_words][11][0] : ''%>', weight: 9,
-              color: '<%= @sentClassifier.classify_tagword(session[:tag_cloud_words][11][0]) %>'},
+              color: '<%= session[:tag_cloud_words][11] ? @sentClassifier.classify_tagword(session[:tag_cloud_words][11][0]) : "yellow"%>'},
 
           {text: '<%= session[:tag_cloud_words][12] ? session[:tag_cloud_words][12][0] : ''%>', weight: 8,
-              color: '<%= @sentClassifier.classify_tagword(session[:tag_cloud_words][12][0]) %>'},
+              color: '<%= session[:tag_cloud_words][12] ? @sentClassifier.classify_tagword(session[:tag_cloud_words][12][0]) : "yellow"%>'},
 
           {text: '<%= session[:tag_cloud_words][13] ? session[:tag_cloud_words][13][0] : ''%>', weight: 7,
-              color: '<%= @sentClassifier.classify_tagword(session[:tag_cloud_words][13][0]) %>'},
+              color: '<%= session[:tag_cloud_words][13] ? @sentClassifier.classify_tagword(session[:tag_cloud_words][13][0]) : "yellow"%>'},
 
           {text: '<%= session[:tag_cloud_words][14] ? session[:tag_cloud_words][14][0] : ''%>', weight: 6,
-              color: '<%= @sentClassifier.classify_tagword(session[:tag_cloud_words][14][0]) %>'},
+              color: '<%= session[:tag_cloud_words][14] ? @sentClassifier.classify_tagword(session[:tag_cloud_words][14][0]) : "yellow"%>'},
 
           {text: '<%= session[:tag_cloud_words][15] ? session[:tag_cloud_words][15][0] : ''%>', weight: 5,
-              color: '<%= @sentClassifier.classify_tagword(session[:tag_cloud_words][15][0]) %>'},
+              color: '<%= session[:tag_cloud_words][15] ? @sentClassifier.classify_tagword(session[:tag_cloud_words][15][0]) : "yellow"%>'},
 
           {text: '<%= session[:tag_cloud_words][16] ? session[:tag_cloud_words][16][0] : ''%>', weight: 4,
-              color: '<%= @sentClassifier.classify_tagword(session[:tag_cloud_words][16][0]) %>'},
+              color: '<%= session[:tag_cloud_words][16] ? @sentClassifier.classify_tagword(session[:tag_cloud_words][16][0]) : "yellow"%>'},
 
           {text: '<%= session[:tag_cloud_words][17] ? session[:tag_cloud_words][17][0] : ''%>', weight: 3,
-              color: '<%= @sentClassifier.classify_tagword(session[:tag_cloud_words][17][0]) %>'},
+              color: '<%= session[:tag_cloud_words][17] ? @sentClassifier.classify_tagword(session[:tag_cloud_words][17][0]) : "yellow"%>'},
 
           {text: '<%= session[:tag_cloud_words][18] ? session[:tag_cloud_words][18][0] : ''%>', weight: 2,
-              color: '<%= @sentClassifier.classify_tagword(session[:tag_cloud_words][18][0]) %>'},
+              color: '<%= session[:tag_cloud_words][18] ? @sentClassifier.classify_tagword(session[:tag_cloud_words][18][0]) : "yellow"%>'},
 
           {text: '<%= session[:tag_cloud_words][19] ? session[:tag_cloud_words][19][0] : ''%>', weight: 1,
-              color: '<%= @sentClassifier.classify_tagword(session[:tag_cloud_words][19][0]) %>'}
+              color: '<%= session[:tag_cloud_words][19] ? @sentClassifier.classify_tagword(session[:tag_cloud_words][19][0]) : "yellow"%>'}
       ];
 
 $(function() {
-  $("#tag-cloud").jQCloud(word_array);
+  $("#tag-cloud").Cloud(wrd_arr);
 });
 
 
@@ -365,7 +357,6 @@ $(document).ready(function() {
     });
 </script>
 
-   
 </script>
 
 <div class="row">

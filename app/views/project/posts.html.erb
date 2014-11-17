@@ -190,9 +190,11 @@ $(document).ready(function(){
                 
               </button>
 
-              <button type="button" id="<%= "reportSpamBtn"+i.to_s %>" class="btn btn-primary pull-right" aria-hidden="true" data-dismiss="alert">
-                Assumir Spam
-              </button>
+              <% if !select_favoriteds.include? filter(@tweets[i+1])  %>
+                <button type="button" id="<%= "reportSpamBtn"+i.to_s %>" class="btn btn-primary pull-right" aria-hidden="true" data-dismiss="alert">
+                  Assumir Spam
+                </button>
+              <% end %>
               
               <script>
                 $(document).ready(function(){
